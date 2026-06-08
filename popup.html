@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RecarregaAi!</title>
+    <link rel="stylesheet" href="CSS/popup.css" />
+  </head>
+  <body>
+    <main class="popup" aria-labelledby="popup-title">
+      <section class="popup__header">
+        <span class="popup__logo" aria-hidden="true">R</span>
+
+        <div class="popup__heading">
+          <h1 id="popup-title" class="popup__title">RecarregaAi!</h1>
+          <p class="popup__subtitle">Sua extensao pronta para evoluir.</p>
+        </div>
+      </section>
+
+      <section class="popup__status" aria-live="polite">
+        <p class="popup__label">Status</p>
+        <strong id="status-message" class="popup__message">
+          Extensao carregada com sucesso.
+        </strong>
+      </section>
+
+      <button id="reload-page-button" class="popup__button" type="button">
+        Recarregar pagina
+      </button>
+    </main>
+
+    <script src="JS/popup.js"></script>
+  </body>
+</html>

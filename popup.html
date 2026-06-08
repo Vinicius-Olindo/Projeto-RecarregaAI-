@@ -13,19 +13,77 @@
 
         <div class="popup__heading">
           <h1 id="popup-title" class="popup__title">RecarregaAi!</h1>
-          <p class="popup__subtitle">Sua extensao pronta para evoluir.</p>
+          <p class="popup__subtitle">Limpe o cache e recarregue a pagina atual.</p>
         </div>
       </section>
 
       <section class="popup__status" aria-live="polite">
         <p class="popup__label">Status</p>
         <strong id="status-message" class="popup__message">
-          Extensao carregada com sucesso.
+          Pronto para limpar o cache da aba aberta.
         </strong>
       </section>
 
+      <section class="popup__timer" aria-labelledby="timer-title">
+        <div class="popup__section-heading">
+          <h2 id="timer-title" class="popup__section-title">Timer</h2>
+          <p class="popup__hint">Limpar cache e recarregar automaticamente a cada:</p>
+        </div>
+
+        <fieldset class="timer-options">
+          <legend class="screen-reader-only">Escolha o intervalo do timer</legend>
+
+          <label class="timer-options__item">
+            <input type="radio" name="timer-interval" value="3" checked />
+            <span>3 min</span>
+          </label>
+
+          <label class="timer-options__item">
+            <input type="radio" name="timer-interval" value="5" />
+            <span>5 min</span>
+          </label>
+
+          <label class="timer-options__item">
+            <input type="radio" name="timer-interval" value="10" />
+            <span>10 min</span>
+          </label>
+
+          <label class="timer-options__item">
+            <input type="radio" name="timer-interval" value="custom" />
+            <span>Personalizado</span>
+          </label>
+        </fieldset>
+
+        <label class="custom-timer" for="custom-timer-input">
+          <span class="custom-timer__label">Tempo personalizado em minutos</span>
+          <input
+            id="custom-timer-input"
+            class="custom-timer__input"
+            type="number"
+            min="1"
+            step="1"
+            value="15"
+            disabled
+          />
+        </label>
+
+        <div class="popup__actions">
+          <button
+            id="start-timer-button"
+            class="popup__button popup__button--secondary"
+            type="button"
+          >
+            Ativar timer
+          </button>
+
+          <button id="stop-timer-button" class="popup__button popup__button--ghost" type="button">
+            Parar timer
+          </button>
+        </div>
+      </section>
+
       <button id="reload-page-button" class="popup__button" type="button">
-        Recarregar pagina
+        Limpar cache e recarregar
       </button>
     </main>
 

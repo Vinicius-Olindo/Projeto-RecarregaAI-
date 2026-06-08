@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "RecarregaAi!",
   "version": "1.0.0",
-  "description": "Extensao inicial do RecarregaAi! para acoes rapidas no Google Chrome.",
+  "description": "Limpe cache e recarregue paginas automaticamente.",
   "action": {
     "default_title": "RecarregaAi!",
     "default_popup": "popup.html"
@@ -12,6 +12,14 @@
   },
   "permissions": [
     "activeTab",
-    "storage"
+    "alarms",
+    "browsingData",
+    "scripting",
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
   ]
 }

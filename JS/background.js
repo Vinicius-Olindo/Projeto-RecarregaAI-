@@ -2,6 +2,7 @@ const timerAlarmName = "recarregaAiAutomaticReload";
 const badgeCountdownAlarmName = "recarregaAiBadgeCountdown";
 const timerSettingsKey = "recarregaAiTimerSettings";
 const lastTimerRunKey = "recarregaAiLastTimerRun";
+const appSettingsKey = "recarregaAiSettings";
 const oneSecondInMilliseconds = 1000;
 const welcomePagePath = "welcome.html";
 
@@ -9,8 +10,17 @@ let badgeCountdownTimerId = null;
 let scheduledRefreshInProgress = false;
 
 const runtimeMessageTypes = {
+  getTimerState: "RECARREGA_AI_GET_TIMER_STATE",
+  openTimerTab: "RECARREGA_AI_OPEN_TIMER_TAB",
+  pauseTimer: "RECARREGA_AI_PAUSE_TIMER",
+  resumeTimer: "RECARREGA_AI_RESUME_TIMER",
   startTimer: "RECARREGA_AI_START_TIMER",
   stopTimer: "RECARREGA_AI_STOP_TIMER"
+};
+
+const defaultAppSettings = {
+  autoStartSites: [],
+  defaultIntervalInMinutes: 3
 };
 
 const cacheDataTypes = {
@@ -113,8 +123,31 @@ const getStoredTimerSettings = async () => {
   return storedData[timerSettingsKey];
 };
 
+const getLastTimerRun = async () => {
+  const storedData = await chrome.storage.local.get(lastTimerRunKey);
+
+  return storedData[lastTimerRunKey];
+};
+
+const getAppSettings = async () => {
+  const storedData = await chrome.storage.local.get(appSettingsKey);
+  const storedSettings = storedData[appSettingsKey] || {};
+
+  return {
+    ...defaultAppSettings,
+    ...storedSettings,
+    autoStartSites: Array.isArray(storedSettings.autoStartSites)
+      ? storedSettings.autoStartSites
+      : []
+  };
+};
+
 const getNextRunDate = (intervalInMinutes) => (
   new Date(Date.now() + intervalInMinutes * 60 * 1000).toISOString()
+);
+
+const getNextRunDateFromSeconds = (remainingSeconds) => (
+  new Date(Date.now() + remainingSeconds * oneSecondInMilliseconds).toISOString()
 );
 
 const getRemainingSeconds = (nextRunAt) => {
@@ -207,15 +240,21 @@ const updateTimerBadge = async (timerSettings) => {
     return;
   }
 
-  const badgeText = getBadgeText(timerSettings.nextRunAt);
-  const remainingSeconds = getRemainingSeconds(timerSettings.nextRunAt);
-  const countdownTime = formatCountdownTime(remainingSeconds);
   const badgeTarget = getBadgeTarget(timerSettings);
+  const isPaused = Boolean(timerSettings.paused);
+  const badgeText = isPaused ? "II" : getBadgeText(timerSettings.nextRunAt);
+  const remainingSeconds = getRemainingSeconds(timerSettings.nextRunAt);
+  const countdownTime = isPaused
+    ? "pausado"
+    : formatCountdownTime(remainingSeconds);
+  const badgeColor = isPaused
+    ? "#667085"
+    : getBadgeColor(timerSettings.nextRunAt);
 
   try {
     await chrome.action.setBadgeBackgroundColor({
       ...badgeTarget,
-      color: getBadgeColor(timerSettings.nextRunAt)
+      color: badgeColor
     });
     await chrome.action.setBadgeText({
       ...badgeTarget,
@@ -223,7 +262,9 @@ const updateTimerBadge = async (timerSettings) => {
     });
     await chrome.action.setTitle({
       ...badgeTarget,
-      title: `RecarregaAi! - proximo reload em ${countdownTime}`
+      title: isPaused
+        ? "RecarregaAi! - timer pausado"
+        : `RecarregaAi! - proximo reload em ${countdownTime}`
     });
   } catch (error) {
     console.warn("Nao foi possivel atualizar badge do RecarregaAi:", error);
@@ -273,11 +314,14 @@ const startStoredBadgeCountdown = async () => {
   await startBadgeCountdown(timerSettings);
 };
 
-const createTimerAlarm = async (intervalInMinutes) => {
+const createTimerAlarm = async (
+  intervalInMinutes,
+  delayInMinutes = intervalInMinutes
+) => {
   await chrome.alarms.clear(timerAlarmName);
 
   chrome.alarms.create(timerAlarmName, {
-    delayInMinutes: intervalInMinutes,
+    delayInMinutes: Math.max(0.5, delayInMinutes),
     periodInMinutes: intervalInMinutes
   });
 };
@@ -315,6 +359,10 @@ const startTimer = async (payload) => {
     mainOrigin: origins[0],
     nextRunAt: getNextRunDate(intervalInMinutes),
     origins,
+    paused: false,
+    pausedAt: null,
+    remainingSecondsWhenPaused: null,
+    source: payload.source || "manual",
     startedAt: new Date().toISOString(),
     tabId: payload.tabId,
     tabTitle: payload.tabTitle || null,
@@ -340,6 +388,74 @@ const startTimer = async (payload) => {
   return timerSettings;
 };
 
+const pauseTimer = async () => {
+  const timerSettings = await getStoredTimerSettings();
+
+  if (!timerSettings?.enabled) {
+    throw new Error("Nenhum timer ativo para pausar.");
+  }
+
+  if (timerSettings.paused) {
+    await updateTimerBadge(timerSettings);
+    return timerSettings;
+  }
+
+  const pausedTimerSettings = {
+    ...timerSettings,
+    paused: true,
+    pausedAt: new Date().toISOString(),
+    remainingSecondsWhenPaused: getRemainingSeconds(timerSettings.nextRunAt)
+  };
+
+  await chrome.alarms.clear(timerAlarmName);
+  await chrome.alarms.clear(badgeCountdownAlarmName);
+  stopBadgeCountdown();
+  await chrome.storage.local.set({
+    [timerSettingsKey]: pausedTimerSettings
+  });
+  await updateTimerBadge(pausedTimerSettings);
+
+  return pausedTimerSettings;
+};
+
+const resumeTimer = async () => {
+  const timerSettings = await getStoredTimerSettings();
+
+  if (!timerSettings?.enabled) {
+    throw new Error("Nenhum timer pausado para retomar.");
+  }
+
+  if (!timerSettings.paused) {
+    await startBadgeCountdown(timerSettings);
+    return timerSettings;
+  }
+
+  const remainingSeconds = Math.max(
+    1,
+    Number(timerSettings.remainingSecondsWhenPaused) || 1
+  );
+  const resumedTimerSettings = {
+    ...timerSettings,
+    nextRunAt: getNextRunDateFromSeconds(remainingSeconds),
+    paused: false,
+    pausedAt: null,
+    remainingSecondsWhenPaused: null,
+    resumedAt: new Date().toISOString()
+  };
+
+  await chrome.storage.local.set({
+    [timerSettingsKey]: resumedTimerSettings
+  });
+  await createTimerAlarm(
+    resumedTimerSettings.intervalInMinutes,
+    remainingSeconds / 60
+  );
+  await createBadgeCountdownAlarm();
+  await startBadgeCountdown(resumedTimerSettings);
+
+  return resumedTimerSettings;
+};
+
 const stopTimer = async () => {
   const timerSettings = await getStoredTimerSettings();
 
@@ -349,10 +465,79 @@ const stopTimer = async () => {
   await chrome.storage.local.set({
     [timerSettingsKey]: {
       enabled: false,
+      paused: false,
       stoppedAt: new Date().toISOString()
     }
   });
   await clearTimerBadge(timerSettings);
+};
+
+const openTimerTab = async () => {
+  const timerSettings = await getStoredTimerSettings();
+
+  if (!timerSettings?.enabled || typeof timerSettings.tabId !== "number") {
+    throw new Error("Nenhuma guia controlada para abrir.");
+  }
+
+  if (typeof timerSettings.windowId === "number") {
+    await chrome.windows.update(timerSettings.windowId, {
+      focused: true
+    });
+  }
+
+  await chrome.tabs.update(timerSettings.tabId, {
+    active: true
+  });
+
+  return timerSettings;
+};
+
+const getMatchingAutoStartSite = (tabUrl, appSettings) => {
+  const tabOrigin = getUrlOrigin(tabUrl);
+
+  if (!tabOrigin) {
+    return null;
+  }
+
+  return appSettings.autoStartSites.find((site) => (
+    site.enabled !== false && site.origin === tabOrigin
+  )) || null;
+};
+
+const autoStartTimerForTab = async (tabId, tab) => {
+  if (!tab?.url) {
+    return;
+  }
+
+  const appSettings = await getAppSettings();
+  const matchingSite = getMatchingAutoStartSite(tab.url, appSettings);
+
+  if (!matchingSite) {
+    return;
+  }
+
+  const timerSettings = await getStoredTimerSettings();
+
+  if (timerSettings?.enabled) {
+    return;
+  }
+
+  const mainOrigin = getUrlOrigin(tab.url);
+  const intervalInMinutes = matchingSite.intervalInMinutes
+    || appSettings.defaultIntervalInMinutes
+    || defaultAppSettings.defaultIntervalInMinutes;
+  const origins = await collectLoadedOrigins(tabId, [mainOrigin]);
+
+  await startTimer({
+    intervalInMinutes,
+    mainOrigin,
+    origins,
+    source: "auto",
+    tabId,
+    tabTitle: tab.title,
+    tabUrl: tab.url,
+    windowId: tab.windowId
+  });
 };
 
 const saveTimerRunResult = async (timerSettings, result) => {
@@ -361,7 +546,7 @@ const saveTimerRunResult = async (timerSettings, result) => {
     lastError: result.error || null,
     lastRunAt: result.finishedAt,
     lastRunStatus: result.status,
-    nextRunAt: timerSettings.enabled
+    nextRunAt: timerSettings.enabled && !timerSettings.paused
       ? getNextRunDate(timerSettings.intervalInMinutes)
       : null,
     origins: result.origins || timerSettings.origins
@@ -412,7 +597,7 @@ const runScheduledRefresh = async () => {
   try {
     timerSettings = await getStoredTimerSettings();
 
-    if (!timerSettings?.enabled) {
+    if (!timerSettings?.enabled || timerSettings.paused) {
       return;
     }
 
@@ -448,6 +633,11 @@ const restoreTimerAlarm = async () => {
     return;
   }
 
+  if (timerSettings.paused) {
+    await updateTimerBadge(timerSettings);
+    return;
+  }
+
   const restoredTimerSettings = {
     ...timerSettings,
     nextRunAt: getNextRunDate(timerSettings.intervalInMinutes)
@@ -462,6 +652,42 @@ const restoreTimerAlarm = async () => {
 };
 
 const handleRuntimeMessage = async (message) => {
+  if (message?.type === runtimeMessageTypes.getTimerState) {
+    return {
+      appSettings: await getAppSettings(),
+      lastTimerRun: await getLastTimerRun(),
+      ok: true,
+      timerSettings: await getStoredTimerSettings()
+    };
+  }
+
+  if (message?.type === runtimeMessageTypes.openTimerTab) {
+    const timerSettings = await openTimerTab();
+
+    return {
+      ok: true,
+      timerSettings
+    };
+  }
+
+  if (message?.type === runtimeMessageTypes.pauseTimer) {
+    const timerSettings = await pauseTimer();
+
+    return {
+      ok: true,
+      timerSettings
+    };
+  }
+
+  if (message?.type === runtimeMessageTypes.resumeTimer) {
+    const timerSettings = await resumeTimer();
+
+    return {
+      ok: true,
+      timerSettings
+    };
+  }
+
   if (message?.type === runtimeMessageTypes.startTimer) {
     const timerSettings = await startTimer(message.payload);
 
@@ -547,4 +773,14 @@ chrome.tabs.onRemoved.addListener((tabId) => {
     .catch((error) => {
       console.error("Erro ao verificar guia removida no RecarregaAi:", error);
     });
+});
+
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (changeInfo.status !== "complete") {
+    return;
+  }
+
+  autoStartTimerForTab(tabId, tab).catch((error) => {
+    console.error("Erro ao iniciar timer automatico do RecarregaAi:", error);
+  });
 });

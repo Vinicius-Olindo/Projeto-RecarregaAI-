@@ -7,20 +7,32 @@ const themeModes = {
 };
 
 const runtimeMessageTypes = {
+  getTimerState: "RECARREGA_AI_GET_TIMER_STATE",
+  openTimerTab: "RECARREGA_AI_OPEN_TIMER_TAB",
+  pauseTimer: "RECARREGA_AI_PAUSE_TIMER",
+  resumeTimer: "RECARREGA_AI_RESUME_TIMER",
   startTimer: "RECARREGA_AI_START_TIMER",
   stopTimer: "RECARREGA_AI_STOP_TIMER"
 };
 
 const popupElements = {
+  controlledTabTitle: document.querySelector("#controlled-tab-title"),
+  controlledTabUrl: document.querySelector("#controlled-tab-url"),
   customTimerInput: document.querySelector("#custom-timer-input"),
   extensionVersion: document.querySelector("#extension-version"),
+  openControlledTabButton: document.querySelector("#open-controlled-tab-button"),
+  openOptionsButton: document.querySelector("#open-options-button"),
+  pauseTimerButton: document.querySelector("#pause-timer-button"),
+  popupCountdown: document.querySelector("#popup-countdown"),
   reloadPageButton: document.querySelector("#reload-page-button"),
+  resumeTimerButton: document.querySelector("#resume-timer-button"),
   startTimerButton: document.querySelector("#start-timer-button"),
   statusPanel: document.querySelector(".popup__status"),
   statusMessage: document.querySelector("#status-message"),
   stopTimerButton: document.querySelector("#stop-timer-button"),
   themeToggleButton: document.querySelector("#theme-toggle-button"),
   themeToggleLabel: document.querySelector("#theme-toggle-label"),
+  timerOverview: document.querySelector("#timer-overview"),
   timerIntervalInputs: document.querySelectorAll("[name='timer-interval']")
 };
 
@@ -43,6 +55,7 @@ const updateStatusMessage = (message, status = "neutral") => {
 const updateButtonState = (button, isLoading, loadingText, defaultText) => {
   button.disabled = isLoading;
   button.textContent = isLoading ? loadingText : defaultText;
+  button.classList.toggle("is-loading", isLoading);
 };
 
 const loadExtensionVersion = () => {
@@ -279,6 +292,114 @@ const formatTimerInterval = (intervalInMinutes) => {
   return `${intervalInMinutes} minutos`;
 };
 
+const getRemainingSeconds = (nextRunAt) => {
+  if (!nextRunAt) {
+    return 0;
+  }
+
+  return Math.max(
+    0,
+    Math.ceil((new Date(nextRunAt).getTime() - Date.now()) / 1000)
+  );
+};
+
+const formatCountdownTime = (remainingSeconds) => {
+  const minutes = Math.floor(remainingSeconds / 60);
+  const seconds = remainingSeconds % 60;
+  const paddedSeconds = String(seconds).padStart(2, "0");
+
+  return `${minutes}:${paddedSeconds}`;
+};
+
+const getTimerState = async () => (
+  sendRuntimeMessage({
+    type: runtimeMessageTypes.getTimerState
+  })
+);
+
+const getTimerTabLabel = (timerSettings) => (
+  timerSettings.tabTitle || timerSettings.mainOrigin || "Guia controlada"
+);
+
+const updateTimerActionButtons = (timerSettings, activeTab) => {
+  const hasTimer = Boolean(timerSettings?.enabled);
+  const isCurrentControlledTab = hasTimer && activeTab?.id === timerSettings.tabId;
+  const isPaused = Boolean(timerSettings?.paused);
+
+  popupElements.openControlledTabButton.hidden = !hasTimer || isCurrentControlledTab;
+  popupElements.pauseTimerButton.hidden = !hasTimer || isPaused;
+  popupElements.resumeTimerButton.hidden = !hasTimer || !isPaused;
+  popupElements.stopTimerButton.disabled = !hasTimer;
+};
+
+const updateTimerOverview = async (timerSettings) => {
+  const activeTab = await getActiveTab();
+
+  if (!timerSettings?.enabled) {
+    popupElements.timerOverview.dataset.state = "empty";
+    popupElements.controlledTabTitle.textContent = "Nenhuma guia monitorada";
+    popupElements.controlledTabUrl.textContent = "Ative o timer para iniciar.";
+    popupElements.popupCountdown.textContent = "--:--";
+    updateTimerActionButtons(timerSettings, activeTab);
+    return;
+  }
+
+  const isPaused = Boolean(timerSettings.paused);
+  const remainingSeconds = getRemainingSeconds(timerSettings.nextRunAt);
+  const isWarning = !isPaused && remainingSeconds <= 10;
+  const state = isPaused ? "paused" : isWarning ? "warning" : "active";
+
+  popupElements.timerOverview.dataset.state = state;
+  popupElements.controlledTabTitle.textContent = getTimerTabLabel(timerSettings);
+  popupElements.controlledTabUrl.textContent = timerSettings.tabUrl
+    || timerSettings.mainOrigin
+    || "Origem nao identificada";
+  popupElements.popupCountdown.textContent = isPaused
+    ? "Pausado"
+    : formatCountdownTime(remainingSeconds);
+
+  updateTimerActionButtons(timerSettings, activeTab);
+};
+
+const refreshTimerState = async ({ updateStatus = false } = {}) => {
+  const response = await getTimerState();
+  const timerSettings = response.timerSettings;
+
+  await updateTimerOverview(timerSettings);
+
+  if (!updateStatus) {
+    return timerSettings;
+  }
+
+  if (!timerSettings?.enabled) {
+    updateStatusMessage("Nenhuma guia sendo monitorada agora.", "neutral");
+    return timerSettings;
+  }
+
+  const activeTab = await getActiveTab();
+  const timerIntervalText = formatTimerInterval(timerSettings.intervalInMinutes);
+
+  if (timerSettings.paused) {
+    updateStatusMessage("Timer pausado.", "warning");
+    return timerSettings;
+  }
+
+  if (activeTab?.id === timerSettings.tabId) {
+    updateStatusMessage(
+      `Timer ativo nesta guia: a cada ${timerIntervalText}.`,
+      "active"
+    );
+    return timerSettings;
+  }
+
+  updateStatusMessage(
+    "Timer ativo em outra guia. Use Abrir guia para ir ate ela.",
+    "warning"
+  );
+
+  return timerSettings;
+};
+
 const syncCustomTimerInputState = () => {
   const selectedTimerInput = document.querySelector("[name='timer-interval']:checked");
   const isCustomTimer = selectedTimerInput?.value === "custom";
@@ -309,30 +430,13 @@ const selectTimerInterval = (intervalInMinutes) => {
 };
 
 const loadTimerState = async () => {
-  const storedData = await chrome.storage.local.get(timerSettingsKey);
-  const timerSettings = storedData[timerSettingsKey];
+  const timerSettings = await refreshTimerState({
+    updateStatus: true
+  });
 
-  if (!timerSettings?.enabled) {
-    return;
+  if (timerSettings?.intervalInMinutes) {
+    selectTimerInterval(timerSettings.intervalInMinutes);
   }
-
-  selectTimerInterval(timerSettings.intervalInMinutes);
-
-  const activeTab = await getActiveTab();
-  const timerIntervalText = formatTimerInterval(timerSettings.intervalInMinutes);
-
-  if (activeTab?.id === timerSettings.tabId) {
-    updateStatusMessage(
-      `Timer ativo nesta guia: a cada ${timerIntervalText}.`,
-      "active"
-    );
-    return;
-  }
-
-  updateStatusMessage(
-    `Timer ativo em outra guia. Ativar aqui substitui a guia anterior.`,
-    "warning"
-  );
 };
 
 const startTimer = async () => {
@@ -379,6 +483,7 @@ const startTimer = async () => {
       `Timer ativo: a cada ${formatTimerInterval(intervalInMinutes)}.`,
       "active"
     );
+    await refreshTimerState();
   } catch (error) {
     console.error("Erro ao ativar timer:", error);
     updateStatusMessage(
@@ -401,14 +506,62 @@ const stopTimer = async () => {
       type: runtimeMessageTypes.stopTimer
     });
 
-    updateStatusMessage("Timer pausado.", "warning");
+    await refreshTimerState();
+    updateStatusMessage("Timer parado.", "warning");
   } catch (error) {
     console.error("Erro ao parar timer:", error);
     updateStatusMessage("Nao foi possivel parar o timer agora.", "error");
   }
 };
 
+const pauseTimer = async () => {
+  try {
+    await sendRuntimeMessage({
+      type: runtimeMessageTypes.pauseTimer
+    });
+
+    updateStatusMessage("Timer pausado.", "warning");
+    await refreshTimerState();
+  } catch (error) {
+    console.error("Erro ao pausar timer:", error);
+    updateStatusMessage("Nao foi possivel pausar o timer agora.", "error");
+  }
+};
+
+const resumeTimer = async () => {
+  try {
+    await sendRuntimeMessage({
+      type: runtimeMessageTypes.resumeTimer
+    });
+
+    updateStatusMessage("Timer retomado.", "active");
+    await refreshTimerState();
+  } catch (error) {
+    console.error("Erro ao retomar timer:", error);
+    updateStatusMessage("Nao foi possivel retomar o timer agora.", "error");
+  }
+};
+
+const openControlledTab = async () => {
+  try {
+    await sendRuntimeMessage({
+      type: runtimeMessageTypes.openTimerTab
+    });
+  } catch (error) {
+    console.error("Erro ao abrir guia controlada:", error);
+    updateStatusMessage("Nao foi possivel abrir a guia controlada.", "error");
+  }
+};
+
+const openOptionsPage = () => {
+  chrome.runtime.openOptionsPage();
+};
+
 popupElements.reloadPageButton.addEventListener("click", clearCacheAndReloadCurrentPage);
+popupElements.openControlledTabButton.addEventListener("click", openControlledTab);
+popupElements.openOptionsButton.addEventListener("click", openOptionsPage);
+popupElements.pauseTimerButton.addEventListener("click", pauseTimer);
+popupElements.resumeTimerButton.addEventListener("click", resumeTimer);
 popupElements.startTimerButton.addEventListener("click", startTimer);
 popupElements.stopTimerButton.addEventListener("click", stopTimer);
 popupElements.themeToggleButton.addEventListener("click", () => {
@@ -429,3 +582,9 @@ loadTheme().catch((error) => {
 loadTimerState().catch((error) => {
   console.error("Erro ao carregar estado do timer:", error);
 });
+
+setInterval(() => {
+  refreshTimerState().catch((error) => {
+    console.error("Erro ao atualizar estado do timer:", error);
+  });
+}, 1000);

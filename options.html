@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Configuracoes do RecarregaAi!</title>
+    <link rel="stylesheet" href="CSS/options.css" />
+  </head>
+  <body>
+    <main class="options" aria-labelledby="options-title">
+      <header class="options__header">
+        <img class="options__icon" src="assets/icons/icon128.png" alt="" />
+
+        <div class="options__heading">
+          <p id="extension-version" class="options__eyebrow">V.1.2.0</p>
+          <h1 id="options-title" class="options__title">
+            Configuracoes do RecarregaAi!
+          </h1>
+          <p class="options__subtitle">
+            Ajuste o timer padrao, sites automaticos e veja como as permissoes
+            sao usadas.
+          </p>
+        </div>
+
+        <button id="theme-toggle-button" class="button button--ghost" type="button">
+          Tema claro
+        </button>
+      </header>
+
+      <section class="panel" aria-labelledby="general-title">
+        <div class="panel__heading">
+          <p class="panel__eyebrow">Preferencias</p>
+          <h2 id="general-title" class="panel__title">Timer padrao</h2>
+        </div>
+
+        <label class="field" for="default-interval-input">
+          <span class="field__label">Intervalo padrao em minutos</span>
+          <input
+            id="default-interval-input"
+            class="field__input"
+            type="number"
+            min="1"
+            step="1"
+            value="3"
+          />
+        </label>
+
+        <button id="save-settings-button" class="button button--primary" type="button">
+          Salvar preferencias
+        </button>
+      </section>
+
+      <section class="panel" aria-labelledby="sites-title">
+        <div class="panel__heading">
+          <p class="panel__eyebrow">Auto-inicio</p>
+          <h2 id="sites-title" class="panel__title">Sites favoritos</h2>
+          <p class="panel__description">
+            Quando nao houver timer ativo, o RecarregaAi! inicia sozinho ao
+            carregar um site desta lista.
+          </p>
+        </div>
+
+        <div class="site-form">
+          <label class="field" for="site-origin-input">
+            <span class="field__label">Endereco do site</span>
+            <input
+              id="site-origin-input"
+              class="field__input"
+              type="text"
+              placeholder="https://drive.google.com"
+            />
+          </label>
+
+          <label class="field" for="site-interval-input">
+            <span class="field__label">Minutos</span>
+            <input
+              id="site-interval-input"
+              class="field__input"
+              type="number"
+              min="1"
+              step="1"
+              placeholder="Padrao"
+            />
+          </label>
+
+          <button id="add-site-button" class="button button--secondary" type="button">
+            Adicionar site
+          </button>
+        </div>
+
+        <div id="sites-empty-state" class="empty-state">
+          Nenhum site automatico cadastrado.
+        </div>
+
+        <ul id="sites-list" class="site-list" aria-label="Sites automaticos"></ul>
+      </section>
+
+      <section class="panel" aria-labelledby="permissions-title">
+        <div class="panel__heading">
+          <p class="panel__eyebrow">Transparencia</p>
+          <h2 id="permissions-title" class="panel__title">
+            Por que a extensao pede permissoes?
+          </h2>
+        </div>
+
+        <div class="permissions-grid">
+          <article class="permission-card">
+            <strong>Abas</strong>
+            <p>Identifica a guia escolhida, abre a guia ativa e recarrega somente ela.</p>
+          </article>
+
+          <article class="permission-card">
+            <strong>Limpeza de dados</strong>
+            <p>Remove cache, CacheStorage e service workers da origem carregada.</p>
+          </article>
+
+          <article class="permission-card">
+            <strong>Scripts</strong>
+            <p>Coleta as origens dos recursos usados pela pagina antes da limpeza.</p>
+          </article>
+
+          <article class="permission-card">
+            <strong>Armazenamento</strong>
+            <p>Salva tema, timer ativo, sites favoritos e preferencias locais.</p>
+          </article>
+        </div>
+      </section>
+
+      <p id="options-status" class="options__status" role="status"></p>
+    </main>
+
+    <script src="JS/options.js"></script>
+  </body>
+</html>

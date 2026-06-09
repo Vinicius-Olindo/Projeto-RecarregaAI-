@@ -11,14 +11,17 @@ um timer para repetir esse processo automaticamente.
 ```text
 RecarregaAI-/
 |-- manifest.json
+|-- options.html
 |-- popup.html
 |-- welcome.html
 |-- CSS/
+|   |-- options.css
 |   |-- popup.css
 |   `-- welcome.css
 |-- JS/
 |   |-- background.js
 |   |-- content.js
+|   |-- options.js
 |   |-- popup.js
 |   `-- welcome.js
 `-- assets/
@@ -76,12 +79,26 @@ Para usar:
 
 Para encerrar o agendamento, clique em `Parar timer`.
 
+Tambem e possivel pausar, retomar e abrir diretamente a guia controlada pelo
+timer usando os botoes do popup.
+
 Enquanto o timer estiver ativo, o icone da extensao mostra a contagem regressiva
 no badge, como `3:00`, `2:59`, `2:58` e assim por diante. Ao parar o timer, o
 badge e removido.
 
 O badge aparece somente na guia controlada pelo timer. Nas outras guias, o icone
 fica sem contador.
+
+## Configuracoes
+
+A pagina `options.html` permite:
+
+- Definir o intervalo padrao do timer.
+- Cadastrar sites para auto-inicio.
+- Remover sites cadastrados.
+- Ver uma explicacao clara das permissoes usadas pela extensao.
+
+O auto-inicio so entra em acao quando nao existe outro timer ativo.
 
 ## Tema
 
@@ -94,3 +111,4 @@ para alternar entre os temas. A escolha fica salva no navegador.
 - Os arquivos de estilo ficam em `CSS/`.
 - Os arquivos JavaScript ficam em `JS/`.
 - A tela inicial da extensao fica em `popup.html`.
+- A pagina de configuracoes fica em `options.html`.

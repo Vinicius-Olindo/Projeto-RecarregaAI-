@@ -48,6 +48,58 @@
         </div>
       </section>
 
+      <section id="timer-overview" class="timer-overview" data-state="empty">
+        <div class="timer-overview__main">
+          <div class="timer-overview__copy">
+            <p class="popup__label">Guia controlada</p>
+            <strong id="controlled-tab-title" class="timer-overview__title">
+              Nenhuma guia monitorada
+            </strong>
+            <span id="controlled-tab-url" class="timer-overview__url">
+              Ative o timer para iniciar o acompanhamento.
+            </span>
+          </div>
+
+          <span id="popup-countdown" class="timer-overview__countdown">
+            --:--
+          </span>
+        </div>
+
+        <div class="timer-overview__actions">
+          <button
+            id="open-controlled-tab-button"
+            class="popup__button popup__button--ghost"
+            type="button"
+          >
+            Abrir guia
+          </button>
+
+          <button
+            id="pause-timer-button"
+            class="popup__button popup__button--ghost"
+            type="button"
+          >
+            Pausar
+          </button>
+
+          <button
+            id="resume-timer-button"
+            class="popup__button popup__button--secondary"
+            type="button"
+          >
+            Retomar
+          </button>
+
+          <button
+            id="open-options-button"
+            class="popup__button popup__button--ghost"
+            type="button"
+          >
+            Configuracoes
+          </button>
+        </div>
+      </section>
+
       <section class="quick-action" aria-labelledby="quick-action-title">
         <div class="quick-action__copy">
           <p id="quick-action-title" class="popup__label">Acao rapida</p>

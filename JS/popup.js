@@ -1,3 +1,5 @@
+// RecarregaAi! V.1.2.1
+
 const timerSettingsKey = "recarregaAiTimerSettings";
 const themeStorageKey = "recarregaAiTheme";
 

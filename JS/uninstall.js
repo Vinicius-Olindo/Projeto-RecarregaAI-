@@ -1,3 +1,5 @@
+// RecarregaAi! V.1.2.1
+
 const feedbackIssueUrl = "https://github.com/Vinicius-Olindo/RecarregaAI-/issues/new";
 const defaultVersionLabel = "V.1.2.1";
 

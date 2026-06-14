@@ -1,3 +1,5 @@
+// RecarregaAi! V.1.2.1
+
 const legacyTimerAlarmName = "recarregaAiAutomaticReload";
 const timerAlarmPrefix = "recarregaAiAutomaticReload:";
 const badgeCountdownAlarmName = "recarregaAiBadgeCountdown";

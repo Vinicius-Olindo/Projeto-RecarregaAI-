@@ -1,3 +1,5 @@
+// RecarregaAi! V.1.2.1
+
 (() => {
   const watcherFlag = "__recarregaAiTypingWatcherLoaded";
   const messageType = "RECARREGA_AI_TYPING_STATE";

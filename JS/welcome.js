@@ -1,3 +1,5 @@
+// RecarregaAi! V.1.2.1
+
 const welcomeThemeStorageKey = "recarregaAiTheme";
 
 const welcomeThemeModes = {

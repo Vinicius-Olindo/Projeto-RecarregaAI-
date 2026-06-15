@@ -1,6 +1,6 @@
 # RecarregaAi!
 
-Versao atual: **V.1.3.9**.
+Versao atual: **V.1.4.5**.
 
 Extensao para Google Chrome que limpa o cache do site aberto, tenta limpar o cache
 dos recursos carregados pela pagina e recarrega a aba atual. Tambem permite ativar
@@ -46,6 +46,10 @@ RecarregaAI-/
 
 Ao instalar a extensao pela primeira vez, o Chrome abre automaticamente
 `welcome.html` com as instrucoes iniciais.
+
+A pagina de boas-vindas tem estrutura de tela inicial do produto: hero com CTA,
+faixa de beneficios, cards de recursos, casos de uso em acordeao, FAQ e chamada
+final para comecar.
 
 Ao desinstalar, o Chrome abre a pagina de feedback configurada no background.
 Como a extensao ja foi removida nesse momento, a URL precisa ser `http` ou

@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- RecarregaAi! V.1.3.9 -->
+<!-- RecarregaAi! V.1.4.5 -->
 <html lang="pt-BR" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
@@ -8,86 +8,529 @@
     <link rel="stylesheet" href="CSS/welcome.css" />
   </head>
   <body>
-    <main class="welcome">
+    <header class="welcome-header">
+      <a class="brand" href="#top" aria-label="RecarregaAi!">
+        <img
+          class="brand__icon"
+          src="assets/icons/icon128.png"
+          alt=""
+          aria-hidden="true"
+        />
+
+        <span>
+          <strong class="brand__name">RecarregaAi!</strong>
+          <span class="brand__version">V.1.4.5</span>
+        </span>
+      </a>
+
+      <nav class="top-nav" aria-label="Navegacao principal">
+        <a class="top-nav__link" href="#features">
+          <svg class="top-nav__icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3l1.7 4.3L18 9l-4.3 1.7L12 15l-1.7-4.3L6 9l4.3-1.7Z" />
+            <path d="M19 14l.8 2.2L22 17l-2.2.8L19 20l-.8-2.2L16 17l2.2-.8Z" />
+          </svg>
+          <span>Funcionalidades</span>
+        </a>
+        <a class="top-nav__link" href="#use-cases">
+          <svg class="top-nav__icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 5h7v7H4Z" />
+            <path d="M13 5h7v7h-7Z" />
+            <path d="M4 14h7v5H4Z" />
+            <path d="M13 14h7v5h-7Z" />
+          </svg>
+          <span>Usos</span>
+        </a>
+        <a class="top-nav__link" href="#faq">
+          <svg class="top-nav__icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 18h.01" />
+            <path d="M9.7 9a2.4 2.4 0 1 1 3.5 2.1c-.8.5-1.2 1-1.2 2" />
+            <circle cx="12" cy="12" r="9" />
+          </svg>
+          <span>FAQ</span>
+        </a>
+      </nav>
+
+      <div class="top-controls" aria-label="Acoes iniciais">
+        <button
+          id="theme-toggle-button"
+          class="theme-button"
+          type="button"
+          aria-label="Tema claro"
+          title="Tema claro"
+        >
+          <svg
+            class="theme-button__icon theme-button__icon--sun"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2" />
+            <path d="M12 20v2" />
+            <path d="m4.93 4.93 1.41 1.41" />
+            <path d="m17.66 17.66 1.41 1.41" />
+            <path d="M2 12h2" />
+            <path d="M20 12h2" />
+            <path d="m6.34 17.66-1.41 1.41" />
+            <path d="m19.07 4.93-1.41 1.41" />
+          </svg>
+          <svg
+            class="theme-button__icon theme-button__icon--moon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path d="M21 12.8A8.4 8.4 0 1 1 11.2 3" />
+            <path d="M21 12.8A6.6 6.6 0 0 1 11.2 3" />
+          </svg>
+        </button>
+        <button
+          class="button button--primary"
+          type="button"
+          data-finish-welcome
+        >
+          Comecar agora
+        </button>
+      </div>
+    </header>
+
+    <main id="top" class="welcome">
       <section class="hero" aria-labelledby="welcome-title">
-        <div class="hero__brand">
+        <div class="hero__visual hero__visual--left" aria-hidden="true">
+          <span class="hero__bubble hero__bubble--large">
+            <svg viewBox="0 0 24 24">
+              <path d="M4 4v6h6" />
+              <path d="M20 20v-6h-6" />
+              <path d="M20 9a8 8 0 0 0-13.5-3.5L4 8" />
+              <path d="M4 15a8 8 0 0 0 13.5 3.5L20 16" />
+            </svg>
+          </span>
+          <span class="hero__bubble">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="8" />
+              <path d="M12 8v5l3 2" />
+            </svg>
+          </span>
+        </div>
+
+        <div class="hero__content">
+          <p class="hero__eyebrow">Cache limpo. Guia no ritmo certo.</p>
+
+          <h1 id="welcome-title" class="hero__title">
+            Paginas sempre novas,
+            <span>sem cache antigo.</span>
+          </h1>
+
+          <p class="hero__description">
+            Use timers por guia, limpe o cache do site aberto e mantenha
+            sistemas como Drive, paineis internos e paginas de trabalho sempre
+            atualizados.
+          </p>
+
+          <div class="hero__actions">
+            <button
+              id="finish-welcome-button"
+              class="button button--primary button--large"
+              type="button"
+              data-finish-welcome
+            >
+              Comecar a usar
+            </button>
+
+            <a class="button button--secondary button--large" href="#features">
+              Ver funcionalidades
+            </a>
+          </div>
+        </div>
+
+        <div class="hero__visual hero__visual--right" aria-hidden="true">
+          <span class="hero__bubble">
+            <svg viewBox="0 0 24 24">
+              <path d="M5 12h14" />
+              <path d="M12 5v14" />
+              <path d="M7 7l10 10" />
+              <path d="M17 7 7 17" />
+            </svg>
+          </span>
+          <span class="hero__bubble hero__bubble--large">
+            <svg viewBox="0 0 24 24">
+              <path d="M6 5h12" />
+              <path d="M6 12h12" />
+              <path d="M6 19h12" />
+              <path d="M4 5h.01" />
+              <path d="M4 12h.01" />
+              <path d="M4 19h.01" />
+            </svg>
+          </span>
+        </div>
+      </section>
+
+      <section class="trust-panel" aria-label="Destaques do RecarregaAi">
+        <p class="trust-panel__label">
+          Feito para fluxos que precisam de paginas atualizadas com cuidado
+        </p>
+
+        <div class="trust-grid">
+          <article class="trust-item">
+            <span class="trust-item__icon">3:00</span>
+            <strong>Contador visivel</strong>
+            <p>O icone mostra a contagem da guia ativa em tempo real.</p>
+          </article>
+
+          <article class="trust-item">
+            <span class="trust-item__icon">TAB</span>
+            <strong>Controle por guia</strong>
+            <p>Ative somente as guias que realmente precisam recarregar.</p>
+          </article>
+
+          <article class="trust-item">
+            <span class="trust-item__icon">TXT</span>
+            <strong>Protecao ao digitar</strong>
+            <p>O timer pausa quando voce esta preenchendo campos.</p>
+          </article>
+
+          <article class="trust-item">
+            <span class="trust-item__icon">AUTO</span>
+            <strong>Auto-inicio</strong>
+            <p>Sites favoritos podem iniciar o timer ao carregar.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="features" class="section" aria-labelledby="features-title">
+        <div class="section__header">
+          <p class="section__eyebrow">Visao geral</p>
+          <h2 id="features-title">Funcionalidades principais</h2>
+          <p>
+            Em Manifest V3, a extensao junta limpeza de cache, recarregamento
+            e automacao em uma experiencia simples para o dia a dia.
+          </p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature-card">
+            <span class="feature-card__icon">01</span>
+            <h3>Limpeza com recarga</h3>
+            <p>
+              Remove cache do site aberto e recarrega a pagina para buscar
+              conteudo atualizado.
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <span class="feature-card__icon">02</span>
+            <h3>Tempos prontos</h3>
+            <p>
+              Escolha rapidamente entre 3, 5 ou 10 minutos para comecar sem
+              configurar demais.
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <span class="feature-card__icon">03</span>
+            <h3>Tempo personalizado</h3>
+            <p>
+              Defina seu proprio intervalo em minutos quando o fluxo pede mais
+              controle.
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <span class="feature-card__icon">04</span>
+            <h3>Timer por guia</h3>
+            <p>
+              Mantenha Drive e outro sistema recarregando ao mesmo tempo, cada
+              um em sua guia.
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <span class="feature-card__icon">05</span>
+            <h3>Pausa ao digitar</h3>
+            <p>
+              Quando voce esta digitando, a guia pausa para evitar perder
+              alteracoes.
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <span class="feature-card__icon">06</span>
+            <h3>Sites favoritos</h3>
+            <p>
+              Cadastre enderecos para o RecarregaAi! iniciar sozinho quando a
+              pagina abrir.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section id="use-cases" class="section" aria-labelledby="use-cases-title">
+        <div class="section__header">
+          <p class="section__eyebrow">Aplicacoes</p>
+          <h2 id="use-cases-title">Onde o RecarregaAi! ajuda</h2>
+          <p>
+            Ideias de uso para paginas que precisam de atualizacao constante,
+            mas sem perder controle sobre cada guia.
+          </p>
+        </div>
+
+        <div class="accordion-list">
+          <details class="accordion-card" open>
+            <summary>
+              <span class="accordion-card__icon">DR</span>
+              <span>
+                <strong>Drive e documentos compartilhados</strong>
+                <small>
+                  Mantenha listas, pastas e documentos sempre renovados.
+                </small>
+              </span>
+            </summary>
+            <p>
+              Quando voce acompanha arquivos que mudam com frequencia, o timer
+              ajuda a atualizar a pagina sem precisar limpar cache manualmente.
+            </p>
+          </details>
+
+          <details class="accordion-card">
+            <summary>
+              <span class="accordion-card__icon">OP</span>
+              <span>
+                <strong>Paineis operacionais</strong>
+                <small>
+                  Bom para dashboards internos, filas e sistemas de trabalho.
+                </small>
+              </span>
+            </summary>
+            <p>
+              Ative apenas o painel que precisa ficar vivo. Outras guias seguem
+              sem timer, sem contador e sem recarregamentos inesperados.
+            </p>
+          </details>
+
+          <details class="accordion-card">
+            <summary>
+              <span class="accordion-card__icon">AT</span>
+              <span>
+                <strong>Atendimento e suporte</strong>
+                <small>
+                  Acompanhe telas que recebem chamados, pedidos ou retornos.
+                </small>
+              </span>
+            </summary>
+            <p>
+              A pausa ao digitar reduz o risco de recarregar enquanto voce esta
+              preenchendo uma resposta ou editando um campo importante.
+            </p>
+          </details>
+
+          <details class="accordion-card">
+            <summary>
+              <span class="accordion-card__icon">VG</span>
+              <span>
+                <strong>Vagas, listas e oportunidades</strong>
+                <small>
+                  Atualize paginas que mudam ao longo do dia.
+                </small>
+              </span>
+            </summary>
+            <p>
+              Use intervalos curtos quando precisa acompanhar novidades, e pare
+              o timer quando a guia deixar de ser importante.
+            </p>
+          </details>
+        </div>
+      </section>
+
+      <section id="faq" class="section" aria-labelledby="faq-title">
+        <div class="section__header">
+          <p class="section__eyebrow">Duvidas comuns</p>
+          <h2 id="faq-title">Perguntas frequentes</h2>
+        </div>
+
+        <div class="faq-list">
+          <details class="faq-item">
+            <summary>O RecarregaAi! limpa o cache de todas as guias?</summary>
+            <p>
+              Nao. A acao principal trabalha na guia atual. Timers ativos em
+              outras guias continuam independentes.
+            </p>
+          </details>
+
+          <details class="faq-item">
+            <summary>Posso deixar dois sites recarregando juntos?</summary>
+            <p>
+              Sim. Cada guia pode ter seu proprio timer, entao dois sistemas
+              podem ficar ativos ao mesmo tempo.
+            </p>
+          </details>
+
+          <details class="faq-item">
+            <summary>O que acontece se eu estiver digitando?</summary>
+            <p>
+              A guia pausa enquanto um campo esta ativo e continua quando voce
+              sai do campo.
+            </p>
+          </details>
+
+          <details class="faq-item">
+            <summary>Para que servem os sites favoritos?</summary>
+            <p>
+              Eles permitem auto-inicio. Quando uma guia abre um site cadastrado,
+              o timer pode comecar sozinho.
+            </p>
+          </details>
+        </div>
+      </section>
+
+      <section class="final-cta" aria-labelledby="final-title">
+        <div class="final-cta__content">
           <img
-            class="hero__icon"
+            class="final-cta__icon"
             src="assets/icons/icon128.png"
             alt=""
             aria-hidden="true"
           />
 
-          <div>
-            <p class="hero__eyebrow">RecarregaAi! V.1.3.9</p>
-            <h1 id="welcome-title" class="hero__title">
-              Tudo pronto para recarregar paginas sem cache.
-            </h1>
-          </div>
-        </div>
+          <h2 id="final-title">Pronto para usar o RecarregaAi!</h2>
+          <p>
+            Fixe o icone da extensao, abra a guia desejada e escolha o tempo
+            que combina com seu fluxo.
+          </p>
 
-        <p class="hero__description">
-          Escolha uma ou mais guias, defina o tempo e deixe o RecarregaAi!
-          limpar o cache e recarregar cada pagina no seu proprio ritmo.
-        </p>
-
-        <div class="hero__actions">
-          <button id="finish-welcome-button" class="button button--primary" type="button">
-            Comecar a usar
-          </button>
-
-          <button id="theme-toggle-button" class="button button--secondary" type="button">
-            Tema claro
+          <button
+            class="button button--primary button--large"
+            type="button"
+            data-finish-welcome
+          >
+            Comecar agora
           </button>
         </div>
-      </section>
 
-      <section class="steps" aria-label="Como usar">
-        <article class="step">
-          <span class="step__number">1</span>
-          <h2 class="step__title">Fixe o icone</h2>
-          <p class="step__text">
-            No Chrome, fixe o RecarregaAi! na barra para acompanhar o contador
-            direto no icone.
+        <footer class="site-footer" aria-label="Rodape">
+          <a class="site-footer__brand" href="#top" aria-label="RecarregaAi!">
+            <img src="assets/icons/icon128.png" alt="" aria-hidden="true" />
+            <span>
+              <strong>RecarregaAi!</strong>
+              <small>Cache limpo. Pagina nova.</small>
+            </span>
+          </a>
+
+          <nav class="site-footer__links" aria-label="Links do rodape">
+            <a href="#features">
+              <span class="site-footer__dot" aria-hidden="true"></span>
+              Funcionalidades
+            </a>
+            <a href="#use-cases">
+              <span class="site-footer__dot" aria-hidden="true"></span>
+              Usos
+            </a>
+            <a href="#faq">
+              <span class="site-footer__dot" aria-hidden="true"></span>
+              FAQ
+            </a>
+          </nav>
+
+          <p class="site-footer__copy">
+            V.1.4.5 - Projeto RecarregaAi!
           </p>
-        </article>
-
-        <article class="step">
-          <span class="step__number">2</span>
-          <h2 class="step__title">Escolha uma guia</h2>
-          <p class="step__text">
-            Abra a pagina desejada e ative o timer. Repita em outras guias se
-            quiser monitorar mais de um sistema.
-          </p>
-        </article>
-
-        <article class="step">
-          <span class="step__number">3</span>
-          <h2 class="step__title">Acompanhe o tempo</h2>
-          <p class="step__text">
-            O badge mostra a contagem no formato `3:00`, `2:59`, `2:58` ate o
-            proximo reload.
-          </p>
-        </article>
-
-        <article class="step">
-          <span class="step__number">4</span>
-          <h2 class="step__title">Configure sites</h2>
-          <p class="step__text">
-            Use a pagina de configuracoes para salvar sites que podem iniciar o
-            timer automaticamente.
-          </p>
-        </article>
-      </section>
-
-      <section class="notice" aria-label="Aviso importante">
-        <strong class="notice__title">Importante</strong>
-        <p class="notice__text">
-          Cada guia tem seu proprio timer. Se voce estiver digitando em uma
-          delas, apenas aquela guia pausa para evitar recarregar no meio da edicao.
-        </p>
+        </footer>
       </section>
     </main>
+
+    <div class="floating-tools" aria-label="Acoes rapidas">
+      <button
+        id="open-language-button"
+        class="floating-action"
+        type="button"
+        aria-label="Idioma"
+      >
+        <svg class="floating-action__icon" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M3 12h18" />
+          <path d="M12 3c2.3 2.5 3.5 5.5 3.5 9s-1.2 6.5-3.5 9" />
+          <path d="M12 3c-2.3 2.5-3.5 5.5-3.5 9s1.2 6.5 3.5 9" />
+        </svg>
+        <span class="floating-action__label">Idioma</span>
+      </button>
+
+      <button
+        id="back-to-top-button"
+        class="floating-action"
+        type="button"
+        aria-label="Voltar ao inicio"
+      >
+        <svg class="floating-action__icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 4h14" />
+          <path d="m6 15 6-6 6 6" />
+          <path d="M12 9v11" />
+        </svg>
+        <span class="floating-action__label">Voltar ao inicio</span>
+      </button>
+    </div>
+
+    <div
+      id="language-dialog"
+      class="language-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="language-dialog-title"
+      hidden
+    >
+      <button
+        class="language-dialog__backdrop"
+        type="button"
+        aria-label="Fechar"
+        data-close-language
+      ></button>
+
+      <section class="language-dialog__panel">
+        <button
+          id="close-language-button"
+          class="language-dialog__close"
+          type="button"
+          aria-label="Fechar"
+        >
+          x
+        </button>
+
+        <h2 id="language-dialog-title" class="language-dialog__title">
+          Idioma
+        </h2>
+        <p class="language-dialog__description">
+          Escolha o idioma preferido para navegar pelo RecarregaAi!.
+        </p>
+
+        <div class="language-grid">
+          <button
+            class="language-card"
+            type="button"
+            data-language-option="pt-BR"
+          >
+            <strong>BR</strong>
+            <span>portugues</span>
+            <small>PT-BR</small>
+          </button>
+
+          <button
+            class="language-card"
+            type="button"
+            data-language-option="en"
+          >
+            <strong>US</strong>
+            <span>English</span>
+            <small>EN</small>
+          </button>
+
+          <button
+            class="language-card"
+            type="button"
+            data-language-option="es"
+          >
+            <strong>ES</strong>
+            <span>Espanol</span>
+            <small>ES</small>
+          </button>
+        </div>
+      </section>
+    </div>
 
     <script src="JS/welcome.js"></script>
   </body>

@@ -1,4 +1,4 @@
-// RecarregaAi! V.1.3.9
+// RecarregaAi! V.1.4.5
 
 const legacyTimerAlarmName = "recarregaAiAutomaticReload";
 const timerAlarmPrefix = "recarregaAiAutomaticReload:";

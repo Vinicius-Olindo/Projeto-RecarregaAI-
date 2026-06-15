@@ -1,8 +1,8 @@
-// RecarregaAi! V.1.3.9
+// RecarregaAi! V.1.4.5
 
 const feedbackSubmitUrl = "https://formsubmit.co/ajax/vinim0106@icloud.com";
 const feedbackFallbackUrl = "https://formsubmit.co/vinim0106@icloud.com";
-const defaultVersionLabel = "V.1.3.9";
+const defaultVersionLabel = "V.1.4.5";
 const defaultLanguage = "pt-BR";
 const defaultReason = "Nao informou motivo";
 const languageStorageKey = "recarregaAiUninstallLanguage";
@@ -43,7 +43,7 @@ const translations = {
     reasonRequired: "Selecione um motivo antes de enviar.",
     selectedPrefix: "Selecionado: ",
     sendButton: "Enviar feedback",
-    versionLabel: "Versao 1.3.9"
+    versionLabel: "Versao 1.4.5"
   },
   en: {
     backToTop: "Back to start",
@@ -79,7 +79,7 @@ const translations = {
     reasonRequired: "Select a reason before sending.",
     selectedPrefix: "Selected: ",
     sendButton: "Send feedback",
-    versionLabel: "Version 1.3.9"
+    versionLabel: "Version 1.4.5"
   },
   es: {
     backToTop: "Volver al inicio",
@@ -115,7 +115,7 @@ const translations = {
     reasonRequired: "Selecciona un motivo antes de enviar.",
     selectedPrefix: "Seleccionado: ",
     sendButton: "Enviar feedback",
-    versionLabel: "Version 1.3.9"
+    versionLabel: "Version 1.4.5"
   }
 };
 

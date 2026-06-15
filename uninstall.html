@@ -1,6 +1,6 @@
 <!doctype html>
-<!-- RecarregaAi! V.1.2.10 -->
-<html lang="pt-BR">
+<!-- RecarregaAi! V.1.3.2 -->
+<html id="page-root" lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,33 +8,57 @@
     <link rel="stylesheet" href="CSS/uninstall.css" />
   </head>
   <body>
-    <main class="uninstall" aria-labelledby="uninstall-title">
-      <section class="hero">
-        <div class="hero__brand">
-          <img
-            class="hero__icon"
-            src="assets/icons/icon128.png"
-            alt=""
-            aria-hidden="true"
-          />
+    <header id="top" class="site-header">
+      <div class="brand">
+        <img
+          class="brand__icon"
+          src="assets/icons/icon128.png"
+          alt=""
+          aria-hidden="true"
+        />
 
-          <div>
-            <p id="extension-version" class="hero__eyebrow">V.1.2.10</p>
-            <h1 id="uninstall-title" class="hero__title">
-              So uma pergunta rapida.
-            </h1>
-          </div>
+        <div>
+          <p class="brand__name">RecarregaAi!</p>
+          <p id="extension-version" class="brand__version">Versao 1.3.2</p>
         </div>
+      </div>
 
-        <p class="hero__description">
-          Escolha um motivo e pronto. O feedback e enviado nesta pagina, sem
-          abrir GitHub, tela intermediaria ou outro formulario.
+      <nav class="header-actions" aria-label="Acoes da pagina">
+        <label class="language-field" for="language-select">
+          <span data-i18n="languageLabel">Idioma</span>
+          <select id="language-select" class="language-field__select">
+            <option value="pt-BR">Portugues</option>
+            <option value="en">English</option>
+            <option value="es">Espanol</option>
+          </select>
+        </label>
+
+        <a class="header-actions__link" href="#feedback-form" data-i18n="feedbackLink">
+          Feedback
+        </a>
+      </nav>
+    </header>
+
+    <main class="uninstall" aria-labelledby="uninstall-title">
+      <section class="intro">
+        <h1 id="uninstall-title" class="intro__title" data-i18n="pageTitle">
+          Lamentamos sua partida.
+        </h1>
+
+        <p data-i18n="introFirst">
+          Antes de desinstalar de vez, conte rapidamente o que nao funcionou
+          bem. Sua opiniao ajuda a melhorar o RecarregaAi! para outros usuarios.
+        </p>
+
+        <p data-i18n="introSecond">
+          Selecione um motivo ou deixe uma mensagem opcional descrevendo sua
+          experiencia.
         </p>
       </section>
 
       <form
         id="feedback-form"
-        class="feedback-card"
+        class="feedback-form"
         action="https://formsubmit.co/vinim0106@icloud.com"
         method="POST"
       >
@@ -44,6 +68,7 @@
         <input id="feedback-version-input" type="hidden" name="Versao" />
         <input id="feedback-date-input" type="hidden" name="Data" />
         <input id="feedback-browser-input" type="hidden" name="Navegador" />
+        <input id="feedback-language-input" type="hidden" name="Idioma" />
         <input
           id="feedback-reason-input"
           type="hidden"
@@ -51,125 +76,104 @@
           value="Nao informou motivo"
         />
 
-        <div class="feedback-card__heading">
-          <p class="feedback-card__eyebrow">Feedback rapido</p>
-          <h2 class="feedback-card__title">Por que voce removeu?</h2>
-          <p class="feedback-card__description">
-            Selecione um motivo, confira o que ficou marcado e envie. Comentario
-            e email continuam opcionais.
-          </p>
-        </div>
-
-        <div
-          class="quick-reasons"
-          aria-label="Escolha o motivo para enviar feedback rapido"
-        >
-          <button
-            class="reason-button"
-            type="button"
-            aria-pressed="false"
-            data-feedback-label="Cache"
-            data-feedback-reason="Nao limpou o cache como eu esperava"
-          >
-            <strong>Cache</strong>
-            <span>Nao limpou como eu esperava</span>
-          </button>
-
-          <button
-            class="reason-button"
-            type="button"
-            aria-pressed="false"
-            data-feedback-label="Reload"
-            data-feedback-reason="Recarregou a pagina na hora errada"
-          >
-            <strong>Reload</strong>
-            <span>Recarregou na hora errada</span>
-          </button>
-
-          <button
-            class="reason-button"
-            type="button"
-            aria-pressed="false"
-            data-feedback-label="Uso"
-            data-feedback-reason="Ficou confuso de usar"
-          >
-            <strong>Uso</strong>
-            <span>Ficou confuso de usar</span>
-          </button>
-
-          <button
-            class="reason-button"
-            type="button"
-            aria-pressed="false"
-            data-feedback-label="Funcao"
-            data-feedback-reason="Faltou alguma funcao importante"
-          >
-            <strong>Funcao</strong>
-            <span>Faltou algo importante</span>
-          </button>
-
-          <button
-            class="reason-button"
-            type="button"
-            aria-pressed="false"
-            data-feedback-label="Outro"
-            data-feedback-reason="Outro motivo"
-          >
-            <strong>Outro</strong>
-            <span>Quero informar outro motivo</span>
-          </button>
-        </div>
-
         <p
-          id="selected-reason-feedback"
-          class="selected-reason"
+          id="feedback-status"
+          class="feedback-status"
+          role="status"
           aria-live="polite"
-        >
-          Nenhum motivo selecionado.
+        ></p>
+
+        <fieldset class="reason-list">
+          <legend class="sr-only">Motivo da desinstalacao</legend>
+
+          <label class="reason-option">
+            <input
+              type="radio"
+              name="reason"
+              data-reason-id="workflow"
+            />
+            <span class="reason-option__control" aria-hidden="true"></span>
+            <span data-reason-text="workflow">
+              Nao e mais necessario para meu fluxo de trabalho
+            </span>
+          </label>
+
+          <label class="reason-option">
+            <input
+              type="radio"
+              name="reason"
+              data-reason-id="cache"
+            />
+            <span class="reason-option__control" aria-hidden="true"></span>
+            <span data-reason-text="cache">Nao limpou o cache como eu esperava</span>
+          </label>
+
+          <label class="reason-option">
+            <input
+              type="radio"
+              name="reason"
+              data-reason-id="reload"
+            />
+            <span class="reason-option__control" aria-hidden="true"></span>
+            <span data-reason-text="reload">Recarregou a pagina na hora errada</span>
+          </label>
+
+          <label class="reason-option">
+            <input
+              type="radio"
+              name="reason"
+              data-reason-id="usability"
+            />
+            <span class="reason-option__control" aria-hidden="true"></span>
+            <span data-reason-text="usability">Ficou confuso de usar</span>
+          </label>
+
+          <label class="reason-option">
+            <input
+              type="radio"
+              name="reason"
+              data-reason-id="feature"
+            />
+            <span class="reason-option__control" aria-hidden="true"></span>
+            <span data-reason-text="feature">Faltou alguma funcao importante</span>
+          </label>
+
+          <label class="reason-option">
+            <input
+              type="radio"
+              name="reason"
+              data-reason-id="other"
+            />
+            <span class="reason-option__control" aria-hidden="true"></span>
+            <span data-reason-text="other">Outro motivo</span>
+          </label>
+        </fieldset>
+
+        <p id="selected-reason-feedback" class="selected-reason">
+          <span data-i18n="noReason">Nenhum motivo selecionado.</span>
         </p>
 
-        <div class="feedback-card__actions feedback-card__actions--main">
-          <button
-            id="send-feedback-button"
-            class="button button--primary"
-            type="submit"
-            disabled
-          >
-            Enviar feedback
-          </button>
-
-          <button
-            id="copy-feedback-button"
-            class="button button--ghost"
-            type="button"
-            disabled
-          >
-            Copiar resposta
-          </button>
-        </div>
-
-        <details class="details-card">
-          <summary class="details-card__summary">
-            Quero deixar mais detalhes
+        <details class="details">
+          <summary data-i18n="optionalCommentSummary">
+            Adicionar comentario opcional
           </summary>
 
-          <div class="details-card__content">
+          <div class="details__content">
             <label class="field" for="feedback-message">
-              <span class="field__label">Comentario opcional</span>
+              <span data-i18n="commentLabel">Comentario</span>
               <textarea
                 id="feedback-message"
-                class="field__input field__input--textarea"
                 name="Comentario"
                 rows="4"
-                placeholder="Exemplo: eu precisava controlar duas abas, mas..."
+                placeholder="Conte em poucas palavras o que poderiamos melhorar."
+                data-i18n-placeholder="commentPlaceholder"
               ></textarea>
             </label>
 
             <label class="field" for="contact-email">
-              <span class="field__label">Email para contato, opcional</span>
+              <span data-i18n="emailLabel">Email para contato</span>
               <input
                 id="contact-email"
-                class="field__input"
                 type="email"
                 name="email"
                 placeholder="voce@email.com"
@@ -178,9 +182,32 @@
           </div>
         </details>
 
-        <p id="feedback-status" class="feedback-card__status" role="status"></p>
+        <div class="actions">
+          <button
+            id="send-feedback-button"
+            class="button button--primary"
+            type="submit"
+            disabled
+          >
+            <span data-i18n="sendButton">Enviar feedback</span>
+          </button>
+
+          <button
+            id="copy-feedback-button"
+            class="button button--ghost"
+            type="button"
+            disabled
+          >
+            <span data-i18n="copyButton">Copiar resposta</span>
+          </button>
+        </div>
       </form>
     </main>
+
+    <button id="back-to-top-button" class="back-to-top" type="button">
+      <span aria-hidden="true">&uarr;</span>
+      <span data-i18n="backToTop">Voltar ao topo</span>
+    </button>
 
     <script src="JS/uninstall.js"></script>
   </body>

@@ -1,4 +1,4 @@
-// RecarregaAi! V.1.2.1
+// RecarregaAi! V.1.2.5
 
 const legacyTimerAlarmName = "recarregaAiAutomaticReload";
 const timerAlarmPrefix = "recarregaAiAutomaticReload:";
@@ -9,7 +9,7 @@ const appSettingsKey = "recarregaAiSettings";
 const oneSecondInMilliseconds = 1000;
 const welcomePagePath = "welcome.html";
 const uninstallFeedbackPageUrl =
-  "https://vinicius-olindo.github.io/RecarregaAI-/uninstall.html";
+  "https://raw.githack.com/Vinicius-Olindo/RecarregaAI-/main/uninstall.html";
 
 let badgeCountdownTimerId = null;
 const scheduledRefreshTabIds = new Set();

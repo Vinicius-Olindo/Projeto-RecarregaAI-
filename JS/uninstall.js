@@ -1,24 +1,19 @@
-// RecarregaAi! V.1.2.1
+// RecarregaAi! V.1.2.5
 
-const feedbackIssueUrl = "https://github.com/Vinicius-Olindo/RecarregaAI-/issues/new";
-const defaultVersionLabel = "V.1.2.1";
+const feedbackSubmitUrl = "https://formsubmit.co/ajax/vinim0106@icloud.com";
+const defaultVersionLabel = "V.1.2.5";
 
 const uninstallElements = {
   copyFeedbackButton: document.querySelector("#copy-feedback-button"),
   extensionVersion: document.querySelector("#extension-version"),
+  feedbackBrowserInput: document.querySelector("#feedback-browser-input"),
+  feedbackDateInput: document.querySelector("#feedback-date-input"),
   feedbackForm: document.querySelector("#feedback-form"),
   feedbackMessage: document.querySelector("#feedback-message"),
   feedbackStatus: document.querySelector("#feedback-status"),
+  feedbackVersionInput: document.querySelector("#feedback-version-input"),
   contactEmail: document.querySelector("#contact-email"),
   experienceRating: document.querySelector("#experience-rating")
-};
-
-const reasonLabels = {
-  cache: "Nao limpou o cache como eu esperava",
-  missing: "Faltou alguma funcao importante",
-  other: "Outro motivo",
-  reload: "Recarregou a pagina na hora errada",
-  usability: "Ficou confuso de usar"
 };
 
 const getPageParams = () => new URLSearchParams(window.location.search);
@@ -30,14 +25,19 @@ const getVersionLabel = () => {
 };
 
 const getSelectedReason = () => {
-  const selectedReasonInput = document.querySelector("[name='reason']:checked");
-  const reasonValue = selectedReasonInput?.value || "other";
+  const selectedReasonInput = document.querySelector("[name='Motivo']:checked");
 
-  return reasonLabels[reasonValue] || reasonLabels.other;
+  return selectedReasonInput?.value || "Outro motivo";
 };
 
 const updateStatus = (message) => {
   uninstallElements.feedbackStatus.textContent = message;
+};
+
+const prepareHiddenFields = () => {
+  uninstallElements.feedbackVersionInput.value = getVersionLabel();
+  uninstallElements.feedbackDateInput.value = new Date().toISOString();
+  uninstallElements.feedbackBrowserInput.value = navigator.userAgent;
 };
 
 const buildFeedbackBody = () => {
@@ -48,32 +48,47 @@ const buildFeedbackBody = () => {
   const rating = uninstallElements.experienceRating.value;
 
   return [
-    "## Feedback de desinstalacao",
+    "Feedback de desinstalacao",
     "",
-    `- Versao: ${getVersionLabel()}`,
-    `- Motivo: ${getSelectedReason()}`,
-    `- Nota da experiencia: ${rating}/5`,
-    `- Email para contato: ${email}`,
-    `- Data: ${new Date().toISOString()}`,
+    `Versao: ${getVersionLabel()}`,
+    `Motivo: ${getSelectedReason()}`,
+    `Nota da experiencia: ${rating}/5`,
+    `Email para contato: ${email}`,
+    `Data: ${new Date().toISOString()}`,
     "",
-    "## Comentario",
-    "",
+    "Comentario:",
     message,
     "",
-    "## Dados tecnicos",
-    "",
-    `- Navegador: ${navigator.userAgent}`
+    `Navegador: ${navigator.userAgent}`
   ].join("\n");
 };
 
-const buildFeedbackIssueUrl = () => {
-  const params = new URLSearchParams({
-    body: buildFeedbackBody(),
-    labels: "feedback,uninstall",
-    title: `Feedback de desinstalacao - ${getSelectedReason()}`
-  });
+const submitFeedbackWithFallback = async () => {
+  prepareHiddenFields();
 
-  return `${feedbackIssueUrl}?${params.toString()}`;
+  const formData = new FormData(uninstallElements.feedbackForm);
+
+  try {
+    const response = await fetch(feedbackSubmitUrl, {
+      body: formData,
+      headers: {
+        Accept: "application/json"
+      },
+      method: "POST"
+    });
+
+    if (!response.ok) {
+      throw new Error("Envio automatico recusado.");
+    }
+
+    updateStatus("Feedback enviado. Obrigado por ajudar a melhorar.");
+    uninstallElements.feedbackForm.reset();
+    prepareHiddenFields();
+  } catch (error) {
+    console.error("Erro ao enviar feedback automaticamente:", error);
+    updateStatus("Abrindo envio seguro do feedback...");
+    uninstallElements.feedbackForm.submit();
+  }
 };
 
 const copyFeedback = async () => {
@@ -88,12 +103,13 @@ const copyFeedback = async () => {
 
 const submitFeedback = (event) => {
   event.preventDefault();
-  updateStatus("Abrindo feedback preenchido para revisao...");
-  window.location.href = buildFeedbackIssueUrl();
+  updateStatus("Enviando feedback...");
+  submitFeedbackWithFallback();
 };
 
 const initializePage = () => {
   uninstallElements.extensionVersion.textContent = getVersionLabel();
+  prepareHiddenFields();
 };
 
 uninstallElements.feedbackForm.addEventListener("submit", submitFeedback);

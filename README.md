@@ -1,6 +1,6 @@
 # RecarregaAi!
 
-Versao atual: **V.1.2.1**.
+Versao atual: **V.1.2.5**.
 
 Extensao para Google Chrome que limpa o cache do site aberto, tenta limpar o cache
 dos recursos carregados pela pagina e recarrega a aba atual. Tambem permite ativar
@@ -48,8 +48,8 @@ Ao instalar a extensao pela primeira vez, o Chrome abre automaticamente
 `welcome.html` com as instrucoes iniciais.
 
 Ao desinstalar, o Chrome abre a pagina de feedback configurada no background.
-Essa URL precisa estar hospedada em `http` ou `https`, conforme a API do Chrome.
-O projeto ja inclui `uninstall.html`, pronta para publicar junto com o site.
+Como a extensao ja foi removida nesse momento, a URL precisa ser `http` ou
+`https`.
 
 ## Funcionamento
 
@@ -115,18 +115,29 @@ favorito, desde que aquela guia ainda nao tenha timer ativo.
 ## Feedback de desinstalacao
 
 A pagina `uninstall.html` coleta o motivo da desinstalacao, nota de experiencia,
-comentario opcional e email opcional. O envio abre uma issue preenchida no
-repositorio do projeto para o usuario revisar antes de confirmar.
+comentario opcional e email opcional. O envio vai direto para o email do projeto
+por FormSubmit, sem abrir GitHub para o usuario confirmar.
 
 O background configura a URL de desinstalacao com:
 
 ```text
-https://vinicius-olindo.github.io/RecarregaAI-/uninstall.html
+https://raw.githack.com/Vinicius-Olindo/RecarregaAI-/main/uninstall.html
 ```
 
-Ative o GitHub Pages para essa URL funcionar em producao. Se a pagina for
-hospedada em outro endereco, atualize `uninstallFeedbackPageUrl` em
-`JS/background.js`.
+Essa URL renderiza o HTML diretamente a partir do arquivo `uninstall.html` no
+branch `main`, sem depender do GitHub Pages. Depois de alterar essa pagina, faca
+commit e push para o GitHub para a versao online acompanhar o projeto.
+
+Se futuramente voce hospedar em dominio proprio, atualize
+`uninstallFeedbackPageUrl` em `JS/background.js`.
+
+O formulario envia para:
+
+```text
+https://formsubmit.co/ajax/vinim0106@icloud.com
+```
+
+No primeiro envio, o FormSubmit pode pedir confirmacao no email de destino.
 
 ## Tema
 

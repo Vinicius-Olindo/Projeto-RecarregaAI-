@@ -1,7 +1,7 @@
-// RecarregaAi! V.1.2.5
+// RecarregaAi! V.1.2.6
 
 const feedbackSubmitUrl = "https://formsubmit.co/ajax/vinim0106@icloud.com";
-const defaultVersionLabel = "V.1.2.5";
+const defaultVersionLabel = "V.1.2.6";
 
 const uninstallElements = {
   copyFeedbackButton: document.querySelector("#copy-feedback-button"),

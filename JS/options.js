@@ -1,4 +1,4 @@
-// RecarregaAi! V.1.5.0
+// RecarregaAi! V.1.5.1
 
 import {
   defaultAppSettings,

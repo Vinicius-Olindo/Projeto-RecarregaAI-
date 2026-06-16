@@ -1,4 +1,4 @@
-// RecarregaAi! V.1.5.0
+// RecarregaAi! V.1.5.1
 
 import { appConfig } from "./modules/config.js";
 import {
@@ -215,26 +215,53 @@ const updateAllTimerBadges = async (timerSettingsList) => {
   await Promise.all(timerSettingsList.map(updateTimerBadge));
 };
 
+const clearChromeAlarm = async (alarmName) => {
+  try {
+    return await chrome.alarms.clear(alarmName);
+  } catch (error) {
+    console.warn(`Nao foi possivel limpar o alarme ${alarmName}:`, error);
+    throw error;
+  }
+};
+
+const createChromeAlarm = async (alarmName, alarmInfo) => {
+  try {
+    await chrome.alarms.create(alarmName, alarmInfo);
+
+    const createdAlarm = await chrome.alarms.get(alarmName);
+
+    if (!createdAlarm) {
+      throw new Error(`Alarme ${alarmName} nao encontrado apos criacao.`);
+    }
+
+    return createdAlarm;
+  } catch (error) {
+    console.error(`Nao foi possivel criar o alarme ${alarmName}:`, error);
+    throw error;
+  }
+};
+
 const clearTimerAlarm = async (tabId) => {
-  await chrome.alarms.clear(getTimerAlarmName(tabId));
+  await clearChromeAlarm(getTimerAlarmName(tabId));
 };
 
 const createTimerAlarm = async (
   timerSettings,
   delayInMinutes = timerSettings.intervalInMinutes
 ) => {
-  await clearTimerAlarm(timerSettings.tabId);
+  const alarmName = getTimerAlarmName(timerSettings.tabId);
 
-  chrome.alarms.create(getTimerAlarmName(timerSettings.tabId), {
+  await clearChromeAlarm(alarmName);
+  await createChromeAlarm(alarmName, {
     delayInMinutes: Math.max(0.5, delayInMinutes),
     periodInMinutes: timerSettings.intervalInMinutes
   });
 };
 
 const createBadgeCountdownAlarm = async () => {
-  await chrome.alarms.clear(alarmNames.badgeCountdown);
+  await clearChromeAlarm(alarmNames.badgeCountdown);
 
-  chrome.alarms.create(alarmNames.badgeCountdown, {
+  await createChromeAlarm(alarmNames.badgeCountdown, {
     delayInMinutes: 0.5,
     periodInMinutes: 0.5
   });
@@ -252,7 +279,7 @@ const startBadgeCountdown = async () => {
   const timerSettingsList = await getAllTimerSettings();
 
   if (timerSettingsList.length === 0) {
-    await chrome.alarms.clear(alarmNames.badgeCountdown);
+    await clearChromeAlarm(alarmNames.badgeCountdown);
     await clearAllTimerBadges();
     return;
   }
@@ -452,7 +479,7 @@ const stopTimer = async (tabId) => {
   await clearTimerBadge(timerSettings);
 
   if (timerSettingsList.length === 0) {
-    await chrome.alarms.clear(alarmNames.badgeCountdown);
+    await clearChromeAlarm(alarmNames.badgeCountdown);
     await clearAllTimerBadges();
     return timerSettings;
   }
@@ -691,13 +718,13 @@ const runScheduledRefresh = async (tabId) => {
 };
 
 const restoreTimerAlarms = async () => {
-  await chrome.alarms.clear(alarmNames.legacyTimer);
+  await clearChromeAlarm(alarmNames.legacyTimer);
 
   const timerCollection = await getStoredTimerCollection();
   const timerSettingsList = getAllTimerSettingsFromCollection(timerCollection);
 
   if (timerSettingsList.length === 0) {
-    await chrome.alarms.clear(alarmNames.badgeCountdown);
+    await clearChromeAlarm(alarmNames.badgeCountdown);
     await clearAllTimerBadges();
     return;
   }

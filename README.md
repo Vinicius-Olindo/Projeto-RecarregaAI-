@@ -1,6 +1,6 @@
 # RecarregaAi!
 
-Versao atual: **V.1.4.8**.
+Versao atual: **V.1.4.9**.
 
 Extensao para Google Chrome que limpa o cache do site aberto, tenta limpar o cache
 dos recursos carregados pela pagina e recarrega a aba atual. Tambem permite ativar

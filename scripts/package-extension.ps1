@@ -1,4 +1,4 @@
-# RecarregaAi! V.1.4.8
+# RecarregaAi! V.1.4.9
 
 # Script legado para Windows. O empacotamento principal usa Node:
 # npm run zip

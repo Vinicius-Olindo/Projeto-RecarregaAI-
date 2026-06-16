@@ -1,4 +1,4 @@
-// RecarregaAi! V.1.4.8
+// RecarregaAi! V.1.4.9
 
 import { spawnSync } from "node:child_process";
 
@@ -7,6 +7,7 @@ const filesToCheck = [
   "JS/background.js",
   "JS/popup.js",
   "JS/options.js",
+  "JS/privacy.js",
   "JS/uninstall.js",
   "JS/welcome.js",
   "JS/content.js",

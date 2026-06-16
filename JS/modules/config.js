@@ -1,4 +1,4 @@
-// RecarregaAi! V.1.4.8
+// RecarregaAi! V.1.4.9
 
 export const appConfig = Object.freeze({
   feedbackFallbackUrl: "https://formsubmit.co/vinim0106@icloud.com",

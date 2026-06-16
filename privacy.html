@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- RecarregaAi! V.1.4.8 -->
+<!-- RecarregaAi! V.1.4.9 -->
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Politica de privacidade do RecarregaAi!</title>
+    <title>Política de Privacidade do RecarregaAi!</title>
     <link rel="stylesheet" href="CSS/privacy.css" />
   </head>
   <body>
@@ -18,109 +18,331 @@
         />
         <span>
           <strong>RecarregaAi!</strong>
-          <small>V.1.4.8</small>
+          <small>V.1.4.9</small>
         </span>
       </a>
 
-      <a class="header-link" href="welcome.html">Voltar ao inicio</a>
+      <nav class="header-nav" aria-label="Navegação da política">
+        <a href="#policy-content">Política</a>
+        <a href="#permissions-title">Permissões</a>
+        <a href="#contact-title">Contato</a>
+      </nav>
+
+      <a class="header-link" href="welcome.html">Voltar ao início</a>
     </header>
 
     <main class="privacy">
       <section class="hero" aria-labelledby="privacy-title">
-        <p class="eyebrow">Privacidade</p>
-        <h1 id="privacy-title">Dados claros, controle simples.</h1>
-        <p>
-          O RecarregaAi! foi criado para limpar cache, recarregar paginas e
-          manter timers por guia. A extensao nao vende dados, nao coleta o
-          conteudo das paginas visitadas e salva suas configuracoes localmente
-          no navegador.
-        </p>
+        <div class="hero__content">
+          <p class="eyebrow">Política de Privacidade</p>
+          <h1 id="privacy-title">Transparência para usar sem surpresa.</h1>
+          <p class="policy-meta">Última atualização: 16/06/2026</p>
+          <p>
+            O RecarregaAi! é uma extensão para navegador criada para limpar
+            cache da página atual, recarregar abas e permitir o uso de timers
+            automáticos de atualização.
+          </p>
+        </div>
+
+        <aside class="trust-panel" aria-label="Resumo rápido">
+          <div>
+            <span>Dados vendidos</span>
+            <strong>Não</strong>
+          </div>
+          <div>
+            <span>Processamento</span>
+            <strong>Local</strong>
+          </div>
+          <div>
+            <span>Feedback externo</span>
+            <strong>Opcional</strong>
+          </div>
+        </aside>
       </section>
 
       <section class="summary-grid" aria-label="Resumo de privacidade">
         <article>
           <span class="summary-grid__icon">01</span>
-          <h2>Sem venda de dados</h2>
+          <h2>Processamento local</h2>
           <p>
-            Nenhuma informacao do usuario e vendida, alugada ou usada para
-            publicidade.
+            Origens, timers, tema e preferências ficam no navegador do usuário
+            para executar as funções principais.
           </p>
         </article>
 
         <article>
           <span class="summary-grid__icon">02</span>
-          <h2>Conteudo protegido</h2>
+          <h2>Conteúdo não coletado</h2>
           <p>
-            A extensao nao coleta textos, arquivos, mensagens ou dados internos
-            das paginas que voce abre.
+            Senhas, textos digitados, mensagens, arquivos e dados de formulário
+            não são lidos, salvos ou enviados pela extensão.
           </p>
         </article>
 
         <article>
           <span class="summary-grid__icon">03</span>
-          <h2>Configuracao local</h2>
+          <h2>Feedback opcional</h2>
           <p>
-            Temas, timers, sites favoritos e preferencias ficam salvos no
-            armazenamento local do Chrome.
+            O único envio externo previsto acontece se o usuário decidir enviar
+            o formulário de feedback de desinstalação.
           </p>
         </article>
       </section>
 
-      <section class="policy-card" aria-labelledby="data-title">
-        <h2 id="data-title">Quais dados podem ser usados</h2>
-        <p>
-          Para funcionar, o RecarregaAi! pode guardar configuracoes locais como
-          intervalo do timer, sites favoritos, tema escolhido e estado das guias
-          com timer ativo.
-        </p>
-        <p>
-          Quando voce envia feedback na pagina de desinstalacao, esse envio e
-          opcional e pode incluir motivo, comentario, email de contato,
-          navegador, idioma, versao da extensao e data do envio.
-        </p>
-      </section>
+      <div id="policy-content" class="policy-layout">
+        <nav class="policy-nav" aria-label="Seções da política">
+          <p>Conteúdo</p>
+          <a class="is-active" href="#data-title" aria-current="true">
+            Informações processadas
+          </a>
+          <a href="#not-collected-title">O que não é coletado</a>
+          <a href="#typing-title">Proteção de digitação</a>
+          <a href="#local-storage-title">Armazenamento local</a>
+          <a href="#feedback-title">Feedback</a>
+          <a href="#sharing-title">Compartilhamento</a>
+          <a href="#limited-use-title">Limited Use</a>
+          <a href="#permissions-title">Permissões</a>
+          <a href="#control-title">Controle do usuário</a>
+          <a href="#contact-title">Contato</a>
+        </nav>
 
-      <section class="policy-card" aria-labelledby="sharing-title">
-        <h2 id="sharing-title">Compartilhamento com terceiros</h2>
-        <p>
-          O feedback de desinstalacao e enviado por FormSubmit para o email do
-          projeto. Esse servico apenas encaminha a resposta do formulario. Fora
-          desse fluxo opcional, a extensao nao envia suas configuracoes para um
-          servidor externo.
-        </p>
-      </section>
+        <article class="policy-document">
+          <section class="policy-section" aria-labelledby="data-title">
+            <h2 id="data-title">1. Informações processadas pela extensão</h2>
+            <p>
+              Para funcionar corretamente, a extensão pode processar localmente
+              a origem da página atual e de alguns recursos carregados pela
+              página. Esse processamento é usado para limpar cache, CacheStorage
+              e service workers relacionados ao site atual.
+            </p>
+            <p>
+              A extensão também pode salvar localmente configurações como tema
+              escolhido, intervalo padrão de timer, sites configurados para
+              auto-início e estado dos timers ativos.
+            </p>
+            <p>
+              Essas informações são armazenadas localmente no navegador do
+              usuário usando <code>chrome.storage.local</code> e não são
+              enviadas para servidores externos pela extensão.
+            </p>
+          </section>
 
-      <section class="policy-card" aria-labelledby="permissions-title">
-        <h2 id="permissions-title">Permissoes de site</h2>
-        <p>
-          A extensao usa permissoes opcionais de dominio para limpar cache,
-          recarregar paginas e manter timers em sites escolhidos pelo usuario.
-          Essas permissoes sao solicitadas durante uma acao direta, como ativar
-          um timer ou cadastrar um site de auto-inicio.
-        </p>
-      </section>
+          <section class="policy-section" aria-labelledby="not-collected-title">
+            <h2 id="not-collected-title">
+              2. Informações que a extensão não coleta
+            </h2>
+            <p>
+              A extensão não coleta senhas, textos digitados, mensagens,
+              arquivos, dados bancários, dados de formulários ou conteúdo das
+              páginas acessadas.
+            </p>
+            <p>
+              A extensão pode detectar localmente quando o usuário está
+              interagindo com campos editáveis para evitar recarregamentos
+              durante a digitação. Essa detecção não lê, armazena ou envia o
+              conteúdo digitado.
+            </p>
+          </section>
 
-      <section class="policy-card" aria-labelledby="contact-title">
-        <h2 id="contact-title">Contato</h2>
-        <p>
-          Para solicitar remocao de feedback enviado ou tirar duvidas sobre
-          privacidade, entre em contato pelo email
-          <a href="mailto:vinim0106@icloud.com">vinim0106@icloud.com</a>.
-        </p>
-      </section>
+          <section class="policy-section" aria-labelledby="typing-title">
+            <h2 id="typing-title">3. Proteção de digitação</h2>
+            <p>
+              Quando um timer está ativo, o RecarregaAi! verifica localmente se
+              há foco em campos como <code>input</code>, <code>textarea</code>
+              ou áreas editáveis da página. Se houver digitação, o timer
+              daquela guia pode ser pausado temporariamente para evitar perda de
+              informações.
+            </p>
+            <p>
+              Essa verificação identifica apenas o estado de interação com
+              campos editáveis. Ela não acessa o texto digitado, não cria
+              histórico de digitação e não envia esse estado para servidores
+              externos.
+            </p>
+          </section>
+
+          <section class="policy-section" aria-labelledby="local-storage-title">
+            <h2 id="local-storage-title">4. Armazenamento local</h2>
+            <p>
+              As preferências da extensão são salvas no armazenamento local do
+              navegador para manter a experiência funcionando entre sessões.
+            </p>
+            <ul class="policy-list">
+              <li>Tema escolhido.</li>
+              <li>Intervalo padrão do timer.</li>
+              <li>Sites configurados para auto-início.</li>
+              <li>Estado dos timers ativos por guia.</li>
+              <li>Último resultado de execução do timer.</li>
+            </ul>
+            <p>
+              Essas informações permanecem no navegador do usuário e são usadas
+              apenas para executar ou melhorar as funcionalidades principais da
+              extensão.
+            </p>
+          </section>
+
+          <section class="policy-section" aria-labelledby="feedback-title">
+            <h2 id="feedback-title">5. Feedback de desinstalação</h2>
+            <p>
+              Ao desinstalar a extensão, o usuário pode optar por enviar um
+              feedback. Esse envio é opcional.
+            </p>
+            <p>
+              Caso enviado, o formulário pode incluir motivo da desinstalação,
+              comentário, e-mail opcional, idioma, navegador, versão da
+              extensão e data do envio.
+            </p>
+            <p>
+              O envio do feedback é realizado por meio do serviço FormSubmit.
+              Essas informações são usadas apenas para entender problemas,
+              corrigir falhas e melhorar a extensão.
+            </p>
+          </section>
+
+          <section class="policy-section" aria-labelledby="sharing-title">
+            <h2 id="sharing-title">6. Compartilhamento de dados</h2>
+            <p>
+              A extensão não vende dados do usuário, não compartilha dados para
+              publicidade e não utiliza informações para rastreamento.
+            </p>
+            <p>
+              O único envio externo previsto ocorre quando o usuário envia
+              voluntariamente o formulário de feedback de desinstalação,
+              processado pelo FormSubmit.
+            </p>
+          </section>
+
+          <section class="policy-section" aria-labelledby="limited-use-title">
+            <h2 id="limited-use-title">7. Limited Use</h2>
+            <p>
+              O uso das informações pela extensão segue a Política de Dados do
+              Usuário da Chrome Web Store, incluindo os requisitos de Limited
+              Use.
+            </p>
+            <p>
+              As informações processadas pela extensão são usadas apenas para
+              fornecer ou melhorar suas funcionalidades principais.
+            </p>
+          </section>
+
+          <section class="policy-section" aria-labelledby="permissions-title">
+            <h2 id="permissions-title">8. Permissões utilizadas</h2>
+            <p>
+              A extensão pode solicitar permissões necessárias para seu
+              funcionamento.
+            </p>
+            <dl class="permission-list">
+              <div>
+                <dt>browsingData</dt>
+                <dd>
+                  Usada para limpar cache, CacheStorage e service workers
+                  relacionados à página.
+                </dd>
+              </div>
+              <div>
+                <dt>storage</dt>
+                <dd>Usada para salvar configurações locais da extensão.</dd>
+              </div>
+              <div>
+                <dt>tabs</dt>
+                <dd>
+                  Usada para identificar a aba atual e atualizar informações do
+                  timer.
+                </dd>
+              </div>
+              <div>
+                <dt>activeTab</dt>
+                <dd>
+                  Usada para executar ações na aba atual quando o usuário
+                  interage com a extensão.
+                </dd>
+              </div>
+              <div>
+                <dt>scripting</dt>
+                <dd>
+                  Usada para executar verificações locais necessárias na página
+                  atual.
+                </dd>
+              </div>
+              <div>
+                <dt>alarms</dt>
+                <dd>Usada para controlar timers automáticos.</dd>
+              </div>
+              <div>
+                <dt>optional_host_permissions</dt>
+                <dd>
+                  Usada para solicitar permissão por domínio somente quando
+                  necessário.
+                </dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="policy-section" aria-labelledby="control-title">
+            <h2 id="control-title">9. Controle do usuário</h2>
+            <p>
+              O usuário pode remover a extensão a qualquer momento pelas
+              configurações do navegador.
+            </p>
+            <p>
+              Ao remover a extensão, as configurações locais associadas a ela
+              são removidas pelo Chrome.
+            </p>
+            <p>
+              O usuário também pode revogar permissões concedidas a sites nas
+              configurações do navegador.
+            </p>
+            <p>
+              Caso tenha enviado feedback e deseje solicitar remoção ou
+              esclarecimento, o usuário pode entrar em contato pelo canal
+              oficial informado nesta política.
+            </p>
+          </section>
+
+          <section class="policy-section" aria-labelledby="contact-title">
+            <h2 id="contact-title">10. Contato</h2>
+            <p>
+              Para dúvidas sobre privacidade, solicitações sobre feedback
+              enviado ou esclarecimentos sobre dados processados pela extensão,
+              use o canal de contato oficial que será informado nesta política
+              assim que definido.
+            </p>
+          </section>
+        </article>
+      </div>
     </main>
 
     <footer class="privacy-footer">
-      <img src="assets/icons/icon128.png" alt="" aria-hidden="true" />
-      <p>
-        RecarregaAi! V.1.4.8 - Politica de privacidade do Projeto
-        RecarregaAi!.
-      </p>
-      <nav aria-label="Links finais">
-        <a href="welcome.html">Inicio</a>
-        <a href="uninstall.html">Feedback</a>
-        <a href="https://github.com/Vinicius-Olindo/RecarregaAI-">Projeto</a>
-      </nav>
+      <div class="privacy-footer__inner">
+        <a class="privacy-footer__brand" href="welcome.html" aria-label="RecarregaAi!">
+          <img
+            class="privacy-footer__logo"
+            src="assets/icons/icon128.png"
+            alt=""
+            aria-hidden="true"
+          />
+          <span>
+            <strong>RecarregaAi!</strong>
+            <small>Limpeza de cache e reload com timer.</small>
+          </span>
+        </a>
+
+        <nav class="privacy-footer__nav" aria-label="Links finais">
+          <a href="privacy.html">Política de privacidade</a>
+          <a href="uninstall.html">Feedback</a>
+          <a href="welcome.html">Início</a>
+          <a href="https://github.com/Vinicius-Olindo/RecarregaAI-">
+            Projeto
+          </a>
+        </nav>
+
+        <p class="privacy-footer__contact">Contato: a definir</p>
+
+        <p class="privacy-footer__legal">
+          © RecarregaAi! V.1.4.9. Política atualizada em 16/06/2026.
+        </p>
+      </div>
     </footer>
+    <script src="JS/privacy.js" defer></script>
   </body>
 </html>

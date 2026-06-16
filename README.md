@@ -1,6 +1,6 @@
 # RecarregaAi!
 
-Versao atual: **V.1.4.7**.
+Versao atual: **V.1.4.8**.
 
 Extensao para Google Chrome que limpa o cache do site aberto, tenta limpar o cache
 dos recursos carregados pela pagina e recarrega a aba atual. Tambem permite ativar
@@ -196,8 +196,13 @@ No primeiro envio, o FormSubmit pode pedir confirmacao no email de destino.
 - O timer fica preso ao dominio original e pausa se a aba sair dele.
 - Campos de senha nao entram na protecao de digitacao.
 - URLs e endpoints fixos ficam em `JS/modules/config.js`.
-- Use `npm run check` para validar scripts e manifest.
+- Tema claro/escuro fica centralizado em `JS/modules/theme.js`.
+- Timers ficam em chaves individuais no storage, como `recarregaAiTimer:123`.
+- Use `npm run check` para validar scripts, manifest e lint quando instalado.
+- Use `npm run lint` para rodar ESLint apos `npm install`.
 - Use `npm run zip` para gerar o pacote em `dist/recarregaai.zip`.
+- O `npm run zip` usa Node e funciona melhor fora do Windows.
+- O `npm run zip:ps` mantem o empacotamento antigo em PowerShell.
 
 ## Tema
 

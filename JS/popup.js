@@ -1,4 +1,4 @@
-// RecarregaAi! V.1.4.7
+// RecarregaAi! V.1.4.8
 
 import {
   formatCountdownTime,
@@ -6,10 +6,12 @@ import {
   getRemainingSeconds,
   getUrlOrigin,
   pauseReasons,
-  runtimeMessageTypes,
-  storageKeys,
-  themeModes
+  runtimeMessageTypes
 } from "./modules/shared.js";
+import {
+  loadThemePreference,
+  toggleThemePreference
+} from "./modules/theme.js";
 import {
   clearCacheForOrigins,
   reloadTabIgnoringCache
@@ -65,13 +67,7 @@ const loadExtensionVersion = () => {
     || `V.${manifest.version}`;
 };
 
-const applyTheme = (theme) => {
-  const nextTheme = theme === themeModes.light
-    ? themeModes.light
-    : themeModes.dark;
-  const isDarkTheme = nextTheme === themeModes.dark;
-
-  document.documentElement.dataset.theme = nextTheme;
+const updateThemeButtonLabel = ({ isDarkTheme }) => {
   popupElements.themeToggleButton.setAttribute("aria-pressed", String(isDarkTheme));
   popupElements.themeToggleButton.title = isDarkTheme
     ? "Mudar para tema claro"
@@ -80,21 +76,14 @@ const applyTheme = (theme) => {
 };
 
 const loadTheme = async () => {
-  const storedData = await chrome.storage.local.get(storageKeys.theme);
-
-  applyTheme(storedData[storageKeys.theme] || themeModes.dark);
+  await loadThemePreference({
+    onChange: updateThemeButtonLabel
+  });
 };
 
 const toggleTheme = async () => {
-  const currentTheme = document.documentElement.dataset.theme;
-  const nextTheme = currentTheme === themeModes.dark
-    ? themeModes.light
-    : themeModes.dark;
-
-  applyTheme(nextTheme);
-
-  await chrome.storage.local.set({
-    [storageKeys.theme]: nextTheme
+  await toggleThemePreference({
+    onChange: updateThemeButtonLabel
   });
 };
 

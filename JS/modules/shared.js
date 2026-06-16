@@ -1,4 +1,4 @@
-// RecarregaAi! V.1.4.7
+// RecarregaAi! V.1.4.8
 
 export const oneSecondInMilliseconds = 1000;
 
@@ -6,6 +6,7 @@ export const storageKeys = Object.freeze({
   appSettings: "recarregaAiSettings",
   lastTimerRun: "recarregaAiLastTimerRun",
   theme: "recarregaAiTheme",
+  timerSettingsPrefix: "recarregaAiTimer:",
   timerSettings: "recarregaAiTimerSettings"
 });
 

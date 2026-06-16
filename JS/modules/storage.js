@@ -1,10 +1,42 @@
-// RecarregaAi! V.1.4.7
+// RecarregaAi! V.1.4.8
 
 import {
+  createEmptyTimerCollection,
   defaultAppSettings,
   normalizeTimerCollection,
+  normalizeTimerSettings,
   storageKeys
 } from "./shared.js";
+
+const getTimerStorageKey = (tabId) => (
+  `${storageKeys.timerSettingsPrefix}${tabId}`
+);
+
+const isTimerStorageKey = (storageKey) => (
+  storageKey.startsWith(storageKeys.timerSettingsPrefix)
+);
+
+const getTimerCollectionFromStoredData = (storedData) => {
+  const timerCollection = normalizeTimerCollection(
+    storedData[storageKeys.timerSettings]
+  );
+
+  Object.entries(storedData).forEach(([storageKey, storedTimerSettings]) => {
+    if (!isTimerStorageKey(storageKey)) {
+      return;
+    }
+
+    const timerSettings = normalizeTimerSettings(storedTimerSettings);
+
+    if (!timerSettings) {
+      return;
+    }
+
+    timerCollection.timers[String(timerSettings.tabId)] = timerSettings;
+  });
+
+  return timerCollection;
+};
 
 export const getTimerSettingsFromCollection = (timerCollection, tabId) => {
   if (typeof tabId !== "number") {
@@ -23,15 +55,69 @@ export const getAllTimerSettingsFromCollection = (timerCollection) => (
 );
 
 export const getStoredTimerCollection = async () => {
-  const storedData = await chrome.storage.local.get(storageKeys.timerSettings);
+  const storedData = await chrome.storage.local.get(null);
 
-  return normalizeTimerCollection(storedData[storageKeys.timerSettings]);
+  return getTimerCollectionFromStoredData(storedData);
 };
 
 export const saveTimerCollection = async (timerCollection) => {
+  const normalizedCollection = normalizeTimerCollection(timerCollection);
+  const storedData = await chrome.storage.local.get(null);
+  const existingTimerKeys = Object.keys(storedData).filter(isTimerStorageKey);
+  const nextTimerKeys = Object.keys(normalizedCollection.timers)
+    .map(getTimerStorageKey);
+  const timerKeysToRemove = existingTimerKeys.filter((storageKey) => (
+    !nextTimerKeys.includes(storageKey)
+  ));
+  const storageData = Object.fromEntries(
+    Object.values(normalizedCollection.timers).map((timerSettings) => [
+      getTimerStorageKey(timerSettings.tabId),
+      timerSettings
+    ])
+  );
+
+  await chrome.storage.local.remove([
+    storageKeys.timerSettings,
+    ...timerKeysToRemove
+  ]);
+
+  if (Object.keys(storageData).length > 0) {
+    await chrome.storage.local.set(storageData);
+  }
+
+  return normalizedCollection;
+};
+
+export const getStoredTimerSettingsByTabId = async (tabId) => {
+  const timerKey = getTimerStorageKey(tabId);
+  const storedData = await chrome.storage.local.get([
+    timerKey,
+    storageKeys.timerSettings
+  ]);
+  const timerSettings = normalizeTimerSettings(storedData[timerKey]);
+
+  if (timerSettings) {
+    return timerSettings;
+  }
+
+  return getTimerSettingsFromCollection(
+    normalizeTimerCollection(storedData[storageKeys.timerSettings]),
+    tabId
+  );
+};
+
+export const saveTimerSettingsByTabId = async (timerSettings) => {
+  const normalizedTimerSettings = normalizeTimerSettings(timerSettings);
+
+  if (!normalizedTimerSettings) {
+    return createEmptyTimerCollection();
+  }
+
   await chrome.storage.local.set({
-    [storageKeys.timerSettings]: timerCollection
+    [getTimerStorageKey(normalizedTimerSettings.tabId)]: normalizedTimerSettings
   });
+
+  return getStoredTimerCollection();
 };
 
 export const getAllTimerSettings = async () => {
@@ -41,33 +127,29 @@ export const getAllTimerSettings = async () => {
 };
 
 export const getTimerSettingsByTabId = async (tabId) => {
-  const timerCollection = await getStoredTimerCollection();
-
-  return getTimerSettingsFromCollection(timerCollection, tabId);
+  return getStoredTimerSettingsByTabId(tabId);
 };
 
 export const upsertTimerSettings = async (timerSettings) => {
-  const timerCollection = await getStoredTimerCollection();
-
-  timerCollection.timers[String(timerSettings.tabId)] = timerSettings;
-
-  await saveTimerCollection(timerCollection);
-
-  return timerCollection;
+  return saveTimerSettingsByTabId(timerSettings);
 };
 
 export const removeTimerSettingsByTabId = async (tabId) => {
   const timerCollection = await getStoredTimerCollection();
+  const storedData = await chrome.storage.local.get(storageKeys.timerSettings);
 
   delete timerCollection.timers[String(tabId)];
-  await saveTimerCollection(timerCollection);
+  await chrome.storage.local.remove(getTimerStorageKey(tabId));
 
-  return timerCollection;
+  if (storedData[storageKeys.timerSettings]) {
+    return saveTimerCollection(timerCollection);
+  }
+
+  return getStoredTimerCollection();
 };
 
 export const updateTimerSettingsByTabId = async (tabId, updater) => {
-  const timerCollection = await getStoredTimerCollection();
-  const timerSettings = getTimerSettingsFromCollection(timerCollection, tabId);
+  const timerSettings = await getStoredTimerSettingsByTabId(tabId);
 
   if (!timerSettings) {
     return null;
@@ -75,8 +157,7 @@ export const updateTimerSettingsByTabId = async (tabId, updater) => {
 
   const updatedTimerSettings = updater(timerSettings);
 
-  timerCollection.timers[String(tabId)] = updatedTimerSettings;
-  await saveTimerCollection(timerCollection);
+  await saveTimerSettingsByTabId(updatedTimerSettings);
 
   return updatedTimerSettings;
 };

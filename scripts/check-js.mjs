@@ -1,8 +1,9 @@
-// RecarregaAi! V.1.4.7
+// RecarregaAi! V.1.4.8
 
 import { spawnSync } from "node:child_process";
 
 const filesToCheck = [
+  "eslint.config.mjs",
   "JS/background.js",
   "JS/popup.js",
   "JS/options.js",
@@ -13,7 +14,12 @@ const filesToCheck = [
   "JS/modules/config.js",
   "JS/modules/shared.js",
   "JS/modules/storage.js",
-  "JS/modules/tabs.js"
+  "JS/modules/tabs.js",
+  "JS/modules/theme.js",
+  "scripts/check-js.mjs",
+  "scripts/check-manifest.mjs",
+  "scripts/package-extension.mjs",
+  "scripts/run-eslint-if-installed.mjs"
 ];
 
 for (const filePath of filesToCheck) {

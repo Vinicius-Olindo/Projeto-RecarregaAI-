@@ -1,4 +1,7 @@
-# RecarregaAi! V.1.4.7
+# RecarregaAi! V.1.4.8
+
+# Script legado para Windows. O empacotamento principal usa Node:
+# npm run zip
 
 $ErrorActionPreference = "Stop"
 

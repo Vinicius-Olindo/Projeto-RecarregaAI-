@@ -1,11 +1,14 @@
-// RecarregaAi! V.1.4.7
+// RecarregaAi! V.1.4.8
 
 import {
   defaultAppSettings,
   getPermissionPatternForOrigin,
-  storageKeys,
-  themeModes
+  storageKeys
 } from "./modules/shared.js";
+import {
+  loadThemePreference,
+  toggleThemePreference
+} from "./modules/theme.js";
 
 const optionsElements = {
   addSiteButton: document.querySelector("#add-site-button"),
@@ -184,34 +187,21 @@ const removeAutoStartSite = async (index) => {
   updateOptionsStatus("Site removido.");
 };
 
-const applyOptionsTheme = (theme) => {
-  const nextTheme = theme === themeModes.light
-    ? themeModes.light
-    : themeModes.dark;
-  const isDarkTheme = nextTheme === themeModes.dark;
-
-  document.documentElement.dataset.theme = nextTheme;
+const updateOptionsThemeButtonLabel = ({ isDarkTheme }) => {
   optionsElements.themeToggleButton.textContent = isDarkTheme
     ? "Tema claro"
     : "Tema escuro";
 };
 
 const loadOptionsTheme = async () => {
-  const storedData = await chrome.storage.local.get(storageKeys.theme);
-
-  applyOptionsTheme(storedData[storageKeys.theme] || themeModes.dark);
+  await loadThemePreference({
+    onChange: updateOptionsThemeButtonLabel
+  });
 };
 
 const toggleOptionsTheme = async () => {
-  const currentTheme = document.documentElement.dataset.theme;
-  const nextTheme = currentTheme === themeModes.dark
-    ? themeModes.light
-    : themeModes.dark;
-
-  applyOptionsTheme(nextTheme);
-
-  await chrome.storage.local.set({
-    [storageKeys.theme]: nextTheme
+  await toggleThemePreference({
+    onChange: updateOptionsThemeButtonLabel
   });
 };
 

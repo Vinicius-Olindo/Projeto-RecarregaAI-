@@ -1,13 +1,12 @@
-// RecarregaAi! V.1.4.7
+// RecarregaAi! V.1.4.8
 
-const welcomeThemeStorageKey = "recarregaAiTheme";
+import {
+  loadThemePreference,
+  toggleThemePreference
+} from "./modules/theme.js";
+
 const welcomeLanguageStorageKey = "recarregaAiWelcomeLanguage";
 const defaultWelcomeLanguage = "pt-BR";
-
-const welcomeThemeModes = {
-  dark: "dark",
-  light: "light"
-};
 
 const supportedWelcomeLanguages = ["pt-BR", "en", "es"];
 
@@ -45,13 +44,7 @@ const updateThemeButtonLabel = (isDarkTheme) => {
   welcomeElements.themeToggleButton.setAttribute("title", nextLabel);
 };
 
-const applyWelcomeTheme = (theme) => {
-  const nextTheme = theme === welcomeThemeModes.light
-    ? welcomeThemeModes.light
-    : welcomeThemeModes.dark;
-  const isDarkTheme = nextTheme === welcomeThemeModes.dark;
-
-  document.documentElement.dataset.theme = nextTheme;
+const handleWelcomeThemeChange = ({ isDarkTheme }) => {
   updateThemeButtonLabel(isDarkTheme);
 };
 
@@ -75,16 +68,10 @@ const applyWelcomeLanguage = (language) => {
 };
 
 const loadWelcomeTheme = async () => {
-  const storageArea = getChromeLocalStorage();
-
-  if (!storageArea) {
-    applyWelcomeTheme(welcomeThemeModes.dark);
-    return;
-  }
-
-  const storedData = await storageArea.get(welcomeThemeStorageKey);
-
-  applyWelcomeTheme(storedData[welcomeThemeStorageKey] || welcomeThemeModes.dark);
+  await loadThemePreference({
+    onChange: handleWelcomeThemeChange,
+    storageArea: getChromeLocalStorage()
+  });
 };
 
 const loadWelcomeLanguage = async () => {
@@ -101,19 +88,10 @@ const loadWelcomeLanguage = async () => {
 };
 
 const toggleWelcomeTheme = async () => {
-  const storageArea = getChromeLocalStorage();
-  const currentTheme = document.documentElement.dataset.theme;
-  const nextTheme = currentTheme === welcomeThemeModes.dark
-    ? welcomeThemeModes.light
-    : welcomeThemeModes.dark;
-
-  applyWelcomeTheme(nextTheme);
-
-  if (storageArea) {
-    await storageArea.set({
-      [welcomeThemeStorageKey]: nextTheme
-    });
-  }
+  await toggleThemePreference({
+    onChange: handleWelcomeThemeChange,
+    storageArea: getChromeLocalStorage()
+  });
 };
 
 const saveWelcomeLanguage = async (language) => {

@@ -1,4 +1,4 @@
-/* RecarregaAi! V.1.5.1 */
+/* RecarregaAi! V.1.5.3 */
 
 :root {
   --color-background: #eef4fb;
@@ -22,6 +22,7 @@
   --color-border: #d9e4f2;
   --color-border-strong: #b6c8dd;
   --shadow-soft: 0 18px 36px rgba(32, 48, 77, 0.14);
+  --shadow-card: 0 12px 26px rgba(30, 50, 84, 0.08);
   --shadow-button: 0 10px 20px rgba(23, 105, 224, 0.24);
   --shadow-logo: 0 12px 22px rgba(23, 105, 224, 0.28);
   --shadow-control: inset 0 0 0 1px rgba(23, 105, 224, 0.16);
@@ -54,6 +55,7 @@
   --color-border: #233450;
   --color-border-strong: #35506f;
   --shadow-soft: 0 20px 42px rgba(0, 0, 0, 0.34);
+  --shadow-card: 0 14px 30px rgba(0, 0, 0, 0.2);
   --shadow-button: 0 12px 24px rgba(45, 156, 255, 0.24);
   --shadow-logo: 0 12px 24px rgba(45, 156, 255, 0.28);
   --shadow-control: inset 0 0 0 1px rgba(45, 156, 255, 0.2);
@@ -85,6 +87,7 @@ input {
 }
 
 .popup {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -95,7 +98,17 @@ input {
   scrollbar-gutter: stable;
   scrollbar-color: var(--color-border-strong) transparent;
   scrollbar-width: thin;
-  background: var(--color-surface);
+  background:
+    radial-gradient(
+      circle at 18% 0%,
+      rgba(45, 156, 255, 0.12),
+      transparent 30%
+    ),
+    linear-gradient(
+      180deg,
+      var(--color-surface) 0%,
+      var(--color-card-end) 100%
+    );
   box-shadow: var(--shadow-soft);
 }
 
@@ -121,7 +134,7 @@ input {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding-bottom: 2px;
+  padding: 2px 2px 4px;
 }
 
 .popup__logo {
@@ -157,25 +170,28 @@ input {
 .theme-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  min-height: 34px;
-  padding: 0 9px;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  padding: 0;
   color: var(--color-text);
-  font-size: 0.75rem;
-  font-weight: 800;
   background: var(--color-surface-soft);
   border: 1px solid var(--color-border);
   border-radius: 999px;
+  box-shadow: var(--shadow-card);
   cursor: pointer;
   transition:
     background 160ms ease,
     border-color 160ms ease,
-    color 160ms ease;
+    box-shadow 160ms ease,
+    transform 160ms ease;
 }
 
 .theme-toggle:hover {
   background: var(--color-hover-soft);
   border-color: var(--color-border-strong);
+  transform: translateY(-1px);
 }
 
 .theme-toggle:focus-visible {
@@ -185,26 +201,42 @@ input {
 
 .theme-toggle__icon {
   position: relative;
-  width: 14px;
-  height: 14px;
+  width: 18px;
+  height: 18px;
   flex: 0 0 auto;
-  background: var(--color-primary);
+  color: #f5a524;
+  background: currentColor;
   border-radius: 50%;
+  box-shadow:
+    0 0 0 4px rgba(245, 165, 36, 0.18),
+    0 0 16px rgba(245, 165, 36, 0.2);
 }
 
 .theme-toggle__icon::after {
   position: absolute;
-  top: -2px;
-  right: -2px;
-  width: 8px;
-  height: 8px;
-  background: var(--color-surface-soft);
-  border-radius: 50%;
+  inset: -5px;
+  border: 1px solid rgba(245, 165, 36, 0.26);
+  border-radius: inherit;
   content: "";
 }
 
+:root[data-theme="dark"] .theme-toggle__icon {
+  color: #d8e8ff;
+  background: transparent;
+  box-shadow:
+    inset -5px -4px 0 0 currentColor,
+    0 0 18px rgba(45, 156, 255, 0.24);
+}
+
 :root[data-theme="dark"] .theme-toggle__icon::after {
-  opacity: 0;
+  inset: 2px 0 0 8px;
+  width: 4px;
+  height: 4px;
+  background: currentColor;
+  border: 0;
+  box-shadow:
+    7px 2px 0 -1px currentColor,
+    -2px 8px 0 -1px currentColor;
 }
 
 .popup__title {
@@ -240,9 +272,15 @@ input {
   align-items: flex-start;
   gap: 10px;
   padding: 11px 12px;
-  background: var(--color-surface-soft);
+  background:
+    linear-gradient(
+      180deg,
+      var(--color-card-start) 0%,
+      var(--color-card-end) 100%
+    );
   border: 1px solid var(--color-border);
   border-radius: 8px;
+  box-shadow: var(--shadow-card);
 }
 
 .popup__status-indicator {
@@ -300,9 +338,15 @@ input {
   display: grid;
   gap: 10px;
   padding: 12px;
-  background: var(--color-surface-soft);
+  background:
+    linear-gradient(
+      180deg,
+      var(--color-card-start) 0%,
+      var(--color-card-end) 100%
+    );
   border: 1px solid var(--color-border);
   border-radius: 8px;
+  box-shadow: var(--shadow-card);
 }
 
 .timer-overview[data-state="active"] {
@@ -396,6 +440,10 @@ input {
   gap: 8px;
 }
 
+.timer-overview__actions:not(:has(.popup__button:not([hidden]))) {
+  display: none;
+}
+
 .timer-overview__actions [hidden] {
   display: none;
 }
@@ -404,9 +452,15 @@ input {
   display: grid;
   gap: 10px;
   padding: 12px;
-  background: var(--color-surface);
+  background:
+    linear-gradient(
+      180deg,
+      var(--color-card-start) 0%,
+      var(--color-card-end) 100%
+    );
   border: 1px solid var(--color-border);
   border-radius: 8px;
+  box-shadow: var(--shadow-card);
 }
 
 .active-timers[hidden] {
@@ -515,17 +569,21 @@ input {
 }
 
 .quick-action {
+  grid-template-columns: minmax(0, 1fr) 146px;
+  align-items: center;
   background:
     linear-gradient(
       180deg,
       var(--color-card-start) 0%,
       var(--color-card-end) 100%
     );
+  box-shadow: var(--shadow-card);
 }
 
 .quick-action__copy {
   display: grid;
   gap: 2px;
+  min-width: 0;
 }
 
 .quick-action__title {
@@ -536,7 +594,13 @@ input {
 }
 
 .popup__timer {
-  background: var(--color-surface);
+  background:
+    linear-gradient(
+      180deg,
+      var(--color-card-start) 0%,
+      var(--color-card-end) 100%
+    );
+  box-shadow: var(--shadow-card);
 }
 
 .popup__section-heading {
@@ -721,6 +785,17 @@ input {
   gap: 8px;
 }
 
+.popup__footer {
+  display: grid;
+  gap: 8px;
+  padding: 2px 0 0;
+  margin-top: -2px;
+}
+
+.popup__settings-button {
+  min-height: 38px;
+}
+
 .popup__button {
   display: inline-flex;
   align-items: center;
@@ -802,6 +877,20 @@ input {
   color: var(--color-text);
   background: var(--color-hover-soft);
   box-shadow: none;
+}
+
+.popup__button--danger {
+  min-height: 38px;
+  color: var(--color-danger);
+  background: rgba(217, 45, 32, 0.1);
+  border: 1px solid rgba(217, 45, 32, 0.22);
+  box-shadow: none;
+}
+
+.popup__button--danger:hover {
+  color: #ffffff;
+  background: var(--color-danger);
+  box-shadow: 0 8px 18px rgba(217, 45, 32, 0.2);
 }
 
 @keyframes spin {

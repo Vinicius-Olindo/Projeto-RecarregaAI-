@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- RecarregaAi! V.1.5.1 -->
+<!-- RecarregaAi! V.1.5.3 -->
 <html lang="pt-BR" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
@@ -17,11 +17,11 @@
         <div class="popup__heading">
           <div class="popup__title-row">
             <h1 id="popup-title" class="popup__title">RecarregaAi!</h1>
-            <span id="extension-version" class="popup__version">V.1.5.1</span>
+            <span id="extension-version" class="popup__version">V.1.5.3</span>
           </div>
 
           <p class="popup__subtitle">
-            Cache limpo. Pagina nova. Sem enrolacao.
+            Atualize a página com dados novos.
           </p>
         </div>
 
@@ -29,12 +29,12 @@
           id="theme-toggle-button"
           class="theme-toggle"
           type="button"
-          aria-label="Alternar tema"
+          aria-label="Mudar para o tema claro"
           aria-pressed="true"
-          title="Mudar para tema claro"
+          title="Mudar para o tema claro"
         >
           <span class="theme-toggle__icon" aria-hidden="true"></span>
-          <span id="theme-toggle-label" class="theme-toggle__label">Claro</span>
+          <span id="theme-toggle-label" class="screen-reader-only">Claro</span>
         </button>
       </header>
 
@@ -44,7 +44,7 @@
         <div class="popup__status-content">
           <p class="popup__label">Status</p>
           <strong id="status-message" class="popup__message">
-            Pronto para limpar o cache da aba aberta.
+            Pronto para limpar e atualizar a página aberta.
           </strong>
         </div>
       </section>
@@ -52,12 +52,12 @@
       <section id="timer-overview" class="timer-overview" data-state="empty">
         <div class="timer-overview__main">
           <div class="timer-overview__copy">
-            <p class="popup__label">Guia atual</p>
+            <p class="popup__label">Página atual</p>
             <strong id="controlled-tab-title" class="timer-overview__title">
-              Nenhuma guia monitorada
+              Atualização desligada
             </strong>
             <span id="controlled-tab-url" class="timer-overview__url">
-              Ative o timer para iniciar o acompanhamento.
+              Escolha um tempo abaixo para começar.
             </span>
           </div>
 
@@ -67,8 +67,8 @@
         </div>
 
         <p class="timer-overview__note">
-          O badge do icone e aproximado; o popup aberto atualiza com mais
-          precisao.
+          O contador no ícone pode variar um pouco quando este painel está
+          fechado.
         </p>
 
         <div class="timer-overview__actions">
@@ -78,13 +78,14 @@
             type="button"
             hidden
           >
-            Abrir guia
+            Abrir página
           </button>
 
           <button
             id="pause-timer-button"
             class="popup__button popup__button--ghost"
             type="button"
+            hidden
           >
             Pausar
           </button>
@@ -93,73 +94,51 @@
             id="resume-timer-button"
             class="popup__button popup__button--secondary"
             type="button"
+            hidden
           >
             Retomar
           </button>
 
           <button
-            id="open-options-button"
-            class="popup__button popup__button--ghost"
+            id="remove-timer-button"
+            class="popup__button popup__button--danger"
             type="button"
+            hidden
           >
-            Configuracoes
+            Remover
           </button>
         </div>
       </section>
 
-      <section
-        id="active-timers-section"
-        class="active-timers"
-        aria-labelledby="active-timers-title"
-        hidden
-      >
-        <div class="popup__section-heading">
-          <div>
-            <p class="popup__label">Multiplas guias</p>
-            <h2 id="active-timers-title" class="popup__section-title">
-              Timers ativos
-            </h2>
-          </div>
-
-          <span id="active-timers-count" class="popup__badge">0</span>
-        </div>
-
-        <div
-          id="active-timers-list"
-          class="active-timers__list"
-          aria-live="polite"
-        ></div>
-      </section>
-
       <section class="quick-action" aria-labelledby="quick-action-title">
         <div class="quick-action__copy">
-          <p id="quick-action-title" class="popup__label">Acao rapida</p>
-          <p class="quick-action__title">Limpar agora</p>
+          <p id="quick-action-title" class="popup__label">Manual</p>
+          <p class="quick-action__title">Atualizar agora</p>
           <p class="popup__hint">
-            Remove cache e recarrega a aba atual uma vez.
+            Limpa dados antigos e atualiza esta página uma vez.
           </p>
         </div>
 
         <button id="reload-page-button" class="popup__button" type="button">
-          Limpar e recarregar
+          Limpar e atualizar
         </button>
       </section>
 
       <section class="popup__timer" aria-labelledby="timer-title">
         <div class="popup__section-heading">
           <div>
-            <p class="popup__label">Automacao</p>
+            <p class="popup__label">Automático</p>
             <h2 id="timer-title" class="popup__section-title">
-              Timer recorrente
+              Atualização recorrente
             </h2>
           </div>
 
-          <span class="popup__badge">m:ss</span>
+          <span class="popup__badge">min:seg</span>
         </div>
 
         <fieldset class="timer-options">
           <legend class="screen-reader-only">
-            Escolha o intervalo do timer
+            Escolha de quanto em quanto tempo a página será atualizada
           </legend>
 
           <label class="timer-options__item">
@@ -183,13 +162,13 @@
           <label class="timer-options__item">
             <input type="radio" name="timer-interval" value="custom" />
             <span class="timer-options__value">+</span>
-            <span class="timer-options__label">Personalizado</span>
+            <span class="timer-options__label">Outro tempo</span>
           </label>
         </fieldset>
 
         <label class="custom-timer" for="custom-timer-input">
           <span class="custom-timer__label"
-            >Tempo personalizado em minutos</span
+            >Outro tempo em minutos</span
           >
           <span class="custom-timer__control">
             <input
@@ -211,7 +190,7 @@
             class="popup__button popup__button--secondary"
             type="button"
           >
-            Ativar timer
+            Ligar atualização
           </button>
 
           <button
@@ -219,10 +198,44 @@
             class="popup__button popup__button--ghost"
             type="button"
           >
-            Parar timer
+            Desligar
           </button>
         </div>
       </section>
+
+      <section
+        id="active-timers-section"
+        class="active-timers"
+        aria-labelledby="active-timers-title"
+        hidden
+      >
+        <div class="popup__section-heading">
+          <div>
+            <p class="popup__label">Outras páginas</p>
+            <h2 id="active-timers-title" class="popup__section-title">
+              Atualizações em andamento
+            </h2>
+          </div>
+
+          <span id="active-timers-count" class="popup__badge">0</span>
+        </div>
+
+        <div
+          id="active-timers-list"
+          class="active-timers__list"
+          aria-live="polite"
+        ></div>
+      </section>
+
+      <footer class="popup__footer">
+        <button
+          id="open-options-button"
+          class="popup__button popup__button--ghost popup__settings-button"
+          type="button"
+        >
+          Configurações
+        </button>
+      </footer>
     </main>
 
     <script type="module" src="JS/popup.js"></script>

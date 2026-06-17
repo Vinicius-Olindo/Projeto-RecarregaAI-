@@ -1,10 +1,10 @@
-// RecarregaAi! V.1.5.1
+// RecarregaAi! V.1.5.3
 
 import { appConfig } from "./modules/config.js";
 
 const feedbackSubmitUrl = appConfig.feedbackSubmitUrl;
 const feedbackFallbackUrl = appConfig.feedbackFallbackUrl;
-const defaultVersionLabel = "V.1.5.1";
+const defaultVersionLabel = "V.1.5.3";
 const defaultLanguage = "pt-BR";
 const defaultReason = "Nao informou motivo";
 const languageStorageKey = "recarregaAiUninstallLanguage";
@@ -46,7 +46,7 @@ const translations = {
     reasonRequired: "Selecione um motivo antes de enviar.",
     selectedPrefix: "Selecionado: ",
     sendButton: "Enviar feedback",
-    versionLabel: "Versao 1.5.1"
+    versionLabel: "Versao 1.5.3"
   },
   en: {
     backToTop: "Back to start",
@@ -83,7 +83,7 @@ const translations = {
     reasonRequired: "Select a reason before sending.",
     selectedPrefix: "Selected: ",
     sendButton: "Send feedback",
-    versionLabel: "Version 1.5.1"
+    versionLabel: "Version 1.5.3"
   },
   es: {
     backToTop: "Volver al inicio",
@@ -120,7 +120,7 @@ const translations = {
     reasonRequired: "Selecciona un motivo antes de enviar.",
     selectedPrefix: "Seleccionado: ",
     sendButton: "Enviar feedback",
-    versionLabel: "Version 1.5.1"
+    versionLabel: "Version 1.5.3"
   }
 };
 

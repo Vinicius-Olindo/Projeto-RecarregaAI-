@@ -1,4 +1,4 @@
-// RecarregaAi! V.1.5.1
+// RecarregaAi! V.1.5.3
 
 import {
   formatCountdownTime,
@@ -31,6 +31,7 @@ const popupElements = {
   pauseTimerButton: document.querySelector("#pause-timer-button"),
   popupCountdown: document.querySelector("#popup-countdown"),
   reloadPageButton: document.querySelector("#reload-page-button"),
+  removeTimerButton: document.querySelector("#remove-timer-button"),
   resumeTimerButton: document.querySelector("#resume-timer-button"),
   startTimerButton: document.querySelector("#start-timer-button"),
   statusPanel: document.querySelector(".popup__status"),
@@ -42,9 +43,9 @@ const popupElements = {
   timerIntervalInputs: document.querySelectorAll("[name='timer-interval']")
 };
 
-const unsupportedPageMessage = "Essa pagina nao permite limpeza de cache pela extensao.";
-const defaultReloadButtonText = "Limpar e recarregar";
-const defaultStartTimerButtonText = "Ativar timer";
+const unsupportedPageMessage = "Esta página não permite esse tipo de limpeza.";
+const defaultReloadButtonText = "Limpar e atualizar";
+const defaultStartTimerButtonText = "Ligar atualização";
 const presetTimerIntervals = [3, 5, 10];
 
 let currentActiveTab = null;
@@ -68,10 +69,13 @@ const loadExtensionVersion = () => {
 };
 
 const updateThemeButtonLabel = ({ isDarkTheme }) => {
+  const nextThemeLabel = isDarkTheme
+    ? "Mudar para o tema claro"
+    : "Mudar para o tema escuro";
+
   popupElements.themeToggleButton.setAttribute("aria-pressed", String(isDarkTheme));
-  popupElements.themeToggleButton.title = isDarkTheme
-    ? "Mudar para tema claro"
-    : "Mudar para tema escuro";
+  popupElements.themeToggleButton.setAttribute("aria-label", nextThemeLabel);
+  popupElements.themeToggleButton.title = nextThemeLabel;
   popupElements.themeToggleLabel.textContent = isDarkTheme ? "Claro" : "Escuro";
 };
 
@@ -128,12 +132,12 @@ const clearCacheAndReloadCurrentPage = async () => {
       "Limpando...",
       defaultReloadButtonText
     );
-    updateStatusMessage("Coletando recursos carregados pela pagina...", "working");
+    updateStatusMessage("Verificando o que precisa ser limpo...", "working");
 
     const activeTab = await getActiveTab();
 
     if (typeof activeTab?.id !== "number") {
-      updateStatusMessage("Nao foi possivel encontrar a aba atual.", "error");
+      updateStatusMessage("Não consegui identificar a página aberta.", "error");
       return;
     }
 
@@ -147,17 +151,17 @@ const clearCacheAndReloadCurrentPage = async () => {
     const loadedOrigins = await collectLoadedOrigins(activeTab.id, [origin]);
 
     updateStatusMessage(
-      `Limpando cache de ${loadedOrigins.length} origem(ns)...`,
+      "Limpando dados antigos desta página...",
       "working"
     );
 
     await clearCacheForOrigins(loadedOrigins);
     await reloadTabIgnoringCache(activeTab.id);
 
-    updateStatusMessage("Cache limpo e pagina recarregada.", "success");
+    updateStatusMessage("Página limpa e atualizada.", "success");
   } catch (error) {
     console.error("Erro ao limpar cache e recarregar:", error);
-    updateStatusMessage("Nao foi possivel limpar o cache agora.", "error");
+    updateStatusMessage("Não consegui limpar esta página agora.", "error");
   } finally {
     updateButtonState(
       popupElements.reloadPageButton,
@@ -178,7 +182,7 @@ const getSelectedTimerInterval = () => {
   const customInterval = Number(popupElements.customTimerInput.value);
 
   if (!Number.isFinite(customInterval) || customInterval < 1) {
-    throw new Error("Informe um tempo personalizado de pelo menos 1 minuto.");
+    throw new Error("Informe pelo menos 1 minuto.");
   }
 
   return Math.floor(customInterval);
@@ -202,15 +206,15 @@ const getTimerState = async (activeTabId = null) => (
 );
 
 const getTimerTabLabel = (timerSettings) => (
-  timerSettings.tabTitle || timerSettings.mainOrigin || "Guia monitorada"
+  timerSettings.tabTitle || timerSettings.mainOrigin || "Página em atualização"
 );
 
 const formatActiveTimerCount = (count) => {
   if (count === 1) {
-    return "1 guia";
+    return "1 página";
   }
 
-  return `${count} guias`;
+  return `${count} páginas`;
 };
 
 const getTimerVisualState = (timerSettings) => {
@@ -249,6 +253,7 @@ const updateTimerActionButtons = (timerSettings) => {
 
   popupElements.openControlledTabButton.hidden = true;
   popupElements.pauseTimerButton.hidden = !hasTimer || isPaused;
+  popupElements.removeTimerButton.hidden = !hasTimer;
   popupElements.resumeTimerButton.hidden = !hasTimer || !isPaused;
   popupElements.stopTimerButton.disabled = !hasTimer;
 };
@@ -256,8 +261,8 @@ const updateTimerActionButtons = (timerSettings) => {
 const updateTimerOverview = (timerSettings) => {
   if (!timerSettings?.enabled) {
     popupElements.timerOverview.dataset.state = "empty";
-    popupElements.controlledTabTitle.textContent = "Esta guia nao esta monitorada";
-    popupElements.controlledTabUrl.textContent = "Ative o timer para incluir esta aba.";
+    popupElements.controlledTabTitle.textContent = "Atualização desligada";
+    popupElements.controlledTabUrl.textContent = "Escolha um tempo para começar.";
     popupElements.popupCountdown.textContent = "--:--";
     updateTimerActionButtons(timerSettings);
     return;
@@ -269,7 +274,7 @@ const updateTimerOverview = (timerSettings) => {
   popupElements.controlledTabTitle.textContent = getTimerTabLabel(timerSettings);
   popupElements.controlledTabUrl.textContent = timerSettings.tabUrl
     || timerSettings.mainOrigin
-    || "Origem nao identificada";
+    || "Página não identificada";
   popupElements.popupCountdown.textContent = timerVisualState.countdownText;
 
   updateTimerActionButtons(timerSettings);
@@ -299,7 +304,7 @@ const createActiveTimerItem = (timerSettings, activeTab) => {
   title.textContent = getTimerTabLabel(timerSettings);
   url.textContent = timerSettings.tabUrl
     || timerSettings.mainOrigin
-    || "Origem nao identificada";
+    || "Página não identificada";
   countdown.textContent = timerVisualState.countdownText;
   openButton.textContent = isCurrentTab ? "Atual" : "Abrir";
   openButton.disabled = isCurrentTab;
@@ -353,14 +358,14 @@ const refreshTimerState = async ({ updateStatus = false } = {}) => {
   if (!timerSettings?.enabled) {
     if (activeTimers.length > 0) {
       updateStatusMessage(
-        `${formatActiveTimerCount(activeTimers.length)} com timer ativo. `
-          + "Esta guia ainda nao esta monitorada.",
+        `${formatActiveTimerCount(activeTimers.length)} atualizando. `
+          + "Esta página ainda está desligada.",
         "active"
       );
       return timerSettings;
     }
 
-    updateStatusMessage("Nenhuma guia sendo monitorada agora.", "neutral");
+    updateStatusMessage("Nenhuma página atualizando sozinha agora.", "neutral");
     return timerSettings;
   }
 
@@ -369,18 +374,18 @@ const refreshTimerState = async ({ updateStatus = false } = {}) => {
   if (timerSettings.paused) {
     if (timerSettings.pauseReason === pauseReasons.typing) {
       updateStatusMessage(
-        "Digitacao detectada. Timer pausado para proteger a pagina.",
+        "Você está digitando. A atualização pausou para proteger seu trabalho.",
         "warning"
       );
       return timerSettings;
     }
 
-    updateStatusMessage("Timer pausado.", "warning");
+    updateStatusMessage("Atualização pausada.", "warning");
     return timerSettings;
   }
 
   updateStatusMessage(
-    `Timer ativo nesta guia: a cada ${timerIntervalText}.`,
+    `Atualização ligada nesta página: a cada ${timerIntervalText}.`,
     "active"
   );
 
@@ -434,13 +439,13 @@ const startTimer = async () => {
       "Ativando...",
       defaultStartTimerButtonText
     );
-    updateStatusMessage("Preparando timer para a aba atual...", "working");
+    updateStatusMessage("Preparando atualização automática...", "working");
 
     const activeTab = currentActiveTab;
 
     if (typeof activeTab?.id !== "number") {
       updateStatusMessage(
-        "Aguarde a guia atual carregar no popup e tente de novo.",
+        "Aguarde esta página aparecer no painel e tente de novo.",
         "error"
       );
       return;
@@ -457,7 +462,7 @@ const startTimer = async () => {
 
     if (!hasPermission) {
       updateStatusMessage(
-        "Permissao negada. O timer precisa acessar esse dominio.",
+        "Você precisa autorizar este site para ligar a atualização.",
         "error"
       );
       return;
@@ -480,14 +485,14 @@ const startTimer = async () => {
     });
 
     updateStatusMessage(
-      `Timer ativo: a cada ${formatTimerInterval(intervalInMinutes)}.`,
+      `Atualização ligada: a cada ${formatTimerInterval(intervalInMinutes)}.`,
       "active"
     );
     await refreshTimerState();
   } catch (error) {
     console.error("Erro ao ativar timer:", error);
     updateStatusMessage(
-      error.message || "Nao foi possivel ativar o timer agora.",
+      error.message || "Não consegui ligar a atualização automática agora.",
       "error"
     );
   } finally {
@@ -504,7 +509,7 @@ const getActiveTabIdForTimerAction = async () => {
   const activeTab = await getActiveTab();
 
   if (typeof activeTab?.id !== "number") {
-    throw new Error("Nao foi possivel encontrar a aba atual.");
+    throw new Error("Não consegui identificar a página aberta.");
   }
 
   return activeTab.id;
@@ -522,10 +527,10 @@ const stopTimer = async () => {
     });
 
     await refreshTimerState();
-    updateStatusMessage("Timer parado.", "warning");
+    updateStatusMessage("Atualização automática desligada.", "warning");
   } catch (error) {
     console.error("Erro ao parar timer:", error);
-    updateStatusMessage("Nao foi possivel parar o timer agora.", "error");
+    updateStatusMessage("Não consegui desligar agora.", "error");
   }
 };
 
@@ -540,11 +545,11 @@ const pauseTimer = async () => {
       type: runtimeMessageTypes.pauseTimer
     });
 
-    updateStatusMessage("Timer pausado.", "warning");
+    updateStatusMessage("Atualização pausada.", "warning");
     await refreshTimerState();
   } catch (error) {
     console.error("Erro ao pausar timer:", error);
-    updateStatusMessage("Nao foi possivel pausar o timer agora.", "error");
+    updateStatusMessage("Não consegui pausar agora.", "error");
   }
 };
 
@@ -559,11 +564,11 @@ const resumeTimer = async () => {
       type: runtimeMessageTypes.resumeTimer
     });
 
-    updateStatusMessage("Timer retomado.", "active");
+    updateStatusMessage("Atualização retomada.", "active");
     await refreshTimerState();
   } catch (error) {
     console.error("Erro ao retomar timer:", error);
-    updateStatusMessage("Nao foi possivel retomar o timer agora.", "error");
+    updateStatusMessage("Não consegui retomar agora.", "error");
   }
 };
 
@@ -576,8 +581,8 @@ const openControlledTab = async (tabId) => {
       type: runtimeMessageTypes.openTimerTab
     });
   } catch (error) {
-    console.error("Erro ao abrir guia monitorada:", error);
-    updateStatusMessage("Nao foi possivel abrir a guia monitorada.", "error");
+    console.error("Erro ao abrir página controlada:", error);
+    updateStatusMessage("Não consegui abrir essa página.", "error");
   }
 };
 
@@ -598,6 +603,7 @@ const handleActiveTimersListClick = (event) => {
 popupElements.reloadPageButton.addEventListener("click", clearCacheAndReloadCurrentPage);
 popupElements.openOptionsButton.addEventListener("click", openOptionsPage);
 popupElements.pauseTimerButton.addEventListener("click", pauseTimer);
+popupElements.removeTimerButton.addEventListener("click", stopTimer);
 popupElements.resumeTimerButton.addEventListener("click", resumeTimer);
 popupElements.startTimerButton.addEventListener("click", startTimer);
 popupElements.stopTimerButton.addEventListener("click", stopTimer);

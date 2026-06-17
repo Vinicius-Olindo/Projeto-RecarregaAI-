@@ -1,11 +1,11 @@
-/* RecarregaAi! 1.6.5 */
+/* RecarregaAi! 1.6.8 */
 
 .floating-tools {
   --floating-tools-bottom: var(--floating-tools-gap, 22px);
   --floating-tools-gap: 22px;
 
   position: fixed;
-  right: 22px;
+  right: clamp(16px, 2.2vw, 42px);
   bottom: var(--floating-tools-bottom);
   z-index: 30;
   display: grid;

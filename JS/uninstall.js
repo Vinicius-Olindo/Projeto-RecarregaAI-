@@ -1,11 +1,11 @@
-// RecarregaAi! 1.6.5
+// RecarregaAi! 1.6.8
 
 import { appConfig } from "./modules/config.js";
 import { initFloatingTools } from "./modules/floating-tools.js";
 
 const feedbackSubmitUrl = appConfig.feedbackSubmitUrl;
 const feedbackFallbackUrl = appConfig.feedbackFallbackUrl;
-const defaultVersionLabel = "1.6.5";
+const defaultVersionLabel = "1.6.8";
 const defaultLanguage = "pt-BR";
 const defaultReason = "Não informou motivo";
 const languageStorageKey = "recarregaAiPageLanguage";
@@ -21,7 +21,7 @@ const translations = {
     emailLabel: "E-mail para contato",
     footerFeedback: "Feedback",
     footerHome: "Inicio",
-    footerLegal: "© RecarregaAi! 1.6.5. Todos os direitos reservados.",
+    footerLegal: "© RecarregaAi! 1.6.8. Todos os direitos reservados.",
     footerPrivacy: "Privacidade",
     footerProject: "Projeto",
     formSubmitError:
@@ -47,7 +47,7 @@ const translations = {
     reasonRequired: "Selecione um motivo antes de enviar.",
     selectedPrefix: "Selecionado: ",
     sendButton: "Enviar feedback",
-    versionLabel: "1.6.5"
+    versionLabel: "1.6.8"
   },
   en: {
     backToTop: "Back to start",
@@ -58,7 +58,7 @@ const translations = {
     emailLabel: "Contact email",
     footerFeedback: "Feedback",
     footerHome: "Home",
-    footerLegal: "© RecarregaAi! 1.6.5. All rights reserved.",
+    footerLegal: "© RecarregaAi! 1.6.8. All rights reserved.",
     footerPrivacy: "Privacy",
     footerProject: "Project",
     formSubmitError:
@@ -83,7 +83,7 @@ const translations = {
     reasonRequired: "Select a reason before sending.",
     selectedPrefix: "Selected: ",
     sendButton: "Send feedback",
-    versionLabel: "1.6.5"
+    versionLabel: "1.6.8"
   },
   es: {
     backToTop: "Volver al inicio",
@@ -94,7 +94,7 @@ const translations = {
     emailLabel: "Email de contacto",
     footerFeedback: "Feedback",
     footerHome: "Inicio",
-    footerLegal: "© RecarregaAi! 1.6.5. Todos los derechos reservados.",
+    footerLegal: "© RecarregaAi! 1.6.8. Todos los derechos reservados.",
     footerPrivacy: "Privacidad",
     footerProject: "Proyecto",
     formSubmitError:
@@ -119,7 +119,7 @@ const translations = {
     reasonRequired: "Selecciona un motivo antes de enviar.",
     selectedPrefix: "Seleccionado: ",
     sendButton: "Enviar feedback",
-    versionLabel: "1.6.5"
+    versionLabel: "1.6.8"
   }
 };
 

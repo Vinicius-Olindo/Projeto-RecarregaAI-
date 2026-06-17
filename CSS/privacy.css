@@ -1,4 +1,4 @@
-/* RecarregaAi! 1.6.5 */
+/* RecarregaAi! 1.6.8 */
 
 :root {
   --anchor-offset: 108px;
@@ -176,7 +176,7 @@ a {
 .privacy {
   display: grid;
   gap: 30px;
-  width: min(1160px, calc(100% - 32px));
+  width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
   padding: 58px 0 78px;
 }
@@ -554,6 +554,40 @@ a {
   }
 }
 
+@media (min-width: 1280px) {
+  .privacy {
+    gap: 34px;
+    width: min(1320px, calc(100% - 80px));
+  }
+
+  .policy-layout {
+    grid-template-columns: 270px minmax(0, 1fr);
+    gap: clamp(36px, 4vw, 64px);
+  }
+
+  .policy-document {
+    padding-inline: clamp(46px, 4vw, 62px);
+  }
+}
+
+@media (min-width: 1540px) {
+  .privacy {
+    width: min(1440px, calc(100% - 112px));
+  }
+
+  .hero {
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
+  }
+
+  .summary-grid {
+    gap: 20px;
+  }
+
+  .summary-grid article {
+    padding: 28px;
+  }
+}
+
 @media (max-width: 920px) {
   .privacy-header {
     grid-template-columns: 1fr;
@@ -582,6 +616,20 @@ a {
 
   .policy-nav p {
     grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 820px) {
+  .privacy-header {
+    gap: 14px;
+  }
+
+  .brand {
+    min-width: 0;
+  }
+
+  .header-link {
+    width: fit-content;
   }
 }
 
@@ -615,6 +663,29 @@ a {
   .permission-list div {
     grid-template-columns: 1fr;
     gap: 8px;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding: 24px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.15rem, 11vw, 2.8rem);
+  }
+
+  .hero p:not(.eyebrow),
+  .summary-grid p,
+  .policy-section p,
+  .policy-list li,
+  .permission-list dd {
+    text-align: left;
+  }
+
+  .policy-nav {
+    max-height: 300px;
+    overflow: auto;
   }
 }
 

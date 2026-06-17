@@ -1,4 +1,4 @@
-// RecarregaAi! 1.6.5
+// RecarregaAi! 1.6.8
 
 import { appConfig } from "./modules/config.js";
 import {

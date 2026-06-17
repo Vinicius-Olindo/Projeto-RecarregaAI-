@@ -1,4 +1,4 @@
-// RecarregaAi! 1.6.5
+// RecarregaAi! 1.6.8
 
 import { initFloatingTools } from "./modules/floating-tools.js";
 import {
@@ -63,7 +63,7 @@ const welcomeTranslations = {
     finalTitle: "Pronto para usar o RecarregaAi!",
     footerFeedback: "Feedback",
     footerHome: "Início",
-    footerLegal: "© RecarregaAi! 1.6.5. Todos os direitos reservados.",
+    footerLegal: "© RecarregaAi! 1.6.8. Todos os direitos reservados.",
     footerPrivacy: "Política de privacidade",
     footerProject: "Projeto",
     heroDescription:
@@ -163,7 +163,7 @@ const welcomeTranslations = {
     finalTitle: "Ready to use RecarregaAi!",
     footerFeedback: "Feedback",
     footerHome: "Home",
-    footerLegal: "© RecarregaAi! 1.6.5. All rights reserved.",
+    footerLegal: "© RecarregaAi! 1.6.8. All rights reserved.",
     footerPrivacy: "Privacy policy",
     footerProject: "Project",
     heroDescription:
@@ -262,7 +262,7 @@ const welcomeTranslations = {
     finalTitle: "Listo para usar RecarregaAi!",
     footerFeedback: "Feedback",
     footerHome: "Inicio",
-    footerLegal: "© RecarregaAi! 1.6.5. Todos los derechos reservados.",
+    footerLegal: "© RecarregaAi! 1.6.8. Todos los derechos reservados.",
     footerPrivacy: "Política de privacidad",
     footerProject: "Proyecto",
     heroDescription:

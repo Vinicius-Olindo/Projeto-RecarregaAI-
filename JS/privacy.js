@@ -1,4 +1,4 @@
-// RecarregaAi! 1.6.5
+// RecarregaAi! 1.6.8
 
 import { initFloatingTools } from "./modules/floating-tools.js";
 import {
@@ -21,7 +21,7 @@ const privacyTranslations = {
     documentTitle: "Política de Privacidade do RecarregaAi!",
     footerFeedback: "Feedback",
     footerHome: "Início",
-    footerLegal: "© RecarregaAi! 1.6.5. Política atualizada em 16/06/2026.",
+    footerLegal: "© RecarregaAi! 1.6.8. Política atualizada em 16/06/2026.",
     footerPrivacy: "Política de privacidade",
     footerProject: "Projeto",
     headerContact: "Contato",
@@ -148,7 +148,7 @@ const privacyTranslations = {
     documentTitle: "RecarregaAi! Privacy Policy",
     footerFeedback: "Feedback",
     footerHome: "Home",
-    footerLegal: "© RecarregaAi! 1.6.5. Policy updated on 06/16/2026.",
+    footerLegal: "© RecarregaAi! 1.6.8. Policy updated on 06/16/2026.",
     footerPrivacy: "Privacy policy",
     footerProject: "Project",
     headerContact: "Contact",
@@ -274,7 +274,7 @@ const privacyTranslations = {
     documentTitle: "Política de Privacidad de RecarregaAi!",
     footerFeedback: "Feedback",
     footerHome: "Inicio",
-    footerLegal: "© RecarregaAi! 1.6.5. Política actualizada el 16/06/2026.",
+    footerLegal: "© RecarregaAi! 1.6.8. Política actualizada el 16/06/2026.",
     footerPrivacy: "Política de privacidad",
     footerProject: "Proyecto",
     headerContact: "Contacto",

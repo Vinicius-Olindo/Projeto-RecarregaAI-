@@ -1,4 +1,4 @@
-/* RecarregaAi! 1.6.5 */
+/* RecarregaAi! 1.6.8 */
 
 :root {
   --color-background: #eef4fb;
@@ -68,8 +68,8 @@
 }
 
 body {
-  width: 376px;
-  height: 600px;
+  width: min(376px, 100vw);
+  height: min(600px, 100vh);
   margin: 0;
   overflow: hidden;
   color: var(--color-text);
@@ -91,7 +91,7 @@ input {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  height: 600px;
+  height: 100%;
   padding: 16px;
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -902,5 +902,27 @@ input {
 @media (prefers-reduced-motion: reduce) {
   .popup__button.is-loading::after {
     animation: none;
+  }
+}
+
+@media (max-width: 340px) {
+  .quick-action,
+  .timer-overview__main,
+  .active-timers__item {
+    grid-template-columns: 1fr;
+  }
+
+  .timer-overview__countdown,
+  .active-timers__meta {
+    justify-self: start;
+  }
+
+  .timer-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .popup__actions,
+  .timer-overview__actions {
+    grid-template-columns: 1fr;
   }
 }

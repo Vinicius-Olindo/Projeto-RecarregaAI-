@@ -1,4 +1,4 @@
-// RecarregaAi! 1.7.4
+// RecarregaAi! 1.7.6
 
 import { initFloatingTools } from "./modules/floating-tools.js";
 import {
@@ -30,7 +30,7 @@ const privacyTranslations = {
     footerFeedback: "Feedback",
     footerDeveloper: "Desenvolvido por:",
     footerHome: "Início",
-    footerLegal: "© RecarregaAi! 1.7.4. Política atualizada em 16/06/2026.",
+    footerLegal: "© RecarregaAi! 1.7.6. Política atualizada em 16/06/2026.",
     footerPrivacy: "Privacidade",
     headerContact: "Contato",
     headerNavLabel: "Navegação da política",
@@ -159,7 +159,7 @@ const privacyTranslations = {
     footerFeedback: "Feedback",
     footerDeveloper: "Developed by:",
     footerHome: "Home",
-    footerLegal: "© RecarregaAi! 1.7.4. Policy updated on 06/16/2026.",
+    footerLegal: "© RecarregaAi! 1.7.6. Policy updated on 06/16/2026.",
     footerPrivacy: "Privacy",
     headerContact: "Contact",
     headerNavLabel: "Policy navigation",
@@ -287,7 +287,7 @@ const privacyTranslations = {
     footerFeedback: "Feedback",
     footerDeveloper: "Desarrollado por:",
     footerHome: "Inicio",
-    footerLegal: "© RecarregaAi! 1.7.4. Política actualizada el 16/06/2026.",
+    footerLegal: "© RecarregaAi! 1.7.6. Política actualizada el 16/06/2026.",
     footerPrivacy: "Privacidad",
     headerContact: "Contacto",
     headerNavLabel: "Navegación de la política",

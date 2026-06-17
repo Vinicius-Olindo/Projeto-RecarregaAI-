@@ -1,4 +1,4 @@
-// RecarregaAi! 1.7.4
+// RecarregaAi! 1.7.6
 
 import { initFloatingTools } from "./modules/floating-tools.js";
 import {
@@ -49,6 +49,7 @@ const optionsTranslations = {
     currentPageDescription:
       "Identifica a página atual para limpar dados e atualizar no tempo definido.",
     currentPageTitle: "Página escolhida",
+    defaultIntervalInputLabel: "Intervalo em minutos",
     defaultIntervalPlaceholder: "Padrão",
     defaultTimeLabel: "Tempo padrão",
     documentTitle: "Configurações do RecarregaAi!",
@@ -58,7 +59,7 @@ const optionsTranslations = {
     footerFeedback: "Feedback",
     footerDeveloper: "Desenvolvido por:",
     footerHome: "Início",
-    footerLegal: "© RecarregaAi! 1.7.4. Todos os direitos reservados.",
+    footerLegal: "© RecarregaAi! 1.7.6. Todos os direitos reservados.",
     footerPrivacy: "Privacidade",
     formInvalidInterval: "Informe um intervalo padrão de pelo menos 1 minuto.",
     formInvalidOrigin: "Use um endereço http ou https.",
@@ -73,6 +74,16 @@ const optionsTranslations = {
     formSettingsLoadError: "Erro ao carregar configurações.",
     formSettingsSaved: "Tempo padrão salvo.",
     formThemeError: "Erro ao alternar tema.",
+    headerHome: "Página inicial",
+    headerTitle: "Configurações",
+    heroCardBody:
+      "Tudo fica salvo localmente no navegador e pode ser ajustado quando seu fluxo mudar.",
+    heroCardLabel: "Resumo rápido",
+    heroCardBadge: "Pronto para personalizar",
+    heroCardTitle: "Controle simples, por guia e por site.",
+    heroEyebrow: "Configurações",
+    introStatusLabel: "Configuração local",
+    introStatusText: "Salva no navegador",
     languageDialogDescription:
       "Escolha o idioma preferido para navegar pelo RecarregaAi!.",
     languageDialogTitle: "Idioma",
@@ -86,14 +97,17 @@ const optionsTranslations = {
     localPreferencesTitle: "Preferências locais",
     minutePlural: "{count} minutos",
     minuteSingular: "1 minuto",
+    navGeneral: "Geral",
+    navPermissions: "Permissões",
+    navSites: "Sites",
     pageDescription:
-      "Defina o tempo padrão, escolha sites de início automático e veja como o RecarregaAi! usa permissões.",
-    pageTitle: "Configurações",
+      "Ajuste o tempo padrão, organize sites de início automático e revise as permissões usadas pela extensão.",
+    pageTitle: "Central de configurações do RecarregaAi!",
     permissionsDescription:
       "A extensão usa apenas o necessário para atualizar a página escolhida e salvar suas preferências localmente.",
     permissionsGridLabel: "Permissões usadas pela extensão",
     permissionsSummaryLabel: "Resumo das configurações",
-    permissionsTitle: "Por que a extensão pede permissões?",
+    permissionsTitle: "Como o RecarregaAi! usa permissões",
     preferencesEyebrow: "Preferências",
     readySitesEmpty: "Nenhum site cadastrado",
     readySitesPlural: "{count} sites cadastrados",
@@ -106,6 +120,7 @@ const optionsTranslations = {
     siteListLabel: "Sites automáticos",
     siteMeta: "Atualiza a cada {interval}",
     sitesTitle: "Sites que iniciam sozinhos",
+    settingsNavLabel: "Navegação das configurações",
     authorizedSitesDescription:
       "Pede permissão somente para os sites adicionados ao início automático.",
     authorizedSitesTitle: "Sites autorizados",
@@ -133,6 +148,7 @@ const optionsTranslations = {
     currentPageDescription:
       "Identifies the current page to clear data and refresh it on the chosen interval.",
     currentPageTitle: "Selected page",
+    defaultIntervalInputLabel: "Interval in minutes",
     defaultIntervalPlaceholder: "Default",
     defaultTimeLabel: "Default time",
     documentTitle: "RecarregaAi! Settings",
@@ -142,7 +158,7 @@ const optionsTranslations = {
     footerFeedback: "Feedback",
     footerDeveloper: "Developed by:",
     footerHome: "Home",
-    footerLegal: "© RecarregaAi! 1.7.4. All rights reserved.",
+    footerLegal: "© RecarregaAi! 1.7.6. All rights reserved.",
     footerPrivacy: "Privacy",
     formInvalidInterval: "Enter a default interval of at least 1 minute.",
     formInvalidOrigin: "Use an http or https address.",
@@ -157,6 +173,16 @@ const optionsTranslations = {
     formSettingsLoadError: "Error loading settings.",
     formSettingsSaved: "Default time saved.",
     formThemeError: "Error switching theme.",
+    headerHome: "Home page",
+    headerTitle: "Settings",
+    heroCardBody:
+      "Everything is saved locally in the browser and can be adjusted whenever your flow changes.",
+    heroCardLabel: "Quick summary",
+    heroCardBadge: "Ready to personalize",
+    heroCardTitle: "Simple control, by tab and by site.",
+    heroEyebrow: "Settings",
+    introStatusLabel: "Local settings",
+    introStatusText: "Saved in the browser",
     languageDialogDescription:
       "Choose your preferred language to browse RecarregaAi!.",
     languageDialogTitle: "Language",
@@ -170,14 +196,17 @@ const optionsTranslations = {
     localPreferencesTitle: "Local preferences",
     minutePlural: "{count} minutes",
     minuteSingular: "1 minute",
+    navGeneral: "General",
+    navPermissions: "Permissions",
+    navSites: "Sites",
     pageDescription:
-      "Set the default time, choose automatic-start sites and see how RecarregaAi! uses permissions.",
-    pageTitle: "Settings",
+      "Adjust the default time, organize automatic-start sites and review the permissions used by the extension.",
+    pageTitle: "RecarregaAi! settings center",
     permissionsDescription:
       "The extension uses only what is necessary to refresh the selected page and save your preferences locally.",
     permissionsGridLabel: "Permissions used by the extension",
     permissionsSummaryLabel: "Settings summary",
-    permissionsTitle: "Why does the extension ask for permissions?",
+    permissionsTitle: "How RecarregaAi! uses permissions",
     preferencesEyebrow: "Preferences",
     readySitesEmpty: "No site added",
     readySitesPlural: "{count} sites added",
@@ -190,6 +219,7 @@ const optionsTranslations = {
     siteListLabel: "Automatic sites",
     siteMeta: "Refreshes every {interval}",
     sitesTitle: "Sites that start automatically",
+    settingsNavLabel: "Settings navigation",
     authorizedSitesDescription:
       "Requests permission only for sites added to automatic start.",
     authorizedSitesTitle: "Authorized sites",
@@ -217,6 +247,7 @@ const optionsTranslations = {
     currentPageDescription:
       "Identifica la página actual para limpiar datos y actualizarla en el intervalo definido.",
     currentPageTitle: "Página seleccionada",
+    defaultIntervalInputLabel: "Intervalo en minutos",
     defaultIntervalPlaceholder: "Predeterminado",
     defaultTimeLabel: "Tiempo predeterminado",
     documentTitle: "Configuración de RecarregaAi!",
@@ -226,7 +257,7 @@ const optionsTranslations = {
     footerFeedback: "Feedback",
     footerDeveloper: "Desarrollado por:",
     footerHome: "Inicio",
-    footerLegal: "© RecarregaAi! 1.7.4. Todos los derechos reservados.",
+    footerLegal: "© RecarregaAi! 1.7.6. Todos los derechos reservados.",
     footerPrivacy: "Privacidad",
     formInvalidInterval: "Ingresa un intervalo predeterminado de al menos 1 minuto.",
     formInvalidOrigin: "Usa una dirección http o https.",
@@ -241,6 +272,16 @@ const optionsTranslations = {
     formSettingsLoadError: "Error al cargar la configuración.",
     formSettingsSaved: "Tiempo predeterminado guardado.",
     formThemeError: "Error al cambiar el tema.",
+    headerHome: "Página inicial",
+    headerTitle: "Configuración",
+    heroCardBody:
+      "Todo queda guardado localmente en el navegador y puede ajustarse cuando tu flujo cambie.",
+    heroCardLabel: "Resumen rápido",
+    heroCardBadge: "Listo para personalizar",
+    heroCardTitle: "Control simple, por pestaña y por sitio.",
+    heroEyebrow: "Configuración",
+    introStatusLabel: "Configuración local",
+    introStatusText: "Guardada en el navegador",
     languageDialogDescription:
       "Elige el idioma preferido para navegar por RecarregaAi!.",
     languageDialogTitle: "Idioma",
@@ -254,14 +295,17 @@ const optionsTranslations = {
     localPreferencesTitle: "Preferencias locales",
     minutePlural: "{count} minutos",
     minuteSingular: "1 minuto",
+    navGeneral: "General",
+    navPermissions: "Permisos",
+    navSites: "Sitios",
     pageDescription:
-      "Define el tiempo predeterminado, elige sitios de inicio automático y mira cómo RecarregaAi! usa permisos.",
-    pageTitle: "Configuración",
+      "Ajusta el tiempo predeterminado, organiza sitios de inicio automático y revisa los permisos usados por la extensión.",
+    pageTitle: "Centro de configuración de RecarregaAi!",
     permissionsDescription:
       "La extensión usa solo lo necesario para actualizar la página elegida y guardar tus preferencias localmente.",
     permissionsGridLabel: "Permisos usados por la extensión",
     permissionsSummaryLabel: "Resumen de la configuración",
-    permissionsTitle: "¿Por qué la extensión solicita permisos?",
+    permissionsTitle: "Cómo RecarregaAi! usa permisos",
     preferencesEyebrow: "Preferencias",
     readySitesEmpty: "Ningún sitio registrado",
     readySitesPlural: "{count} sitios registrados",
@@ -274,6 +318,7 @@ const optionsTranslations = {
     siteListLabel: "Sitios automáticos",
     siteMeta: "Actualiza cada {interval}",
     sitesTitle: "Sitios que se inician solos",
+    settingsNavLabel: "Navegación de la configuración",
     authorizedSitesDescription:
       "Solicita permiso solo para los sitios agregados al inicio automático.",
     authorizedSitesTitle: "Sitios autorizados",
@@ -620,7 +665,7 @@ const loadOptionsVersion = () => {
   const manifest = chrome.runtime.getManifest();
 
   optionsElements.extensionVersion.textContent = manifest.version_name
-    || `V.${manifest.version}`;
+    || manifest.version;
 };
 
 const applyOptionsLanguage = (language) => {
@@ -629,12 +674,25 @@ const applyOptionsLanguage = (language) => {
     : defaultLanguage;
   document.title = getOptionsCopy("documentTitle");
 
+  setTexts(".settings-nav__label", [
+    "navGeneral",
+    "navSites",
+    "navPermissions"
+  ]);
+  setText(".settings-header__link", "headerHome");
+  setText(".settings-header__title", "headerTitle");
+  setText(".settings-page-intro__eyebrow", "heroEyebrow");
   setText("#options-title", "pageTitle");
   setText(".brand__subtitle", "pageDescription");
-  setText(".panel--split .panel__eyebrow", "preferencesEyebrow");
+  setText(".settings-page-intro__status span", "introStatusLabel");
+  setText(".settings-page-intro__status strong", "introStatusText");
+  setText(".settings-sidebar-card__eyebrow", "heroCardBadge");
+  setText(".settings-sidebar-card__title", "heroCardTitle");
+  setText(".settings-sidebar-card__text", "heroCardBody");
+  setText(".panel--general .panel__eyebrow", "preferencesEyebrow");
   setText("#general-title", "defaultTimeLabel");
-  setText(".panel--split .panel__description", "timeDescription");
-  setText(".settings-row .field__label", "siteIntervalLabel");
+  setText(".panel--general .panel__description", "timeDescription");
+  setText(".settings-row .field__label", "defaultIntervalInputLabel");
   setText("#save-settings-button", "saveDefaultInterval");
   setText("#sites-title", "sitesTitle");
   setText(".site-form .field:nth-child(1) .field__label", "siteAddressLabel");
@@ -642,7 +700,7 @@ const applyOptionsLanguage = (language) => {
   setText(".site-form .field__hint", "siteIntervalHint");
   setText("#add-site-button", "addSite");
   setText(".empty-state strong", "emptySitesTitle");
-  setText(".empty-state span", "emptySitesDescription");
+  setText(".empty-state div span", "emptySitesDescription");
   setText("#permissions-title", "permissionsTitle");
   setTextAt(".summary-card strong", 0, "defaultTimeLabel");
   setTextAt(".summary-card strong", 1, "autoSitesLabel");
@@ -682,6 +740,8 @@ const applyOptionsLanguage = (language) => {
 
   setAttribute(".summary-grid", "aria-label", "permissionsSummaryLabel");
   setAttribute(".permissions-grid", "aria-label", "permissionsGridLabel");
+  setAttribute(".settings-nav", "aria-label", "settingsNavLabel");
+  setAttribute(".settings-sidebar-card", "aria-label", "heroCardLabel");
   setAttribute("#sites-list", "aria-label", "siteListLabel");
   setAttribute(".privacy-footer__nav", "aria-label", "linksLabel");
   setAttribute(".privacy-footer__social", "aria-label", "contactChannelsLabel");

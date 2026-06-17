@@ -1,6 +1,6 @@
 {
   "name": "recarregaai",
-  "version": "1.7.2",
+  "version": "1.7.4",
   "private": true,
   "description": "Extensao MV3 para limpar cache e recarregar paginas.",
   "scripts": {

@@ -1,4 +1,4 @@
-// RecarregaAi! 1.7.2
+// RecarregaAi! 1.7.4
 
 import { storageKeys, themeModes } from "./shared.js";
 

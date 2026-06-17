@@ -1,4 +1,4 @@
-/* RecarregaAi! 1.7.2 */
+/* RecarregaAi! 1.7.4 */
 
 :root {
   --color-page: #ffffff;
@@ -12,6 +12,21 @@
   --color-success-soft: #dcfce7;
   --color-error: #b42318;
   --color-error-soft: #fee4e2;
+  --color-card-border: #e8eef7;
+  --color-dialog: #ffffff;
+  --color-dialog-text: #020617;
+  --color-form: rgba(255, 255, 255, 0.92);
+  --color-header: #ffffff;
+  --color-input: #ffffff;
+  --color-input-border: #cbd5e1;
+  --color-install-text: #020617;
+  --color-intro: #1e293b;
+  --color-language-code: #64748b;
+  --color-option: #ffffff;
+  --color-option-hover: #f8fbff;
+  --color-page-start: #ffffff;
+  --color-page-middle: #f8fbff;
+  --color-radio-ring: #ffffff;
   --font-family:
     Inter,
     Arial,
@@ -19,6 +34,37 @@
 
   color-scheme: light;
   font-family: var(--font-family);
+}
+
+:root[data-theme="dark"] {
+  --color-page: #07111f;
+  --color-text: #edf4ff;
+  --color-muted: #9ba9bd;
+  --color-border: #233450;
+  --color-primary: #58b3ff;
+  --color-primary-dark: #8bc8ff;
+  --color-primary-soft: rgba(45, 156, 255, 0.16);
+  --color-success: #32d49b;
+  --color-success-soft: rgba(50, 212, 155, 0.13);
+  --color-error: #ff928a;
+  --color-error-soft: rgba(255, 107, 97, 0.14);
+  --color-card-border: #233450;
+  --color-dialog: #0f1728;
+  --color-dialog-text: #edf4ff;
+  --color-form: rgba(15, 23, 40, 0.92);
+  --color-header: rgba(7, 17, 31, 0.94);
+  --color-input: #0a1322;
+  --color-input-border: #35506f;
+  --color-install-text: #edf4ff;
+  --color-intro: #c7d4e8;
+  --color-language-code: #9ba9bd;
+  --color-option: #0f1728;
+  --color-option-hover: #13213a;
+  --color-page-start: #07111f;
+  --color-page-middle: #0f1728;
+  --color-radio-ring: #0f1728;
+
+  color-scheme: dark;
 }
 
 * {
@@ -35,7 +81,12 @@ body {
   background:
     radial-gradient(circle at 18% 16%, rgba(45, 156, 255, 0.08), transparent 28rem),
     radial-gradient(circle at 84% 42%, rgba(20, 121, 207, 0.06), transparent 24rem),
-    linear-gradient(180deg, #ffffff 0%, #f8fbff 58%, #ffffff 100%);
+    linear-gradient(
+      180deg,
+      var(--color-page-start) 0%,
+      var(--color-page-middle) 58%,
+      var(--color-page-start) 100%
+    );
 }
 
 body.has-open-dialog {
@@ -58,7 +109,7 @@ textarea {
   padding:
     14px
     max(22px, calc((100vw - 1440px) / 2 + 36px));
-  background: #ffffff;
+  background: var(--color-header);
   border-bottom: 1px solid var(--color-border);
   box-shadow: 0 1px 0 rgba(15, 23, 42, 0.02);
 }
@@ -102,12 +153,12 @@ textarea {
   min-height: 44px;
   padding: 0 22px;
   gap: 10px;
-  color: #020617;
+  color: var(--color-install-text);
   font-size: 0.92rem;
   font-weight: 900;
   text-decoration: none;
-  background: #ffffff;
-  border: 1.5px solid #0f172a;
+  background: var(--color-option);
+  border: 1.5px solid var(--color-text);
   border-radius: 999px;
   box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
   transition:
@@ -158,7 +209,7 @@ textarea {
 
 .intro p {
   max-width: 760px;
-  color: #1e293b;
+  color: var(--color-intro);
   font-size: 1.05rem;
   line-height: 1.75;
 }
@@ -201,11 +252,11 @@ textarea {
   width: 100%;
   max-width: 100%;
   padding: 12px 14px;
-  color: #020617;
+  color: var(--color-text);
   font-size: 0.98rem;
   line-height: 1.45;
-  background: #ffffff;
-  border: 1px solid #e8eef7;
+  background: var(--color-option);
+  border: 1px solid var(--color-card-border);
   border-radius: 10px;
   cursor: pointer;
   transition:
@@ -216,7 +267,7 @@ textarea {
 }
 
 .reason-option:hover {
-  background: #f8fbff;
+  background: var(--color-option-hover);
   border-color: #d7e5f5;
   transform: translateY(-1px);
 }
@@ -252,7 +303,7 @@ textarea {
 
 .reason-option input:checked + .reason-option__control {
   border-color: var(--color-primary);
-  box-shadow: inset 0 0 0 5px #ffffff;
+  box-shadow: inset 0 0 0 5px var(--color-radio-ring);
   background: var(--color-primary);
 }
 
@@ -306,8 +357,8 @@ textarea {
   min-height: 44px;
   padding: 10px 12px;
   color: var(--color-text);
-  background: #ffffff;
-  border: 1px solid #cbd5e1;
+  background: var(--color-input);
+  border: 1px solid var(--color-input-border);
   border-radius: 6px;
   outline: 0;
 }
@@ -469,7 +520,7 @@ textarea {
   width: min(520px, 100%);
   padding: 28px;
   text-align: center;
-  background: #ffffff;
+  background: var(--color-dialog);
   border: 1px solid var(--color-border);
   border-radius: 18px;
   box-shadow: 0 28px 80px rgba(2, 6, 23, 0.28);
@@ -485,7 +536,7 @@ textarea {
   width: 34px;
   height: 34px;
   color: var(--color-muted);
-  background: #ffffff;
+  background: var(--color-dialog);
   border: 1px solid var(--color-border);
   border-radius: 999px;
   cursor: pointer;
@@ -494,12 +545,12 @@ textarea {
 .language-dialog__close:hover,
 .language-dialog__close:focus-visible {
   color: var(--color-text);
-  border-color: #cbd5e1;
+  border-color: var(--color-input-border);
 }
 
 .language-dialog__title {
   margin: 0;
-  color: #020617;
+  color: var(--color-dialog-text);
   font-size: 1.28rem;
   font-weight: 950;
 }
@@ -524,8 +575,8 @@ textarea {
   gap: 7px;
   min-height: 122px;
   padding: 18px 12px;
-  color: #020617;
-  background: #ffffff;
+  color: var(--color-dialog-text);
+  background: var(--color-dialog);
   border: 1px solid var(--color-border);
   border-radius: 16px;
   cursor: pointer;
@@ -579,7 +630,7 @@ textarea {
 
 .language-card__name {
   overflow: hidden;
-  color: #020617;
+  color: var(--color-dialog-text);
   font-size: 0.88rem;
   font-weight: 800;
   text-overflow: ellipsis;
@@ -587,7 +638,7 @@ textarea {
 }
 
 .language-card__code {
-  color: #64748b;
+  color: var(--color-language-code);
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.04em;
@@ -634,12 +685,12 @@ textarea {
     justify-self: stretch;
     max-width: 680px;
     padding: clamp(28px, 3vw, 36px);
-    background: rgba(255, 255, 255, 0.92);
+    background: var(--color-form);
     border: 1px solid var(--color-border);
     border-radius: 18px;
     box-shadow:
       0 22px 54px rgba(15, 23, 42, 0.09),
-      0 1px 0 rgba(255, 255, 255, 0.9) inset;
+      0 1px 0 rgba(255, 255, 255, 0.12) inset;
     backdrop-filter: blur(10px);
   }
 

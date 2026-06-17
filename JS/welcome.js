@@ -1,4 +1,4 @@
-// RecarregaAi! 1.7.2
+// RecarregaAi! 1.7.4
 
 import { initFloatingTools } from "./modules/floating-tools.js";
 import {
@@ -61,10 +61,10 @@ const welcomeTranslations = {
     finalBody:
       "Fixe o ícone da extensão, abra a guia desejada e escolha o tempo que combina com seu fluxo.",
     finalTitle: "Pronto para usar o RecarregaAi!",
-    footerDeveloper: "Desenvolvido por: a definir",
+    footerDeveloper: "Desenvolvido por:",
     footerFeedback: "Feedback",
     footerHome: "Início",
-    footerLegal: "© RecarregaAi! 1.7.2. Todos os direitos reservados.",
+    footerLegal: "© RecarregaAi! 1.7.4. Todos os direitos reservados.",
     footerPrivacy: "Privacidade",
     heroDescription:
       "Use timers por guia, limpe o cache do site aberto e mantenha sistemas como Drive, painéis internos e páginas de trabalho sempre atualizados.",
@@ -161,10 +161,10 @@ const welcomeTranslations = {
     finalBody:
       "Pin the extension icon, open the desired tab and choose the time that matches your workflow.",
     finalTitle: "Ready to use RecarregaAi!",
-    footerDeveloper: "Developed by: to be defined",
+    footerDeveloper: "Developed by:",
     footerFeedback: "Feedback",
     footerHome: "Home",
-    footerLegal: "© RecarregaAi! 1.7.2. All rights reserved.",
+    footerLegal: "© RecarregaAi! 1.7.4. All rights reserved.",
     footerPrivacy: "Privacy",
     heroDescription:
       "Use timers by tab, clear the open site's cache and keep systems such as Drive, internal dashboards and work pages always updated.",
@@ -260,10 +260,10 @@ const welcomeTranslations = {
     finalBody:
       "Fija el icono de la extensión, abre la pestaña deseada y elige el tiempo que combina con tu flujo.",
     finalTitle: "Listo para usar RecarregaAi!",
-    footerDeveloper: "Desarrollado por: por definir",
+    footerDeveloper: "Desarrollado por:",
     footerFeedback: "Feedback",
     footerHome: "Inicio",
-    footerLegal: "© RecarregaAi! 1.7.2. Todos los derechos reservados.",
+    footerLegal: "© RecarregaAi! 1.7.4. Todos los derechos reservados.",
     footerPrivacy: "Privacidad",
     heroDescription:
       "Usa timers por pestaña, limpia la caché del sitio abierto y mantén sistemas como Drive, paneles internos y páginas de trabajo siempre actualizados.",
@@ -321,7 +321,8 @@ const welcomeElements = {
   languageDialog: document.querySelector("#language-dialog"),
   languageOptionButtons: document.querySelectorAll("[data-language-option]"),
   openLanguageButton: document.querySelector("#open-language-button"),
-  themeToggleButton: document.querySelector("#theme-toggle-button")
+  themeToggleButton: document.querySelector("#theme-toggle-button"),
+  themeToggleLabel: document.querySelector("#theme-toggle-label")
 };
 
 let activeWelcomeLanguage = defaultWelcomeLanguage;
@@ -462,7 +463,7 @@ const updateWelcomeText = () => {
     "footerFeedback"
   ]);
   setText(".privacy-footer__legal", "footerLegal");
-  setText(".privacy-footer__developer", "footerDeveloper");
+  setText(".privacy-footer__developer-label", "footerDeveloper");
   setText("#open-language-button .floating-action__label", "languageLabel");
   setText("#back-to-top-button .floating-action__label", "backToTop");
   setText("#language-dialog-title", "languageDialogTitle");
@@ -500,6 +501,11 @@ const updateThemeButtonLabel = (isDarkTheme) => {
 
   welcomeElements.themeToggleButton.setAttribute("aria-label", nextLabel);
   welcomeElements.themeToggleButton.setAttribute("title", nextLabel);
+  welcomeElements.themeToggleButton.setAttribute("aria-pressed", String(isDarkTheme));
+
+  if (welcomeElements.themeToggleLabel) {
+    welcomeElements.themeToggleLabel.textContent = nextLabel;
+  }
 };
 
 const handleWelcomeThemeChange = ({ isDarkTheme }) => {

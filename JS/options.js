@@ -1,4 +1,4 @@
-// RecarregaAi! 1.7.2
+// RecarregaAi! 1.7.4
 
 import { initFloatingTools } from "./modules/floating-tools.js";
 import {
@@ -56,9 +56,9 @@ const optionsTranslations = {
       "Adicione um endereço acima para o RecarregaAi! iniciar sozinho quando esse site abrir.",
     emptySitesTitle: "Nenhum site automático cadastrado.",
     footerFeedback: "Feedback",
-    footerDeveloper: "Desenvolvido por: a definir",
+    footerDeveloper: "Desenvolvido por:",
     footerHome: "Início",
-    footerLegal: "© RecarregaAi! 1.7.2. Todos os direitos reservados.",
+    footerLegal: "© RecarregaAi! 1.7.4. Todos os direitos reservados.",
     footerPrivacy: "Privacidade",
     formInvalidInterval: "Informe um intervalo padrão de pelo menos 1 minuto.",
     formInvalidOrigin: "Use um endereço http ou https.",
@@ -140,9 +140,9 @@ const optionsTranslations = {
       "Add an address above so RecarregaAi! can start automatically when that site opens.",
     emptySitesTitle: "No automatic site added.",
     footerFeedback: "Feedback",
-    footerDeveloper: "Developed by: to be defined",
+    footerDeveloper: "Developed by:",
     footerHome: "Home",
-    footerLegal: "© RecarregaAi! 1.7.2. All rights reserved.",
+    footerLegal: "© RecarregaAi! 1.7.4. All rights reserved.",
     footerPrivacy: "Privacy",
     formInvalidInterval: "Enter a default interval of at least 1 minute.",
     formInvalidOrigin: "Use an http or https address.",
@@ -224,9 +224,9 @@ const optionsTranslations = {
       "Agrega una dirección arriba para que RecarregaAi! se inicie solo cuando ese sitio se abra.",
     emptySitesTitle: "No hay sitios automáticos registrados.",
     footerFeedback: "Feedback",
-    footerDeveloper: "Desarrollado por: por definir",
+    footerDeveloper: "Desarrollado por:",
     footerHome: "Inicio",
-    footerLegal: "© RecarregaAi! 1.7.2. Todos los derechos reservados.",
+    footerLegal: "© RecarregaAi! 1.7.4. Todos los derechos reservados.",
     footerPrivacy: "Privacidad",
     formInvalidInterval: "Ingresa un intervalo predeterminado de al menos 1 minuto.",
     formInvalidOrigin: "Usa una dirección http o https.",
@@ -670,7 +670,7 @@ const applyOptionsLanguage = (language) => {
     "footerFeedback"
   ]);
   setText(".privacy-footer__legal", "footerLegal");
-  setText(".privacy-footer__developer", "footerDeveloper");
+  setText(".privacy-footer__developer-label", "footerDeveloper");
   setText("#open-language-button .floating-action__label", "languageLabel");
   setText("#back-to-top-button .floating-action__label", "backToTop");
   setText("#language-dialog-title", "languageDialogTitle");

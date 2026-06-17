@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- RecarregaAi! 1.7.2 -->
+<!-- RecarregaAi! 1.7.4 -->
 <html lang="pt-BR" data-theme="light">
   <head>
     <meta charset="UTF-8" />
@@ -22,7 +22,7 @@
 
         <span>
           <strong class="brand__name">RecarregaAi!</strong>
-          <span class="brand__version">1.7.2</span>
+          <span class="brand__version">1.7.4</span>
         </span>
       </a>
 
@@ -54,15 +54,6 @@
       </nav>
 
       <div class="top-controls" aria-label="Acoes iniciais">
-        <button
-          id="theme-toggle-button"
-          class="theme-toggle"
-          type="button"
-          aria-label="Tema escuro"
-          title="Tema escuro"
-        >
-          <span class="theme-toggle__icon" aria-hidden="true"></span>
-        </button>
         <a
           class="chrome-install-button"
           href="https://chromewebstore.google.com/"
@@ -443,16 +434,38 @@
         </nav>
 
         <p class="privacy-footer__legal">
-          © RecarregaAi! 1.7.2. Todos os direitos reservados.
+          © RecarregaAi! 1.7.4. Todos os direitos reservados.
         </p>
 
         <p class="privacy-footer__developer">
-          Desenvolvido por: a definir
+          <span class="privacy-footer__developer-label">Desenvolvido por:</span>
+          <a
+            class="privacy-footer__developer-link"
+            href="https://olinbyte.digital/"
+            rel="noopener"
+            target="_blank"
+          >
+            Olinbyte Digital
+          </a>
         </p>
       </div>
     </footer>
 
     <div class="floating-tools" aria-label="Acoes rapidas">
+      <button
+        id="theme-toggle-button"
+        class="floating-action"
+        type="button"
+        aria-label="Tema escuro"
+        aria-pressed="false"
+        title="Tema escuro"
+      >
+        <span class="floating-action__theme-icon" aria-hidden="true"></span>
+        <span id="theme-toggle-label" class="floating-action__label">
+          Tema escuro
+        </span>
+      </button>
+
       <button
         id="open-language-button"
         class="floating-action"

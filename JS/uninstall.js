@@ -1,11 +1,15 @@
-// RecarregaAi! 1.7.2
+// RecarregaAi! 1.7.4
 
 import { appConfig } from "./modules/config.js";
 import { initFloatingTools } from "./modules/floating-tools.js";
+import {
+  loadThemePreference,
+  toggleThemePreference
+} from "./modules/theme.js";
 
 const feedbackSubmitUrl = appConfig.feedbackSubmitUrl;
 const feedbackFallbackUrl = appConfig.feedbackFallbackUrl;
-const defaultVersionLabel = "1.7.2";
+const defaultVersionLabel = "1.7.4";
 const defaultLanguage = "pt-BR";
 const defaultReason = "Não informou motivo";
 const languageStorageKey = "recarregaAiPageLanguage";
@@ -19,10 +23,10 @@ const translations = {
     commentPlaceholder: "Conte em poucas palavras o que poderíamos melhorar.",
     documentTitle: "Feedback do RecarregaAi!",
     emailLabel: "E-mail para contato",
-    footerDeveloper: "Desenvolvido por: a definir",
+    footerDeveloper: "Desenvolvido por:",
     footerFeedback: "Feedback",
     footerHome: "Início",
-    footerLegal: "© RecarregaAi! 1.7.2. Todos os direitos reservados.",
+    footerLegal: "© RecarregaAi! 1.7.4. Todos os direitos reservados.",
     footerPrivacy: "Privacidade",
     formSubmitError:
       "Não consegui confirmar o envio agora. Tente novamente em alguns instantes.",
@@ -41,13 +45,15 @@ const translations = {
     languageDialogTitle: "Idioma",
     languageLabel: "Idioma",
     installButton: "Adicionar ao Chrome",
+    themeToDark: "Tema escuro",
+    themeToLight: "Tema claro",
     noReason: "Nenhum motivo selecionado.",
     optionalCommentSummary: "Adicionar comentário opcional",
     pageTitle: "Lamentamos sua partida.",
     reasonRequired: "Selecione um motivo antes de enviar.",
     selectedPrefix: "Selecionado: ",
     sendButton: "Enviar feedback",
-    versionLabel: "1.7.2"
+    versionLabel: "1.7.4"
   },
   en: {
     backToTop: "Back to start",
@@ -56,10 +62,10 @@ const translations = {
     commentPlaceholder: "Tell us briefly what we could improve.",
     documentTitle: "RecarregaAi! Feedback",
     emailLabel: "Contact email",
-    footerDeveloper: "Developed by: to be defined",
+    footerDeveloper: "Developed by:",
     footerFeedback: "Feedback",
     footerHome: "Home",
-    footerLegal: "© RecarregaAi! 1.7.2. All rights reserved.",
+    footerLegal: "© RecarregaAi! 1.7.4. All rights reserved.",
     footerPrivacy: "Privacy",
     formSubmitError:
       "I could not confirm the send right now. Try again in a few moments.",
@@ -77,13 +83,15 @@ const translations = {
     languageDialogTitle: "Language",
     languageLabel: "Language",
     installButton: "Add to Chrome",
+    themeToDark: "Dark theme",
+    themeToLight: "Light theme",
     noReason: "No reason selected.",
     optionalCommentSummary: "Add optional comment",
     pageTitle: "Sorry to see you go.",
     reasonRequired: "Select a reason before sending.",
     selectedPrefix: "Selected: ",
     sendButton: "Send feedback",
-    versionLabel: "1.7.2"
+    versionLabel: "1.7.4"
   },
   es: {
     backToTop: "Volver al inicio",
@@ -92,10 +100,10 @@ const translations = {
     commentPlaceholder: "Cuéntanos brevemente qué podríamos mejorar.",
     documentTitle: "Feedback de RecarregaAi!",
     emailLabel: "Email de contacto",
-    footerDeveloper: "Desarrollado por: por definir",
+    footerDeveloper: "Desarrollado por:",
     footerFeedback: "Feedback",
     footerHome: "Inicio",
-    footerLegal: "© RecarregaAi! 1.7.2. Todos los derechos reservados.",
+    footerLegal: "© RecarregaAi! 1.7.4. Todos los derechos reservados.",
     footerPrivacy: "Privacidad",
     formSubmitError:
       "No pude confirmar el envío ahora. Inténtalo de nuevo en unos momentos.",
@@ -113,13 +121,15 @@ const translations = {
     languageDialogTitle: "Idioma",
     languageLabel: "Idioma",
     installButton: "Agregar a Chrome",
+    themeToDark: "Tema oscuro",
+    themeToLight: "Tema claro",
     noReason: "Ningún motivo seleccionado.",
     optionalCommentSummary: "Agregar comentario opcional",
     pageTitle: "Lamentamos que te vayas.",
     reasonRequired: "Selecciona un motivo antes de enviar.",
     selectedPrefix: "Seleccionado: ",
     sendButton: "Enviar feedback",
-    versionLabel: "1.7.2"
+    versionLabel: "1.7.4"
   }
 };
 
@@ -247,7 +257,9 @@ const uninstallElements = {
   reasonInputs: document.querySelectorAll("[data-reason-id]"),
   reasonTextElements: document.querySelectorAll("[data-reason-text]"),
   sendFeedbackButton: document.querySelector("#send-feedback-button"),
-  selectedReasonFeedback: document.querySelector("#selected-reason-feedback")
+  selectedReasonFeedback: document.querySelector("#selected-reason-feedback"),
+  themeToggleButton: document.querySelector("#theme-toggle-button"),
+  themeToggleLabel: document.querySelector("#theme-toggle-label")
 };
 
 let isSendingFeedback = false;
@@ -256,6 +268,35 @@ let activeLanguage = defaultLanguage;
 const getVersionLabel = () => defaultVersionLabel;
 
 const getCopy = (key) => translations[activeLanguage][key];
+
+const updateUninstallThemeButtonLabel = ({ isDarkTheme }) => {
+  const nextThemeLabel = isDarkTheme
+    ? getCopy("themeToLight")
+    : getCopy("themeToDark");
+
+  uninstallElements.themeToggleButton?.setAttribute(
+    "aria-pressed",
+    String(isDarkTheme)
+  );
+  uninstallElements.themeToggleButton?.setAttribute("aria-label", nextThemeLabel);
+  uninstallElements.themeToggleButton?.setAttribute("title", nextThemeLabel);
+
+  if (uninstallElements.themeToggleLabel) {
+    uninstallElements.themeToggleLabel.textContent = nextThemeLabel;
+  }
+};
+
+const loadUninstallTheme = async () => {
+  await loadThemePreference({
+    onChange: updateUninstallThemeButtonLabel
+  });
+};
+
+const toggleUninstallTheme = async () => {
+  await toggleThemePreference({
+    onChange: updateUninstallThemeButtonLabel
+  });
+};
 
 const getReasonCopy = (reasonId) => (
   reasonTranslations[reasonId]?.[activeLanguage]
@@ -497,6 +538,9 @@ const updateLocalizedText = () => {
   uninstallElements.extensionVersion.textContent = getCopy("versionLabel");
   uninstallElements.pageRoot.lang = activeLanguage;
   document.documentElement.lang = activeLanguage;
+  updateUninstallThemeButtonLabel({
+    isDarkTheme: document.documentElement.dataset.theme === "dark"
+  });
   updateLanguageOptions();
   syncReasonSelection();
   prepareHiddenFields();
@@ -535,6 +579,12 @@ uninstallElements.reasonInputs.forEach((input) => {
   input.addEventListener("change", () => {
     syncReasonSelection();
     updateStatus("");
+  });
+});
+
+uninstallElements.themeToggleButton?.addEventListener("click", () => {
+  toggleUninstallTheme().catch((error) => {
+    console.error("Erro ao alternar tema da desinstalação:", error);
   });
 });
 
@@ -577,3 +627,6 @@ window.addEventListener("keydown", (event) => {
 
 initializePage();
 initFloatingTools();
+loadUninstallTheme().catch((error) => {
+  console.error("Erro ao carregar tema da desinstalação:", error);
+});

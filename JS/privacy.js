@@ -1,13 +1,21 @@
-// RecarregaAi! 1.7.2
+// RecarregaAi! 1.7.4
 
 import { initFloatingTools } from "./modules/floating-tools.js";
 import {
   defaultLanguage,
   initLanguageDialog
 } from "./modules/language-dialog.js";
+import {
+  loadThemePreference,
+  toggleThemePreference
+} from "./modules/theme.js";
 
 const policyNavLinks = [...document.querySelectorAll(".policy-nav a[href^='#']")];
 const privacyHeader = document.querySelector(".privacy-header");
+const privacyElements = {
+  themeToggleButton: document.querySelector("#theme-toggle-button"),
+  themeToggleLabel: document.querySelector("#theme-toggle-label")
+};
 const policyHeadings = policyNavLinks
   .map((link) => document.querySelector(link.getAttribute("href")))
   .filter(Boolean);
@@ -20,9 +28,9 @@ const privacyTranslations = {
     contactChannelsLabel: "Canais de contato",
     documentTitle: "Política de Privacidade do RecarregaAi!",
     footerFeedback: "Feedback",
-    footerDeveloper: "Desenvolvido por: a definir",
+    footerDeveloper: "Desenvolvido por:",
     footerHome: "Início",
-    footerLegal: "© RecarregaAi! 1.7.2. Política atualizada em 16/06/2026.",
+    footerLegal: "© RecarregaAi! 1.7.4. Política atualizada em 16/06/2026.",
     footerPrivacy: "Privacidade",
     headerContact: "Contato",
     headerNavLabel: "Navegação da política",
@@ -52,6 +60,8 @@ const privacyTranslations = {
     navTyping: "Proteção de digitação",
     policyNavTitle: "Conteúdo",
     quickActionsLabel: "Ações rápidas",
+    themeToDark: "Tema escuro",
+    themeToLight: "Tema claro",
     sectionContactBody:
       "Para dúvidas sobre privacidade, solicitações sobre feedback enviado ou esclarecimentos sobre dados processados pela extensão, use o canal de contato oficial que será informado nesta política assim que definido.",
     sectionContactTitle: "10. Contato",
@@ -147,9 +157,9 @@ const privacyTranslations = {
     contactChannelsLabel: "Contact channels",
     documentTitle: "RecarregaAi! Privacy Policy",
     footerFeedback: "Feedback",
-    footerDeveloper: "Developed by: to be defined",
+    footerDeveloper: "Developed by:",
     footerHome: "Home",
-    footerLegal: "© RecarregaAi! 1.7.2. Policy updated on 06/16/2026.",
+    footerLegal: "© RecarregaAi! 1.7.4. Policy updated on 06/16/2026.",
     footerPrivacy: "Privacy",
     headerContact: "Contact",
     headerNavLabel: "Policy navigation",
@@ -179,6 +189,8 @@ const privacyTranslations = {
     navTyping: "Typing protection",
     policyNavTitle: "Content",
     quickActionsLabel: "Quick actions",
+    themeToDark: "Dark theme",
+    themeToLight: "Light theme",
     sectionContactBody:
       "For privacy questions, requests about submitted feedback or clarifications about data processed by the extension, use the official contact channel that will be added to this policy once defined.",
     sectionContactTitle: "10. Contact",
@@ -273,9 +285,9 @@ const privacyTranslations = {
     contactChannelsLabel: "Canales de contacto",
     documentTitle: "Política de Privacidad de RecarregaAi!",
     footerFeedback: "Feedback",
-    footerDeveloper: "Desarrollado por: por definir",
+    footerDeveloper: "Desarrollado por:",
     footerHome: "Inicio",
-    footerLegal: "© RecarregaAi! 1.7.2. Política actualizada el 16/06/2026.",
+    footerLegal: "© RecarregaAi! 1.7.4. Política actualizada el 16/06/2026.",
     footerPrivacy: "Privacidad",
     headerContact: "Contacto",
     headerNavLabel: "Navegación de la política",
@@ -305,6 +317,8 @@ const privacyTranslations = {
     navTyping: "Protección de escritura",
     policyNavTitle: "Contenido",
     quickActionsLabel: "Acciones rápidas",
+    themeToDark: "Tema oscuro",
+    themeToLight: "Tema claro",
     sectionContactBody:
       "Para dudas sobre privacidad, solicitudes sobre feedback enviado o aclaraciones sobre datos procesados por la extensión, usa el canal oficial de contacto que se informará en esta política cuando esté definido.",
     sectionContactTitle: "10. Contacto",
@@ -457,6 +471,35 @@ const setSectionText = (headingId, headingKey, paragraphKeys) => {
   });
 };
 
+const updatePrivacyThemeButtonLabel = ({ isDarkTheme }) => {
+  const nextThemeLabel = isDarkTheme
+    ? getPrivacyCopy("themeToLight")
+    : getPrivacyCopy("themeToDark");
+
+  privacyElements.themeToggleButton?.setAttribute(
+    "aria-pressed",
+    String(isDarkTheme)
+  );
+  privacyElements.themeToggleButton?.setAttribute("aria-label", nextThemeLabel);
+  privacyElements.themeToggleButton?.setAttribute("title", nextThemeLabel);
+
+  if (privacyElements.themeToggleLabel) {
+    privacyElements.themeToggleLabel.textContent = nextThemeLabel;
+  }
+};
+
+const loadPrivacyTheme = async () => {
+  await loadThemePreference({
+    onChange: updatePrivacyThemeButtonLabel
+  });
+};
+
+const togglePrivacyTheme = async () => {
+  await toggleThemePreference({
+    onChange: updatePrivacyThemeButtonLabel
+  });
+};
+
 const setActivePolicyNavLink = (headingId) => {
   policyNavLinks.forEach((link) => {
     const isActive = link.getAttribute("href") === `#${headingId}`;
@@ -595,7 +638,10 @@ const applyPrivacyLanguage = (language) => {
     "footerFeedback"
   ]);
   setText(".privacy-footer__legal", "footerLegal");
-  setText(".privacy-footer__developer", "footerDeveloper");
+  setText(".privacy-footer__developer-label", "footerDeveloper");
+  updatePrivacyThemeButtonLabel({
+    isDarkTheme: document.documentElement.dataset.theme === "dark"
+  });
   setText("#open-language-button .floating-action__label", "languageLabel");
   setText("#back-to-top-button .floating-action__label", "backToTop");
   setText("#language-dialog-title", "languageDialogTitle");
@@ -613,6 +659,12 @@ const applyPrivacyLanguage = (language) => {
   setAttribute("#close-language-button", "aria-label", "closeDialog");
   setAttribute(".language-grid", "aria-label", "languageGridLabel");
 };
+
+privacyElements.themeToggleButton?.addEventListener("click", () => {
+  togglePrivacyTheme().catch((error) => {
+    console.error("Erro ao alternar tema da privacidade:", error);
+  });
+});
 
 policyNavLinks.forEach((link) => {
   link.addEventListener("click", (event) => {
@@ -666,4 +718,8 @@ initFloatingTools();
 initLanguageDialog({
   onChange: applyPrivacyLanguage,
   storageKey: "recarregaAiPageLanguage"
+});
+
+loadPrivacyTheme().catch((error) => {
+  console.error("Erro ao carregar tema da privacidade:", error);
 });

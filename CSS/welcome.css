@@ -1,4 +1,4 @@
-/* RecarregaAi! 1.5.11 */
+/* RecarregaAi! 1.6.5 */
 
 :root {
   --color-background: #07111f;
@@ -136,12 +136,8 @@ button {
 
 .top-nav {
   justify-content: center;
-  gap: 8px;
-  padding: 8px;
-  background: color-mix(in srgb, var(--color-surface-soft) 82%, transparent);
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
-  box-shadow: 0 16px 38px rgba(2, 6, 23, 0.14);
+  gap: clamp(18px, 2.2vw, 32px);
+  padding: 0;
 }
 
 .top-controls {
@@ -149,21 +145,82 @@ button {
   gap: 10px;
 }
 
+.chrome-install-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 22px;
+  gap: 10px;
+  color: #020617;
+  font-size: 0.92rem;
+  font-weight: 900;
+  text-decoration: none;
+  background: #ffffff;
+  border: 1.5px solid #0f172a;
+  border-radius: 999px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  transition:
+    box-shadow 160ms ease,
+    transform 160ms ease,
+    border-color 160ms ease;
+}
+
+.chrome-install-button:hover,
+.chrome-install-button:focus-visible {
+  border-color: var(--color-primary);
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.12);
+  transform: translateY(-1px);
+}
+
+.chrome-install-button:focus-visible {
+  outline: 3px solid rgba(45, 156, 255, 0.24);
+  outline-offset: 3px;
+}
+
+.chrome-install-button__icon {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  background:
+    radial-gradient(circle at center, #2d9cff 0 28%, #ffffff 29% 39%,
+    transparent 40%),
+    conic-gradient(#16a34a 0 33%, #facc15 0 66%, #ef4444 0 100%);
+  border-radius: 50%;
+}
+
 .top-nav__link {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   min-height: 40px;
-  padding: 0 18px;
+  padding: 0 2px;
   color: var(--color-muted);
   font-size: 0.9rem;
   font-weight: 850;
   text-decoration: none;
-  border-radius: 999px;
   transition:
-    background 160ms ease,
-    color 160ms ease;
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.top-nav__link::after {
+  position: absolute;
+  right: 0;
+  bottom: 2px;
+  left: 0;
+  height: 2px;
+  content: "";
+  background: var(--color-primary);
+  border-radius: 999px;
+  opacity: 0;
+  transform: scaleX(0.6);
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
 }
 
 .top-nav__icon {
@@ -180,7 +237,19 @@ button {
 .top-nav__link:hover,
 .top-nav__link:focus-visible {
   color: var(--color-primary);
-  background: var(--color-primary-soft);
+  transform: translateY(-1px);
+}
+
+.top-nav__link:hover::after,
+.top-nav__link:focus-visible::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.top-nav__link:focus-visible {
+  outline: 3px solid rgba(45, 156, 255, 0.18);
+  outline-offset: 6px;
+  border-radius: 8px;
 }
 
 .theme-toggle {
@@ -723,7 +792,10 @@ button {
   display: grid;
   gap: 42px;
   justify-items: center;
-  padding: 84px clamp(22px, 5vw, 72px) 0;
+  padding:
+    clamp(64px, 6vw, 84px)
+    clamp(22px, 5vw, 72px)
+    clamp(68px, 7vw, 92px);
   width: 100%;
   margin: 0 auto;
   color: #ffffff;
@@ -732,7 +804,7 @@ button {
     radial-gradient(circle at 50% 0, rgba(45, 156, 255, 0.18), transparent 22rem),
     linear-gradient(180deg, #050b18 0%, var(--color-footer) 100%);
   border: 1px solid rgba(148, 163, 184, 0.16);
-  border-radius: 28px 28px 0 0;
+  border-radius: 28px;
   box-shadow: 0 -24px 70px rgba(2, 6, 23, 0.26);
   overflow: hidden;
 }
@@ -1026,7 +1098,7 @@ button {
 
   .top-nav__link {
     flex: 1 1 auto;
-    padding-inline: 10px;
+    padding-inline: 6px;
   }
 
   .hero__title {
@@ -1063,6 +1135,12 @@ button {
 
   .accordion-card > p {
     padding: 0 56px 22px 20px;
+  }
+
+  .final-cta {
+    padding:
+      52px 22px
+      64px;
   }
 
   .floating-tools {

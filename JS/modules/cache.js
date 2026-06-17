@@ -1,4 +1,4 @@
-// RecarregaAi! 1.5.11
+// RecarregaAi! 1.6.5
 
 import { cacheDataTypes } from "./shared.js";
 

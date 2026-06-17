@@ -1,61 +1,64 @@
-// RecarregaAi! 1.5.11
+// RecarregaAi! 1.6.5
 
 import { appConfig } from "./modules/config.js";
 import { initFloatingTools } from "./modules/floating-tools.js";
 
 const feedbackSubmitUrl = appConfig.feedbackSubmitUrl;
 const feedbackFallbackUrl = appConfig.feedbackFallbackUrl;
-const defaultVersionLabel = "1.5.11";
+const defaultVersionLabel = "1.6.5";
 const defaultLanguage = "pt-BR";
-const defaultReason = "Nao informou motivo";
-const languageStorageKey = "recarregaAiUninstallLanguage";
+const defaultReason = "Não informou motivo";
+const languageStorageKey = "recarregaAiPageLanguage";
+const legacyLanguageStorageKey = "recarregaAiUninstallLanguage";
 
 const translations = {
   "pt-BR": {
-    backToTop: "Voltar ao inicio",
+    backToTop: "Voltar ao início",
     closeDialog: "Fechar",
-    commentLabel: "Comentario",
-    commentPlaceholder: "Conte em poucas palavras o que poderiamos melhorar.",
-    emailLabel: "Email para contato",
+    commentLabel: "Comentário",
+    commentPlaceholder: "Conte em poucas palavras o que poderíamos melhorar.",
+    documentTitle: "Feedback do RecarregaAi!",
+    emailLabel: "E-mail para contato",
     footerFeedback: "Feedback",
     footerHome: "Inicio",
-    footerLegal: "© RecarregaAi! 1.5.11. Todos os direitos reservados.",
+    footerLegal: "© RecarregaAi! 1.6.5. Todos os direitos reservados.",
     footerPrivacy: "Privacidade",
     footerProject: "Projeto",
     formSubmitError:
-      "Nao consegui confirmar o envio agora. Tente novamente em alguns instantes.",
+      "Não consegui confirmar o envio agora. Tente novamente em alguns instantes.",
     formSubmitFallbackSuccess:
       "Feedback registrado. Obrigado por ajudar a melhorar o RecarregaAi!",
     formSubmitLoading: "Enviando feedback...",
     formSubmitSuccess: "Feedback enviado com sucesso. Obrigado por ajudar.",
     introFirst: [
-      "Antes de desinstalar de vez, conte rapidamente o que nao funcionou bem.",
-      "Sua opiniao ajuda a melhorar o RecarregaAi! para outros usuarios."
+      "Antes de desinstalar de vez, conte rapidamente o que não funcionou bem.",
+      "Sua opinião ajuda a melhorar o RecarregaAi! para outros usuários."
     ].join(" "),
     introSecond:
-      "Selecione um motivo ou deixe uma mensagem opcional descrevendo sua experiencia.",
+      "Selecione um motivo ou deixe uma mensagem opcional descrevendo sua experiência.",
     languageDialogText:
-      "Altere o idioma da pagina para o seu idioma preferido.",
+      "Altere o idioma da página para o seu idioma preferido.",
     languageDialogTitle: "Idioma",
     languageLabel: "Idioma",
     installButton: "Adicionar ao Chrome",
     noReason: "Nenhum motivo selecionado.",
-    optionalCommentSummary: "Adicionar comentario opcional",
+    optionalCommentSummary: "Adicionar comentário opcional",
     pageTitle: "Lamentamos sua partida.",
     reasonRequired: "Selecione um motivo antes de enviar.",
     selectedPrefix: "Selecionado: ",
     sendButton: "Enviar feedback",
-    versionLabel: "1.5.11"
+    versionLabel: "1.6.5"
   },
   en: {
     backToTop: "Back to start",
     closeDialog: "Close",
     commentLabel: "Comment",
     commentPlaceholder: "Tell us briefly what we could improve.",
+    documentTitle: "RecarregaAi! Feedback",
     emailLabel: "Contact email",
     footerFeedback: "Feedback",
     footerHome: "Home",
-    footerLegal: "© RecarregaAi! 1.5.11. All rights reserved.",
+    footerLegal: "© RecarregaAi! 1.6.5. All rights reserved.",
     footerPrivacy: "Privacy",
     footerProject: "Project",
     formSubmitError:
@@ -80,42 +83,43 @@ const translations = {
     reasonRequired: "Select a reason before sending.",
     selectedPrefix: "Selected: ",
     sendButton: "Send feedback",
-    versionLabel: "1.5.11"
+    versionLabel: "1.6.5"
   },
   es: {
     backToTop: "Volver al inicio",
     closeDialog: "Cerrar",
     commentLabel: "Comentario",
-    commentPlaceholder: "Cuentanos brevemente que podriamos mejorar.",
+    commentPlaceholder: "Cuéntanos brevemente qué podríamos mejorar.",
+    documentTitle: "Feedback de RecarregaAi!",
     emailLabel: "Email de contacto",
     footerFeedback: "Feedback",
     footerHome: "Inicio",
-    footerLegal: "© RecarregaAi! 1.5.11. Todos los derechos reservados.",
+    footerLegal: "© RecarregaAi! 1.6.5. Todos los derechos reservados.",
     footerPrivacy: "Privacidad",
     footerProject: "Proyecto",
     formSubmitError:
-      "No pude confirmar el envio ahora. Intentalo de nuevo en unos momentos.",
+      "No pude confirmar el envío ahora. Inténtalo de nuevo en unos momentos.",
     formSubmitFallbackSuccess:
       "Feedback registrado. Gracias por ayudar a mejorar RecarregaAi!",
     formSubmitLoading: "Enviando feedback...",
     formSubmitSuccess: "Feedback enviado correctamente. Gracias por ayudar.",
     introFirst: [
-      "Antes de desinstalar definitivamente, cuentanos rapidamente que no funciono bien.",
-      "Tu opinion ayuda a mejorar RecarregaAi! para otros usuarios."
+      "Antes de desinstalar definitivamente, cuéntanos rápidamente qué no funcionó bien.",
+      "Tu opinión ayuda a mejorar RecarregaAi! para otros usuarios."
     ].join(" "),
     introSecond:
       "Selecciona un motivo o deja un mensaje opcional describiendo tu experiencia.",
-    languageDialogText: "Cambia esta pagina a tu idioma preferido.",
+    languageDialogText: "Cambia esta página a tu idioma preferido.",
     languageDialogTitle: "Idioma",
     languageLabel: "Idioma",
     installButton: "Agregar a Chrome",
-    noReason: "Ningun motivo seleccionado.",
+    noReason: "Ningún motivo seleccionado.",
     optionalCommentSummary: "Agregar comentario opcional",
     pageTitle: "Lamentamos que te vayas.",
     reasonRequired: "Selecciona un motivo antes de enviar.",
     selectedPrefix: "Seleccionado: ",
     sendButton: "Enviar feedback",
-    versionLabel: "1.5.11"
+    versionLabel: "1.6.5"
   }
 };
 
@@ -123,8 +127,8 @@ const reasonTranslations = {
   workflow: {
     "pt-BR": {
       label: "Fluxo de trabalho",
-      reason: "Nao e mais necessario para meu fluxo de trabalho",
-      text: "Nao e mais necessario para meu fluxo de trabalho"
+      reason: "Não é mais necessário para meu fluxo de trabalho",
+      text: "Não é mais necessário para meu fluxo de trabalho"
     },
     en: {
       label: "Workflow",
@@ -140,8 +144,8 @@ const reasonTranslations = {
   cache: {
     "pt-BR": {
       label: "Cache",
-      reason: "Nao limpou o cache como eu esperava",
-      text: "Nao limpou o cache como eu esperava"
+      reason: "Não limpou o cache como eu esperava",
+      text: "Não limpou o cache como eu esperava"
     },
     en: {
       label: "Cache",
@@ -150,15 +154,15 @@ const reasonTranslations = {
     },
     es: {
       label: "Cache",
-      reason: "No limpio la cache como esperaba",
-      text: "No limpio la cache como esperaba"
+      reason: "No limpió la caché como esperaba",
+      text: "No limpió la caché como esperaba"
     }
   },
   reload: {
     "pt-BR": {
       label: "Reload",
-      reason: "Recarregou a pagina na hora errada",
-      text: "Recarregou a pagina na hora errada"
+      reason: "Recarregou a página na hora errada",
+      text: "Recarregou a página na hora errada"
     },
     en: {
       label: "Reload",
@@ -167,8 +171,8 @@ const reasonTranslations = {
     },
     es: {
       label: "Recarga",
-      reason: "Recargo la pagina en el momento equivocado",
-      text: "Recargo la pagina en el momento equivocado"
+      reason: "Recargó la página en el momento equivocado",
+      text: "Recargó la página en el momento equivocado"
     }
   },
   usability: {
@@ -190,9 +194,9 @@ const reasonTranslations = {
   },
   feature: {
     "pt-BR": {
-      label: "Funcao ausente",
-      reason: "Faltou alguma funcao importante",
-      text: "Faltou alguma funcao importante"
+      label: "Função ausente",
+      reason: "Faltou alguma função importante",
+      text: "Faltou alguma função importante"
     },
     en: {
       label: "Missing feature",
@@ -200,9 +204,9 @@ const reasonTranslations = {
       text: "An important feature was missing"
     },
     es: {
-      label: "Funcion faltante",
-      reason: "Falto alguna funcion importante",
-      text: "Falto alguna funcion importante"
+      label: "Función faltante",
+      reason: "Faltó alguna función importante",
+      text: "Faltó alguna función importante"
     }
   },
   other: {
@@ -323,9 +327,9 @@ const prepareHiddenFields = () => {
 
 const buildFeedbackPayload = () => {
   const message = uninstallElements.feedbackMessage.value.trim()
-    || "O usuario nao informou detalhes adicionais.";
+    || "O usuário não informou detalhes adicionais.";
   const contactEmail = uninstallElements.contactEmail.value.trim();
-  const emailLabel = contactEmail || "Nao informado";
+  const emailLabel = contactEmail || "Não informado";
   const payload = {
     _captcha: "false",
     _subject: "Feedback RecarregaAi!",
@@ -336,7 +340,7 @@ const buildFeedbackPayload = () => {
     Idioma: activeLanguage,
     Motivo: getSelectedReason(),
     Navegador: navigator.userAgent,
-    Versao: getVersionLabel()
+    Versão: getVersionLabel()
   };
 
   if (contactEmail) {
@@ -417,7 +421,7 @@ const submitFeedback = async () => {
     });
 
     if (!response.ok) {
-      throw new Error("Envio automatico recusado.");
+      throw new Error("Envio automático recusado.");
     }
 
     updateStatus(getCopy("formSubmitSuccess"));
@@ -465,6 +469,8 @@ const closeLanguageDialog = ({ shouldFocusTrigger = false } = {}) => {
 };
 
 const updateLocalizedText = () => {
+  document.title = getCopy("documentTitle");
+
   document.querySelectorAll("[data-i18n]").forEach((element) => {
     element.textContent = getCopy(element.dataset.i18n);
   });
@@ -490,6 +496,7 @@ const updateLocalizedText = () => {
 
   uninstallElements.extensionVersion.textContent = getCopy("versionLabel");
   uninstallElements.pageRoot.lang = activeLanguage;
+  document.documentElement.lang = activeLanguage;
   updateLanguageOptions();
   syncReasonSelection();
   prepareHiddenFields();
@@ -515,7 +522,8 @@ const handleFeedbackSubmit = (event) => {
 };
 
 const initializePage = () => {
-  const storedLanguage = localStorage.getItem(languageStorageKey);
+  const storedLanguage = localStorage.getItem(languageStorageKey)
+    || localStorage.getItem(legacyLanguageStorageKey);
 
   activeLanguage = translations[storedLanguage]
     ? storedLanguage

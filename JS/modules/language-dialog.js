@@ -1,17 +1,18 @@
-// RecarregaAi! 1.5.11
+// RecarregaAi! 1.6.5
 
-const defaultLanguage = "pt-BR";
-const supportedLanguages = ["pt-BR", "en", "es"];
+export const defaultLanguage = "pt-BR";
+export const supportedLanguages = ["pt-BR", "en", "es"];
 
 const getElement = (selector, root = document) => root.querySelector(selector);
 
-const normalizeLanguage = (language) => (
+export const normalizeLanguage = (language) => (
   supportedLanguages.includes(language) ? language : defaultLanguage
 );
 
 export const initLanguageDialog = ({
   closeSelector = "#close-language-button",
   dialogSelector = "#language-dialog",
+  onChange = () => {},
   optionSelector = "[data-language-option]",
   openSelector = "#open-language-button",
   storageKey,
@@ -49,6 +50,8 @@ export const initLanguageDialog = ({
     if (storageKey) {
       localStorage.setItem(storageKey, nextLanguage);
     }
+
+    onChange(nextLanguage);
   };
 
   const openDialog = () => {
@@ -94,4 +97,10 @@ export const initLanguageDialog = ({
   });
 
   applyLanguage(getStoredLanguage());
+
+  return {
+    applyLanguage,
+    closeDialog,
+    openDialog
+  };
 };

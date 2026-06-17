@@ -1,6 +1,6 @@
 <!doctype html>
 <!-- RecarregaAi! 1.7.2 -->
-<html id="page-root" lang="pt-BR">
+<html id="page-root" lang="pt-BR" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -258,6 +258,20 @@
     </footer>
 
     <div class="floating-tools" aria-label="Acoes rapidas">
+      <button
+        id="theme-toggle-button"
+        class="floating-action"
+        type="button"
+        aria-label="Tema escuro"
+        aria-pressed="false"
+        title="Tema escuro"
+      >
+        <span class="floating-action__theme-icon" aria-hidden="true"></span>
+        <span class="floating-action__label" data-theme-toggle-label>
+          Tema escuro
+        </span>
+      </button>
+
       <button
         id="open-language-button"
         class="floating-action"

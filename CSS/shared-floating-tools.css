@@ -59,6 +59,47 @@
   stroke-width: 2;
 }
 
+.floating-action__theme-icon {
+  position: relative;
+  order: 2;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  color: #f5a524;
+  background: currentColor;
+  border-radius: 999px;
+  box-shadow:
+    0 0 0 4px rgba(245, 165, 36, 0.18),
+    0 0 16px rgba(245, 165, 36, 0.18);
+}
+
+.floating-action__theme-icon::after {
+  position: absolute;
+  inset: -5px;
+  content: "";
+  border: 1px solid rgba(245, 165, 36, 0.26);
+  border-radius: inherit;
+}
+
+:root[data-theme="dark"] .floating-action__theme-icon {
+  color: #d8e8ff;
+  background: transparent;
+  box-shadow:
+    inset -5px -4px 0 0 currentColor,
+    0 0 18px rgba(45, 156, 255, 0.24);
+}
+
+:root[data-theme="dark"] .floating-action__theme-icon::after {
+  inset: 2px 0 0 8px;
+  width: 4px;
+  height: 4px;
+  background: currentColor;
+  border: 0;
+  box-shadow:
+    7px 2px 0 -1px currentColor,
+    -2px 8px 0 -1px currentColor;
+}
+
 .floating-action__label {
   order: 1;
   display: inline-block;

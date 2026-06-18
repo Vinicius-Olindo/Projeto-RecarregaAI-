@@ -1,4 +1,4 @@
-// RecarregaAi! 1.8.3
+// RecarregaAi! 1.8.6
 
 import { appConfig } from "./modules/config.js";
 import {
@@ -108,19 +108,8 @@ const isTabEditingText = async (tabId) => {
 };
 
 const hasActiveMediaInFrame = () => {
-  const hasLiveStreamTrack = (element) => {
-    const stream = element.srcObject;
-
-    return Boolean(
-      stream
-        && typeof stream.getTracks === "function"
-        && stream.getTracks().some((track) => track.readyState === "live")
-    );
-  };
-
   return Array.from(document.querySelectorAll("audio, video")).some((element) => (
-    hasLiveStreamTrack(element)
-      || (!element.paused && !element.ended && element.readyState > 0)
+    !element.paused && !element.ended && element.readyState > 0
   ));
 };
 
@@ -341,10 +330,31 @@ const createBadgeCountdownAlarm = async () => {
   });
 };
 
+const refreshPausedMediaTimers = async (timerSettingsList) => (
+  Promise.all(timerSettingsList.map(async (timerSettings) => {
+    if (timerSettings.pauseReason !== pauseReasons.media) {
+      return timerSettings;
+    }
+
+    if (await isTabUsingMedia(timerSettings.tabId)) {
+      return timerSettings;
+    }
+
+    if (await isTabEditingText(timerSettings.tabId)) {
+      return pauseTimerForTyping(timerSettings);
+    }
+
+    return resumeTimer(timerSettings.tabId, {
+      expectedPauseReason: pauseReasons.media
+    });
+  }))
+);
+
 const handleBadgeCountdownTick = async () => {
   const timerSettingsList = await getAllTimerSettings();
+  const refreshedTimerSettingsList = await refreshPausedMediaTimers(timerSettingsList);
 
-  await updateAllTimerBadges(timerSettingsList);
+  await updateAllTimerBadges(refreshedTimerSettingsList);
 };
 
 const startBadgeCountdown = async () => {

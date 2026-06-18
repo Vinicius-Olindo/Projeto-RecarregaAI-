@@ -1,11 +1,11 @@
-// RecarregaAi! 1.8.3
+// RecarregaAi! 1.8.6
 
 (() => {
   const watcherFlag = "__recarregaAiPageSafetyWatcherLoaded";
-  const watcherVersion = 1;
+  const watcherVersion = 2;
   const mediaMessageType = "RECARREGA_AI_MEDIA_STATE";
   const pageMediaGuardMessageType = "RECARREGA_AI_PAGE_MEDIA_STATE";
-  const pageMediaGuardSource = "RECARREGA_AI_PAGE_MEDIA_GUARD";
+  const pageMediaGuardSource = "RECARREGA_AI_PAGE_MEDIA_GUARD_V2";
   const typingMessageType = "RECARREGA_AI_TYPING_STATE";
   const blurCheckDelay = 120;
   const mediaSyncDelay = 120;
@@ -78,15 +78,41 @@
     return isEditableElement(editableTarget) ? editableTarget : null;
   };
 
-  const sendRuntimeMessage = (type, payload) => {
-    chrome.runtime.sendMessage({
-      payload,
-      type
-    }, () => {
+  const isExtensionContextInvalidated = (error) => (
+    error?.message?.includes("Extension context invalidated")
+  );
+
+  const handleRuntimeMessageResponse = () => {
+    try {
       if (chrome.runtime.lastError) {
         return;
       }
-    });
+    } catch (error) {
+      if (isExtensionContextInvalidated(error)) {
+        return;
+      }
+
+      console.debug("RecarregaAi! ignorou resposta de contexto indisponivel:", error);
+    }
+  };
+
+  const sendRuntimeMessage = (type, payload) => {
+    try {
+      if (typeof chrome === "undefined" || !chrome.runtime?.id) {
+        return;
+      }
+
+      chrome.runtime.sendMessage({
+        payload,
+        type
+      }, handleRuntimeMessageResponse);
+    } catch (error) {
+      if (isExtensionContextInvalidated(error)) {
+        return;
+      }
+
+      console.debug("RecarregaAi! nao conseguiu enviar estado local:", error);
+    }
   };
 
   const sendTypingState = (nextIsTyping, { force = false } = {}) => {
@@ -121,20 +147,9 @@
     }, blurCheckDelay);
   };
 
-  const getLiveStreamTracks = (element) => {
-    const stream = element.srcObject;
-
-    if (!stream || typeof stream.getTracks !== "function") {
-      return [];
-    }
-
-    return stream.getTracks().filter((track) => track.readyState === "live");
-  };
-
   const hasActiveMediaElement = () => (
     Array.from(document.querySelectorAll("audio, video")).some((element) => (
-      getLiveStreamTracks(element).length > 0
-        || (!element.paused && !element.ended && element.readyState > 0)
+      !element.paused && !element.ended && element.readyState > 0
     ))
   );
 

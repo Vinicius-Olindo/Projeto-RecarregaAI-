@@ -1,4 +1,4 @@
-// RecarregaAi! 1.8.3
+// RecarregaAi! 1.8.6
 
 export const oneSecondInMilliseconds = 1000;
 

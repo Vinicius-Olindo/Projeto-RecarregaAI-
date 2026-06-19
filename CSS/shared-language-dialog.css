@@ -1,4 +1,4 @@
-/* RecarregaAi! 2.0.6 */
+/* RecarregaAi! 2.0.7 */
 
 body.has-open-dialog {
   overflow: hidden;
@@ -29,7 +29,7 @@ body.has-open-dialog {
 .language-dialog__panel {
   position: relative;
   z-index: 1;
-  width: min(520px, 100%);
+  width: min(720px, 100%);
   max-height: min(680px, calc(100vh - 48px));
   overflow: auto;
   padding: 28px;
@@ -79,7 +79,7 @@ body.has-open-dialog {
 
 .language-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
 }
 
@@ -143,12 +143,10 @@ body.has-open-dialog {
 }
 
 .language-card__name {
-  overflow: hidden;
   color: #020617;
   font-size: 0.88rem;
   font-weight: 800;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 
 .language-card__code {
@@ -168,10 +166,16 @@ body.has-open-dialog {
   }
 
   .language-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .language-card {
     min-height: 88px;
+  }
+}
+
+@media (max-width: 420px) {
+  .language-grid {
+    grid-template-columns: 1fr;
   }
 }

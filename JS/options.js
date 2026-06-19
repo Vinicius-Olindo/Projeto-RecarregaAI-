@@ -1,4 +1,4 @@
-// RecarregaAi! 2.0.6
+// RecarregaAi! 2.0.7
 
 import { initFloatingTools } from "./modules/floating-tools.js";
 import { extendPageTranslations } from "./modules/extended-translations.js";
@@ -78,7 +78,7 @@ const optionsTranslations = extendPageTranslations({
     footerFeedback: "Feedback",
     footerDeveloper: "Desenvolvido por:",
     footerHome: "Início",
-    footerLegal: "© RecarregaAi! 2.0.6. Todos os direitos reservados.",
+    footerLegal: "© RecarregaAi! 2.0.7. Todos os direitos reservados.",
     footerPrivacy: "Privacidade",
     formInvalidInterval: "Informe um intervalo padrão de pelo menos 1 minuto.",
     formInvalidOrigin: "Use um endereço http ou https.",
@@ -192,7 +192,7 @@ const optionsTranslations = extendPageTranslations({
     footerFeedback: "Feedback",
     footerDeveloper: "Developed by:",
     footerHome: "Home",
-    footerLegal: "© RecarregaAi! 2.0.6. All rights reserved.",
+    footerLegal: "© RecarregaAi! 2.0.7. All rights reserved.",
     footerPrivacy: "Privacy",
     formInvalidInterval: "Enter a default interval of at least 1 minute.",
     formInvalidOrigin: "Use an http or https address.",
@@ -306,7 +306,7 @@ const optionsTranslations = extendPageTranslations({
     footerFeedback: "Feedback",
     footerDeveloper: "Desarrollado por:",
     footerHome: "Inicio",
-    footerLegal: "© RecarregaAi! 2.0.6. Todos los derechos reservados.",
+    footerLegal: "© RecarregaAi! 2.0.7. Todos los derechos reservados.",
     footerPrivacy: "Privacidad",
     formInvalidInterval: "Ingresa un intervalo predeterminado de al menos 1 minuto.",
     formInvalidOrigin: "Usa una dirección http o https.",

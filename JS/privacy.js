@@ -1,4 +1,4 @@
-// RecarregaAi! 2.0.6
+// RecarregaAi! 2.0.7
 
 import { initFloatingTools } from "./modules/floating-tools.js";
 import { extendPageTranslations } from "./modules/extended-translations.js";
@@ -31,7 +31,7 @@ const privacyTranslations = extendPageTranslations({
     footerFeedback: "Feedback",
     footerDeveloper: "Desenvolvido por:",
     footerHome: "Início",
-    footerLegal: "© RecarregaAi! 2.0.6. Política atualizada em 19/06/2026.",
+    footerLegal: "© RecarregaAi! 2.0.7. Política atualizada em 19/06/2026.",
     footerPrivacy: "Privacidade",
     headerContact: "Contato",
     headerNavLabel: "Navegação da política",
@@ -163,7 +163,7 @@ const privacyTranslations = extendPageTranslations({
     footerFeedback: "Feedback",
     footerDeveloper: "Developed by:",
     footerHome: "Home",
-    footerLegal: "© RecarregaAi! 2.0.6. Policy updated on 06/19/2026.",
+    footerLegal: "© RecarregaAi! 2.0.7. Policy updated on 06/19/2026.",
     footerPrivacy: "Privacy",
     headerContact: "Contact",
     headerNavLabel: "Policy navigation",
@@ -295,7 +295,7 @@ const privacyTranslations = extendPageTranslations({
     footerFeedback: "Feedback",
     footerDeveloper: "Desarrollado por:",
     footerHome: "Inicio",
-    footerLegal: "© RecarregaAi! 2.0.6. Política actualizada el 19/06/2026.",
+    footerLegal: "© RecarregaAi! 2.0.7. Política actualizada el 19/06/2026.",
     footerPrivacy: "Privacidad",
     headerContact: "Contacto",
     headerNavLabel: "Navegación de la política",

@@ -1,4 +1,4 @@
-/* RecarregaAi! 2.0.6 */
+/* RecarregaAi! 2.0.7 */
 
 :root {
   --color-background: #07111f;
@@ -965,7 +965,7 @@ button {
 .language-dialog__panel {
   position: relative;
   z-index: 1;
-  width: min(520px, 100%);
+  width: min(720px, 100%);
   padding: 28px;
   text-align: center;
   background: #ffffff;
@@ -1012,7 +1012,7 @@ button {
 
 .language-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
 }
 
@@ -1053,6 +1053,7 @@ button {
 .language-card span {
   font-size: 0.88rem;
   font-weight: 850;
+  overflow-wrap: anywhere;
 }
 
 .language-card small {
@@ -1214,7 +1215,7 @@ button {
   }
 
   .language-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .accordion-card summary {
@@ -1237,4 +1238,10 @@ button {
     bottom: 14px;
   }
 
+}
+
+@media (max-width: 420px) {
+  .language-grid {
+    grid-template-columns: 1fr;
+  }
 }

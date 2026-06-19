@@ -1,4 +1,4 @@
-// RecarregaAi! 1.9.1
+// RecarregaAi! 2.0.0
 
 import { readFileSync } from "node:fs";
 

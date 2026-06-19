@@ -1,470 +1,434 @@
 <!doctype html>
-<!-- RecarregaAi! 1.9.1 -->
+<!-- RecarregaAi! 2.0.0 -->
 <html lang="pt-BR" data-theme="light">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Configurações do RecarregaAi!</title>
-    <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/icon16.png" />
-    <link rel="stylesheet" href="CSS/options.css" />
-    <link rel="stylesheet" href="CSS/shared-footer.css" />
-    <link rel="stylesheet" href="CSS/shared-floating-tools.css" />
-    <link rel="stylesheet" href="CSS/shared-language-dialog.css" />
-  </head>
-  <body>
-    <header id="top" class="settings-header">
-      <a class="settings-brand" href="welcome.html" aria-label="RecarregaAi!">
-        <img
-          class="settings-brand__icon"
-          src="assets/icons/icon128.png"
-          alt=""
-          aria-hidden="true"
-        />
-        <span>
-          <strong>RecarregaAi!</strong>
-          <small id="extension-version">1.9.1</small>
-        </span>
-      </a>
 
-      <p class="settings-header__title">Configurações</p>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Configurações do RecarregaAi!</title>
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/icon16.png" />
+  <link rel="stylesheet" href="CSS/options.css" />
+  <link rel="stylesheet" href="CSS/shared-footer.css" />
+  <link rel="stylesheet" href="CSS/shared-floating-tools.css" />
+  <link rel="stylesheet" href="CSS/shared-language-dialog.css" />
+</head>
 
-      <a class="settings-header__link" href="welcome.html">Página inicial</a>
-    </header>
+<body>
+  <header id="top" class="settings-header">
+    <a class="settings-brand" href="welcome.html" aria-label="RecarregaAi!">
+      <img class="settings-brand__icon" src="assets/icons/icon128.png" alt="" aria-hidden="true" />
+      <span>
+        <strong>RecarregaAi!</strong>
+        <small id="extension-version">2.0.0</small>
+      </span>
+    </a>
 
-    <main class="options" aria-labelledby="options-title">
-      <section class="settings-page-intro" aria-labelledby="options-title">
-        <div>
-          <p class="settings-page-intro__eyebrow">Configurações</p>
-          <h1 id="options-title">Central de configurações do RecarregaAi!</h1>
-          <p class="brand__subtitle">
-            Ajuste o tempo padrão, organize sites de início automático e revise
-            as permissões usadas pela extensão.
+    <p class="settings-header__title">Configurações</p>
+
+    <a class="settings-header__link" href="welcome.html">Página inicial</a>
+  </header>
+
+  <main class="options" aria-labelledby="options-title">
+    <section class="settings-page-intro" aria-labelledby="options-title">
+      <div>
+        <h1 id="options-title">Configurações do RecarregaAi!</h1>
+        <p class="brand__subtitle">
+          Ajuste o tempo padrão, organize sites de início automático e revise
+          as permissões usadas pela extensão.
+        </p>
+      </div>
+
+      <div class="settings-page-intro__status">
+        <span>Configuração local</span>
+        <strong>Salva no navegador</strong>
+      </div>
+    </section>
+
+    <div class="settings-dashboard">
+      <aside class="settings-sidebar">
+        <nav class="settings-nav" aria-label="Navegação das configurações">
+          <a href="#general-section">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="8" />
+              <path d="M12 8v5l3 2" />
+            </svg>
+            <span class="settings-nav__label">Geral</span>
+          </a>
+
+          <a href="#sites-section">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" />
+              <path d="M3 12h18" />
+              <path d="M12 3c2.4 2.7 3.6 5.7 3.6 9S14.4 18.3 12 21" />
+              <path d="M12 3c-2.4 2.7-3.6 5.7-3.6 9s1.2 6.3 3.6 9" />
+            </svg>
+            <span class="settings-nav__label">Sites</span>
+          </a>
+
+          <a href="#backup-section">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3v12" />
+              <path d="m8 11 4 4 4-4" />
+              <path d="M5 19h14" />
+              <path d="M5 5h4" />
+              <path d="M15 5h4" />
+            </svg>
+            <span class="settings-nav__label">Backup</span>
+          </a>
+
+          <a href="#permissions-section">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3 5 6v5c0 4.6 2.9 8.3 7 10 4.1-1.7 7-5.4 7-10V6z" />
+              <path d="m9 12 2 2 4-5" />
+            </svg>
+            <span class="settings-nav__label">Permissões</span>
+          </a>
+        </nav>
+
+        <section class="settings-sidebar-card" aria-label="Resumo rápido">
+          <span class="settings-sidebar-card__eyebrow">Pronto para personalizar</span>
+          <strong class="settings-sidebar-card__title">
+            Controle simples, por guia e por site.
+          </strong>
+          <p class="settings-sidebar-card__text">
+            Tudo fica salvo localmente no navegador e pode ser ajustado quando
+            seu fluxo mudar.
           </p>
-        </div>
+        </section>
+      </aside>
 
-        <div class="settings-page-intro__status">
-          <span>Configuração local</span>
-          <strong>Salva no navegador</strong>
-        </div>
-      </section>
-
-      <div class="settings-dashboard">
-        <aside class="settings-sidebar">
-          <nav class="settings-nav" aria-label="Navegação das configurações">
-            <a href="#general-section">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
+      <div class="settings-content">
+        <section class="summary-grid" aria-label="Resumo das configurações">
+          <article class="summary-card">
+            <span class="summary-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="8" />
                 <path d="M12 8v5l3 2" />
               </svg>
-              <span class="settings-nav__label">Geral</span>
-            </a>
+            </span>
+            <div>
+              <strong>Tempo padrão</strong>
+              <span id="summary-default-interval">3 minutos</span>
+            </div>
+          </article>
 
-            <a href="#sites-section">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <circle cx="12" cy="12" r="9" />
-                <path d="M3 12h18" />
-                <path d="M12 3c2.4 2.7 3.6 5.7 3.6 9S14.4 18.3 12 21" />
-                <path d="M12 3c-2.4 2.7-3.6 5.7-3.6 9s1.2 6.3 3.6 9" />
+          <article class="summary-card">
+            <span class="summary-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M4 7h16" />
+                <path d="M7 7v12" />
+                <path d="M17 7v12" />
+                <path d="M5 19h14" />
+                <path d="M8 4h8" />
               </svg>
-              <span class="settings-nav__label">Sites</span>
-            </a>
+            </span>
+            <div>
+              <strong>Sites automáticos</strong>
+              <span id="summary-sites-count">Nenhum site cadastrado</span>
+            </div>
+          </article>
 
-            <a href="#permissions-section">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
+          <article class="summary-card">
+            <span class="summary-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
                 <path d="M12 3 5 6v5c0 4.6 2.9 8.3 7 10 4.1-1.7 7-5.4 7-10V6z" />
                 <path d="m9 12 2 2 4-5" />
               </svg>
-              <span class="settings-nav__label">Permissões</span>
-            </a>
-          </nav>
+            </span>
+            <div>
+              <strong>Controle local</strong>
+              <span>Configurações salvas no navegador.</span>
+            </div>
+          </article>
+        </section>
 
-          <section class="settings-sidebar-card" aria-label="Resumo rápido">
-            <span class="settings-sidebar-card__eyebrow">Pronto para personalizar</span>
-            <strong class="settings-sidebar-card__title">
-              Controle simples, por guia e por site.
-            </strong>
-            <p class="settings-sidebar-card__text">
-              Tudo fica salvo localmente no navegador e pode ser ajustado quando
-              seu fluxo mudar.
+        <section id="general-section" class="panel panel--general" aria-labelledby="general-title">
+          <div class="panel__heading">
+            <p class="panel__eyebrow">Preferências</p>
+            <h2 id="general-title" class="panel__title">Tempo padrão</h2>
+            <p class="panel__description">
+              Esse tempo é usado quando você cria uma atualização automática sem
+              informar um intervalo específico.
             </p>
-          </section>
-        </aside>
+          </div>
 
-        <div class="settings-content">
-          <section class="summary-grid" aria-label="Resumo das configurações">
-            <article class="summary-card">
-              <span class="summary-card__icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24">
-                  <circle cx="12" cy="12" r="8" />
-                  <path d="M12 8v5l3 2" />
-                </svg>
+          <div class="settings-row">
+            <label class="field" for="default-interval-input">
+              <span class="field__label">Intervalo em minutos</span>
+              <input id="default-interval-input" class="field__input" type="number" min="1" step="1" value="3" />
+            </label>
+
+            <button id="save-settings-button" class="button button--primary" type="button">
+              Salvar tempo padrão
+            </button>
+          </div>
+        </section>
+
+        <section id="sites-section" class="panel panel--sites" aria-labelledby="sites-title">
+          <div class="panel__heading">
+            <p class="panel__eyebrow">Início automático</p>
+            <h2 id="sites-title" class="panel__title">
+              Sites que iniciam sozinhos
+            </h2>
+            <p class="panel__description">
+              Quando uma página desses sites abrir, o RecarregaAi! liga uma
+              atualização separada para ela.
+            </p>
+          </div>
+
+          <div class="site-form">
+            <label class="field field--site" for="site-origin-input">
+              <span class="field__label">Endereço do site</span>
+              <input id="site-origin-input" class="field__input" type="text" placeholder="https://drive.google.com" />
+            </label>
+
+            <label class="field" for="site-interval-input">
+              <span class="field__label">Tempo em minutos</span>
+              <input id="site-interval-input" class="field__input" type="number" min="1" step="1"
+                placeholder="Padrão" />
+              <span class="field__hint">
+                Deixe vazio para usar o tempo padrão.
               </span>
-              <div>
-                <strong>Tempo padrão</strong>
-                <span id="summary-default-interval">3 minutos</span>
-              </div>
-            </article>
+            </label>
 
-            <article class="summary-card">
-              <span class="summary-card__icon" aria-hidden="true">
+            <button id="add-site-button" class="button button--secondary" type="button">
+              Adicionar site
+            </button>
+          </div>
+
+          <div id="sites-empty-state" class="empty-state">
+            <span class="empty-state__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 5v14" />
+                <path d="M5 12h14" />
+              </svg>
+            </span>
+            <div>
+              <strong>Nenhum site automático cadastrado.</strong>
+              <span>
+                Adicione um endereço acima para o RecarregaAi! iniciar sozinho
+                quando esse site abrir.
+              </span>
+            </div>
+          </div>
+
+          <ul id="sites-list" class="site-list" aria-label="Sites automáticos"></ul>
+        </section>
+
+        <section id="backup-section" class="panel panel--backup" aria-labelledby="backup-title">
+          <div class="panel__heading">
+            <p class="panel__eyebrow">Portabilidade</p>
+            <h2 id="backup-title" class="panel__title">
+              Importar e exportar configurações
+            </h2>
+            <p class="panel__description">
+              Leve tempo padrão, sites automáticos, tema e idioma para outro
+              navegador ou uma nova instalação.
+            </p>
+          </div>
+
+          <div class="backup-actions">
+            <button id="export-settings-button" class="button button--ghost" type="button">
+              <span class="button__icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24">
-                  <path d="M4 7h16" />
-                  <path d="M7 7v12" />
-                  <path d="M17 7v12" />
+                  <path d="M12 3v12" />
+                  <path d="m8 11 4 4 4-4" />
                   <path d="M5 19h14" />
-                  <path d="M8 4h8" />
                 </svg>
               </span>
+              <span id="export-settings-label">Exportar configurações</span>
+            </button>
+
+            <button id="import-settings-button" class="button button--ghost" type="button">
+              <span class="button__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 21V9" />
+                  <path d="m8 13 4-4 4 4" />
+                  <path d="M5 5h14" />
+                </svg>
+              </span>
+              <span id="import-settings-label">Importar configurações</span>
+            </button>
+
+            <input id="import-settings-input" type="file" accept="application/json,.json" hidden />
+          </div>
+
+          <p class="backup-note">
+            Timers ativos por aba não entram no arquivo porque dependem das
+            guias abertas neste navegador.
+          </p>
+        </section>
+
+        <section id="permissions-section" class="panel panel--permissions" aria-labelledby="permissions-title">
+          <div class="panel__heading">
+            <p class="panel__eyebrow">Transparência</p>
+            <h2 id="permissions-title" class="panel__title">
+              Como o RecarregaAi! usa permissões
+            </h2>
+            <p class="panel__description">
+              A extensão usa apenas o necessário para atualizar a página
+              escolhida e salvar suas preferências localmente.
+            </p>
+          </div>
+
+          <div class="permissions-grid">
+            <article class="permission-card">
+              <span class="permission-card__icon" aria-hidden="true">A</span>
               <div>
-                <strong>Sites automáticos</strong>
-                <span id="summary-sites-count">Nenhum site cadastrado</span>
+                <strong>Página escolhida</strong>
+                <p>Identifica a página atual para limpar dados e atualizar no tempo definido.</p>
               </div>
             </article>
 
-            <article class="summary-card">
-              <span class="summary-card__icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24">
-                  <path d="M12 3 5 6v5c0 4.6 2.9 8.3 7 10 4.1-1.7 7-5.4 7-10V6z" />
-                  <path d="m9 12 2 2 4-5" />
-                </svg>
-              </span>
+            <article class="permission-card">
+              <span class="permission-card__icon" aria-hidden="true">L</span>
               <div>
-                <strong>Controle local</strong>
-                <span>Configurações salvas no navegador.</span>
+                <strong>Limpeza do site</strong>
+                <p>Remove dados antigos do endereço aberto para buscar conteúdo novo.</p>
               </div>
             </article>
-          </section>
 
-          <section
-            id="general-section"
-            class="panel panel--general"
-            aria-labelledby="general-title"
-          >
-            <div class="panel__heading">
-              <p class="panel__eyebrow">Preferências</p>
-              <h2 id="general-title" class="panel__title">Tempo padrão</h2>
-              <p class="panel__description">
-                Esse tempo é usado quando você cria uma atualização automática sem
-                informar um intervalo específico.
-              </p>
-            </div>
-
-            <div class="settings-row">
-              <label class="field" for="default-interval-input">
-                <span class="field__label">Intervalo em minutos</span>
-                <input
-                  id="default-interval-input"
-                  class="field__input"
-                  type="number"
-                  min="1"
-                  step="1"
-                  value="3"
-                />
-              </label>
-
-              <button
-                id="save-settings-button"
-                class="button button--primary"
-                type="button"
-              >
-                Salvar tempo padrão
-              </button>
-            </div>
-          </section>
-
-          <section
-            id="sites-section"
-            class="panel panel--sites"
-            aria-labelledby="sites-title"
-          >
-            <div class="panel__heading">
-              <p class="panel__eyebrow">Início automático</p>
-              <h2 id="sites-title" class="panel__title">
-                Sites que iniciam sozinhos
-              </h2>
-              <p class="panel__description">
-                Quando uma página desses sites abrir, o RecarregaAi! liga uma
-                atualização separada para ela.
-              </p>
-            </div>
-
-            <div class="site-form">
-              <label class="field field--site" for="site-origin-input">
-                <span class="field__label">Endereço do site</span>
-                <input
-                  id="site-origin-input"
-                  class="field__input"
-                  type="text"
-                  placeholder="https://drive.google.com"
-                />
-              </label>
-
-              <label class="field" for="site-interval-input">
-                <span class="field__label">Tempo em minutos</span>
-                <input
-                  id="site-interval-input"
-                  class="field__input"
-                  type="number"
-                  min="1"
-                  step="1"
-                  placeholder="Padrão"
-                />
-                <span class="field__hint">
-                  Deixe vazio para usar o tempo padrão.
-                </span>
-              </label>
-
-              <button id="add-site-button" class="button button--secondary" type="button">
-                Adicionar site
-              </button>
-            </div>
-
-            <div id="sites-empty-state" class="empty-state">
-              <span class="empty-state__icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24">
-                  <path d="M12 5v14" />
-                  <path d="M5 12h14" />
-                </svg>
-              </span>
+            <article class="permission-card">
+              <span class="permission-card__icon" aria-hidden="true">S</span>
               <div>
-                <strong>Nenhum site automático cadastrado.</strong>
-                <span>
-                  Adicione um endereço acima para o RecarregaAi! iniciar sozinho
-                  quando esse site abrir.
-                </span>
+                <strong>Sites autorizados</strong>
+                <p>Pede permissão somente para os sites adicionados ao início automático.</p>
               </div>
-            </div>
+            </article>
 
-            <ul id="sites-list" class="site-list" aria-label="Sites automáticos"></ul>
-          </section>
+            <article class="permission-card">
+              <span class="permission-card__icon" aria-hidden="true">P</span>
+              <div>
+                <strong>Preferências locais</strong>
+                <p>Salva tema, tempo padrão e sites cadastrados no seu navegador.</p>
+              </div>
+            </article>
+          </div>
+        </section>
 
-          <section
-            id="permissions-section"
-            class="panel panel--permissions"
-            aria-labelledby="permissions-title"
-          >
-            <div class="panel__heading">
-              <p class="panel__eyebrow">Transparência</p>
-              <h2 id="permissions-title" class="panel__title">
-                Como o RecarregaAi! usa permissões
-              </h2>
-              <p class="panel__description">
-                A extensão usa apenas o necessário para atualizar a página
-                escolhida e salvar suas preferências localmente.
-              </p>
-            </div>
-
-            <div class="permissions-grid">
-              <article class="permission-card">
-                <span class="permission-card__icon" aria-hidden="true">A</span>
-                <div>
-                  <strong>Página escolhida</strong>
-                  <p>Identifica a página atual para limpar dados e atualizar no tempo definido.</p>
-                </div>
-              </article>
-
-              <article class="permission-card">
-                <span class="permission-card__icon" aria-hidden="true">L</span>
-                <div>
-                  <strong>Limpeza do site</strong>
-                  <p>Remove dados antigos do endereço aberto para buscar conteúdo novo.</p>
-                </div>
-              </article>
-
-              <article class="permission-card">
-                <span class="permission-card__icon" aria-hidden="true">S</span>
-                <div>
-                  <strong>Sites autorizados</strong>
-                  <p>Pede permissão somente para os sites adicionados ao início automático.</p>
-                </div>
-              </article>
-
-              <article class="permission-card">
-                <span class="permission-card__icon" aria-hidden="true">P</span>
-                <div>
-                  <strong>Preferências locais</strong>
-                  <p>Salva tema, tempo padrão e sites cadastrados no seu navegador.</p>
-                </div>
-              </article>
-            </div>
-          </section>
-
-          <p id="options-status" class="options__status" role="status"></p>
-        </div>
+        <p id="options-status" class="options__status" role="status"></p>
       </div>
-    </main>
-
-    <footer class="privacy-footer">
-      <div class="privacy-footer__inner">
-        <a class="privacy-footer__brand" href="welcome.html" aria-label="RecarregaAi!">
-          <img
-            class="privacy-footer__logo"
-            src="assets/icons/icon128.png"
-            alt=""
-            aria-hidden="true"
-          />
-        </a>
-
-        <nav class="privacy-footer__nav" aria-label="Links finais">
-          <a href="welcome.html">Início</a>
-          <a href="privacy.html">Privacidade</a>
-          <a href="uninstall.html">Feedback</a>
-        </nav>
-
-        <nav class="privacy-footer__social" aria-label="Canais de contato">
-          <a class="privacy-footer__icon-link" href="mailto:" aria-label="E-mail" title="E-mail">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M4 6h16v12H4z" />
-              <path d="m4 7 8 6 8-6" />
-            </svg>
-          </a>
-          <a
-            class="privacy-footer__icon-link"
-            href="https://www.instagram.com/"
-            rel="noopener"
-            target="_blank"
-            aria-label="Instagram"
-            title="Instagram"
-          >
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <rect x="4" y="4" width="16" height="16" rx="5" />
-              <circle cx="12" cy="12" r="3.5" />
-              <path d="M17.5 6.5h.01" />
-            </svg>
-          </a>
-          <a
-            class="privacy-footer__icon-link"
-            href="uninstall.html"
-            aria-label="Feedback"
-            title="Feedback"
-          >
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M5 5h14v10H8l-3 3z" />
-              <path d="M9 9h6" />
-              <path d="M9 12h4" />
-            </svg>
-          </a>
-        </nav>
-
-        <p class="privacy-footer__legal">
-          © RecarregaAi! 1.9.1. Todos os direitos reservados.
-        </p>
-
-        <p class="privacy-footer__developer">
-          <span class="privacy-footer__developer-label">Desenvolvido por:</span>
-          <a
-            class="privacy-footer__developer-link"
-            href="https://olinbyte.digital/"
-            rel="noopener"
-            target="_blank"
-          >
-            Olinbyte Digital
-          </a>
-        </p>
-      </div>
-    </footer>
-
-    <div class="floating-tools" aria-label="Ações rápidas">
-      <button
-        id="theme-toggle-button"
-        class="floating-action"
-        type="button"
-        aria-label="Mudar para o tema escuro"
-        aria-pressed="false"
-        title="Mudar para o tema escuro"
-      >
-        <span class="floating-action__theme-icon" aria-hidden="true"></span>
-        <span id="theme-toggle-label" class="floating-action__label">
-          Tema escuro
-        </span>
-      </button>
-
-      <button
-        id="open-language-button"
-        class="floating-action"
-        type="button"
-        aria-label="Idioma"
-        aria-haspopup="dialog"
-        aria-controls="language-dialog"
-      >
-        <svg class="floating-action__icon" viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="12" cy="12" r="9" />
-          <path d="M3 12h18" />
-          <path d="M12 3c2.3 2.5 3.5 5.5 3.5 9s-1.2 6.5-3.5 9" />
-          <path d="M12 3c-2.3 2.5-3.5 5.5-3.5 9s1.2 6.5 3.5 9" />
-        </svg>
-        <span class="floating-action__label">Idioma</span>
-      </button>
-
-      <button
-        id="back-to-top-button"
-        class="floating-action"
-        type="button"
-        aria-label="Voltar ao início"
-      >
-        <svg class="floating-action__icon" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M5 4h14" />
-          <path d="m6 15 6-6 6 6" />
-          <path d="M12 9v11" />
-        </svg>
-        <span class="floating-action__label">Voltar ao início</span>
-      </button>
     </div>
+  </main>
 
-    <div
-      id="language-dialog"
-      class="language-dialog"
-      hidden
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="language-dialog-title"
-    >
-      <button
-        class="language-dialog__backdrop"
-        type="button"
-        aria-label="Fechar"
-        data-close-language
-      ></button>
+  <footer class="privacy-footer">
+    <div class="privacy-footer__inner">
+      <a class="privacy-footer__brand" href="welcome.html" aria-label="RecarregaAi!">
+        <img class="privacy-footer__logo" src="assets/icons/icon128.png" alt="" aria-hidden="true" />
+      </a>
 
-      <section class="language-dialog__panel">
-        <button
-          id="close-language-button"
-          class="language-dialog__close"
-          type="button"
-          aria-label="Fechar"
-        >
-          <span aria-hidden="true">&times;</span>
+      <nav class="privacy-footer__nav" aria-label="Links finais">
+        <a href="welcome.html">Início</a>
+        <a href="privacy.html">Privacidade</a>
+        <a href="uninstall.html">Feedback</a>
+      </nav>
+
+      <nav class="privacy-footer__social" aria-label="Canais de contato">
+        <a class="privacy-footer__icon-link" href="mailto:" aria-label="E-mail" title="E-mail">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 6h16v12H4z" />
+            <path d="m4 7 8 6 8-6" />
+          </svg>
+        </a>
+        <a class="privacy-footer__icon-link" href="https://www.instagram.com/" rel="noopener" target="_blank"
+          aria-label="Instagram" title="Instagram">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="4" y="4" width="16" height="16" rx="5" />
+            <circle cx="12" cy="12" r="3.5" />
+            <path d="M17.5 6.5h.01" />
+          </svg>
+        </a>
+        <a class="privacy-footer__icon-link" href="uninstall.html" aria-label="Feedback" title="Feedback">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 5h14v10H8l-3 3z" />
+            <path d="M9 9h6" />
+            <path d="M9 12h4" />
+          </svg>
+        </a>
+      </nav>
+
+      <p class="privacy-footer__legal">
+        © RecarregaAi! 2.0.0. Todos os direitos reservados.
+      </p>
+
+      <p class="privacy-footer__developer">
+        <span class="privacy-footer__developer-label">Desenvolvido por:</span>
+        <a class="privacy-footer__developer-link" href="https://olinbyte.digital/" rel="noopener" target="_blank">
+          Olinbyte Digital
+        </a>
+      </p>
+    </div>
+  </footer>
+
+  <div class="floating-tools" aria-label="Ações rápidas">
+    <button id="theme-toggle-button" class="floating-action" type="button" aria-label="Mudar para o tema escuro"
+      aria-pressed="false" title="Mudar para o tema escuro">
+      <span class="floating-action__theme-icon" aria-hidden="true"></span>
+      <span id="theme-toggle-label" class="floating-action__label">
+        Tema escuro
+      </span>
+    </button>
+
+    <button id="open-language-button" class="floating-action" type="button" aria-label="Idioma" aria-haspopup="dialog"
+      aria-controls="language-dialog">
+      <svg class="floating-action__icon" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M3 12h18" />
+        <path d="M12 3c2.3 2.5 3.5 5.5 3.5 9s-1.2 6.5-3.5 9" />
+        <path d="M12 3c-2.3 2.5-3.5 5.5-3.5 9s1.2 6.5 3.5 9" />
+      </svg>
+      <span class="floating-action__label">Idioma</span>
+    </button>
+
+    <button id="back-to-top-button" class="floating-action" type="button" aria-label="Voltar ao início">
+      <svg class="floating-action__icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M5 4h14" />
+        <path d="m6 15 6-6 6 6" />
+        <path d="M12 9v11" />
+      </svg>
+      <span class="floating-action__label">Voltar ao início</span>
+    </button>
+  </div>
+
+  <div id="language-dialog" class="language-dialog" hidden role="dialog" aria-modal="true"
+    aria-labelledby="language-dialog-title">
+    <button class="language-dialog__backdrop" type="button" aria-label="Fechar" data-close-language></button>
+
+    <section class="language-dialog__panel">
+      <button id="close-language-button" class="language-dialog__close" type="button" aria-label="Fechar">
+        <span aria-hidden="true">&times;</span>
+      </button>
+
+      <h2 id="language-dialog-title" class="language-dialog__title">
+        Idioma
+      </h2>
+      <p class="language-dialog__description">
+        Escolha o idioma preferido para navegar pelo RecarregaAi!.
+      </p>
+
+      <div class="language-grid" aria-label="Idiomas disponíveis">
+        <button class="language-card" type="button" data-language-option="pt-BR">
+          <span class="language-card__badge">BR</span>
+          <span class="language-card__name">Português (BR)</span>
+          <span class="language-card__code">PT-BR</span>
         </button>
 
-        <h2 id="language-dialog-title" class="language-dialog__title">
-          Idioma
-        </h2>
-        <p class="language-dialog__description">
-          Escolha o idioma preferido para navegar pelo RecarregaAi!.
-        </p>
+        <button class="language-card" type="button" data-language-option="en">
+          <span class="language-card__badge">US</span>
+          <span class="language-card__name">English</span>
+          <span class="language-card__code">EN</span>
+        </button>
 
-        <div class="language-grid" aria-label="Idiomas disponíveis">
-          <button class="language-card" type="button" data-language-option="pt-BR">
-            <span class="language-card__badge">BR</span>
-            <span class="language-card__name">Português (BR)</span>
-            <span class="language-card__code">PT-BR</span>
-          </button>
+        <button class="language-card" type="button" data-language-option="es">
+          <span class="language-card__badge">ES</span>
+          <span class="language-card__name">Español</span>
+          <span class="language-card__code">ES</span>
+        </button>
+      </div>
+    </section>
+  </div>
 
-          <button class="language-card" type="button" data-language-option="en">
-            <span class="language-card__badge">US</span>
-            <span class="language-card__name">English</span>
-            <span class="language-card__code">EN</span>
-          </button>
+  <script type="module" src="JS/options.js"></script>
+</body>
 
-          <button class="language-card" type="button" data-language-option="es">
-            <span class="language-card__badge">ES</span>
-            <span class="language-card__name">Español</span>
-            <span class="language-card__code">ES</span>
-          </button>
-        </div>
-      </section>
-    </div>
-
-    <script type="module" src="JS/options.js"></script>
-  </body>
 </html>

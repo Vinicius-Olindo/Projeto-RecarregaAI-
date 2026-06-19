@@ -1,4 +1,4 @@
-// RecarregaAi! 1.9.1
+// RecarregaAi! 2.0.0
 
 import { initFloatingTools } from "./modules/floating-tools.js";
 import {
@@ -30,7 +30,7 @@ const privacyTranslations = {
     footerFeedback: "Feedback",
     footerDeveloper: "Desenvolvido por:",
     footerHome: "Início",
-    footerLegal: "© RecarregaAi! 1.9.1. Política atualizada em 16/06/2026.",
+    footerLegal: "© RecarregaAi! 2.0.0. Política atualizada em 16/06/2026.",
     footerPrivacy: "Privacidade",
     headerContact: "Contato",
     headerNavLabel: "Navegação da política",
@@ -159,7 +159,7 @@ const privacyTranslations = {
     footerFeedback: "Feedback",
     footerDeveloper: "Developed by:",
     footerHome: "Home",
-    footerLegal: "© RecarregaAi! 1.9.1. Policy updated on 06/16/2026.",
+    footerLegal: "© RecarregaAi! 2.0.0. Policy updated on 06/16/2026.",
     footerPrivacy: "Privacy",
     headerContact: "Contact",
     headerNavLabel: "Policy navigation",
@@ -287,7 +287,7 @@ const privacyTranslations = {
     footerFeedback: "Feedback",
     footerDeveloper: "Desarrollado por:",
     footerHome: "Inicio",
-    footerLegal: "© RecarregaAi! 1.9.1. Política actualizada el 16/06/2026.",
+    footerLegal: "© RecarregaAi! 2.0.0. Política actualizada el 16/06/2026.",
     footerPrivacy: "Privacidad",
     headerContact: "Contacto",
     headerNavLabel: "Navegación de la política",
@@ -523,6 +523,51 @@ const getScrollTargetTop = (heading) => {
   return Math.max(0, sectionTop - headerHeight - sectionTopGap);
 };
 
+const getPolicyHeadingTop = (heading) => {
+  const section = heading.closest(".policy-section") || heading;
+
+  return section.getBoundingClientRect().top + window.scrollY;
+};
+
+const getActivePolicyHeadingId = () => {
+  const headerHeight = privacyHeader?.getBoundingClientRect().height || 0;
+  const activeLine = window.scrollY + headerHeight + sectionTopGap + 8;
+  const pageBottom = window.scrollY + window.innerHeight;
+  const documentHeight = document.documentElement.scrollHeight;
+  let activeHeading = policyHeadings[0];
+
+  if (pageBottom >= documentHeight - 4) {
+    return policyHeadings[policyHeadings.length - 1]?.id;
+  }
+
+  policyHeadings.forEach((heading) => {
+    if (getPolicyHeadingTop(heading) <= activeLine) {
+      activeHeading = heading;
+    }
+  });
+
+  return activeHeading?.id;
+};
+
+let isPolicyNavSyncQueued = false;
+
+const syncActivePolicyNavLink = () => {
+  if (isPolicyNavSyncQueued) {
+    return;
+  }
+
+  isPolicyNavSyncQueued = true;
+
+  window.requestAnimationFrame(() => {
+    isPolicyNavSyncQueued = false;
+    const activeHeadingId = getActivePolicyHeadingId();
+
+    if (activeHeadingId) {
+      setActivePolicyNavLink(activeHeadingId);
+    }
+  });
+};
+
 const applyPrivacyLanguage = (language) => {
   activePrivacyLanguage = privacyTranslations[language]
     ? language
@@ -658,6 +703,8 @@ const applyPrivacyLanguage = (language) => {
   setAttribute("#back-to-top-button", "aria-label", "backToTop");
   setAttribute("#close-language-button", "aria-label", "closeDialog");
   setAttribute(".language-grid", "aria-label", "languageGridLabel");
+
+  syncActivePolicyNavLink();
 };
 
 privacyElements.themeToggleButton?.addEventListener("click", () => {
@@ -693,25 +740,10 @@ if (window.location.hash) {
   }
 }
 
-if ("IntersectionObserver" in window && policyHeadings.length > 0) {
-  const activeHeadingObserver = new IntersectionObserver((entries) => {
-    const visibleEntry = entries
-      .filter((entry) => entry.isIntersecting)
-      .sort((firstEntry, secondEntry) => (
-        firstEntry.boundingClientRect.top - secondEntry.boundingClientRect.top
-      ))[0];
-
-    if (visibleEntry?.target?.id) {
-      setActivePolicyNavLink(visibleEntry.target.id);
-    }
-  }, {
-    rootMargin: "-28% 0px -60% 0px",
-    threshold: 0
-  });
-
-  policyHeadings.forEach((heading) => {
-    activeHeadingObserver.observe(heading);
-  });
+if (policyHeadings.length > 0) {
+  syncActivePolicyNavLink();
+  window.addEventListener("scroll", syncActivePolicyNavLink, { passive: true });
+  window.addEventListener("resize", syncActivePolicyNavLink);
 }
 
 initFloatingTools();

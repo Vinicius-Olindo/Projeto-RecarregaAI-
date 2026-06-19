@@ -1,4 +1,4 @@
-/* RecarregaAi! 1.9.1 */
+/* RecarregaAi! 2.0.0 */
 
 :root {
   --color-page-start: #07111f;
@@ -195,7 +195,6 @@ a {
   padding: 0 0 24px;
 }
 
-.settings-page-intro__eyebrow,
 .panel__eyebrow,
 .settings-sidebar-card__eyebrow {
   margin: 0 0 8px;
@@ -206,19 +205,19 @@ a {
   text-transform: uppercase;
 }
 
-:root[data-theme="light"] .settings-page-intro__eyebrow,
 :root[data-theme="light"] .panel__eyebrow,
 :root[data-theme="light"] .settings-sidebar-card__eyebrow {
   color: var(--color-primary);
 }
 
 .settings-page-intro h1 {
-  max-width: 720px;
+  max-width: min(100%, 980px);
   margin: 0;
   font-size: clamp(2rem, 5vw, 3.45rem);
   font-weight: 940;
   letter-spacing: 0;
   line-height: 1.02;
+  white-space: nowrap;
 }
 
 .brand__subtitle,
@@ -238,14 +237,17 @@ a {
   position: relative;
   display: grid;
   grid-template-columns: 30px minmax(0, 1fr);
-  gap: 10px;
+  grid-template-areas:
+    "icon label"
+    "icon value";
+  gap: 3px 10px;
   align-items: center;
   justify-self: end;
   width: min(252px, 100%);
   min-width: 244px;
   padding: 12px 14px;
   overflow: hidden;
-  text-align: left;
+  text-align: right;
   background:
     linear-gradient(135deg, rgba(50, 212, 155, 0.13), transparent 58%),
     var(--color-surface-raised);
@@ -258,7 +260,9 @@ a {
 
 .settings-page-intro__status::before {
   display: inline-flex;
+  grid-area: icon;
   align-items: center;
+  align-self: center;
   justify-content: center;
   width: 30px;
   height: 30px;
@@ -283,6 +287,8 @@ a {
 }
 
 .settings-page-intro__status span {
+  grid-area: label;
+  justify-self: end;
   color: var(--color-subtle);
   font-size: 0.72rem;
   font-weight: 850;
@@ -292,6 +298,8 @@ a {
 }
 
 .settings-page-intro__status strong {
+  grid-area: value;
+  justify-self: end;
   color: var(--color-text);
   font-size: 0.95rem;
   line-height: 1.18;
@@ -579,6 +587,20 @@ a {
   max-width: 760px;
 }
 
+.panel--backup {
+  align-items: start;
+  background:
+    linear-gradient(135deg, rgba(23, 166, 138, 0.09), transparent 44%),
+    var(--color-surface-raised);
+}
+
+.backup-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
 .settings-row,
 .site-form {
   display: grid;
@@ -593,8 +615,9 @@ a {
 
 .site-form {
   position: relative;
-  grid-template-columns: minmax(260px, 1fr) 180px auto;
+  grid-template-columns: minmax(240px, min(50%, 480px)) minmax(170px, 200px) auto;
   align-items: start;
+  justify-content: start;
   padding: 16px;
   overflow: hidden;
   background:
@@ -626,7 +649,8 @@ a {
 }
 
 .site-form .button {
-  align-self: end;
+  align-self: start;
+  margin-top: 22px;
   min-width: 160px;
 }
 
@@ -670,6 +694,7 @@ a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   min-height: 46px;
   padding: 0 18px;
   color: #ffffff;
@@ -684,6 +709,25 @@ a {
     border-color 160ms ease,
     color 160ms ease,
     transform 160ms ease;
+}
+
+.button__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+}
+
+.button__icon svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
 }
 
 .button:hover,
@@ -704,9 +748,61 @@ a {
   color: var(--color-primary);
 }
 
+.button--secondary:hover,
+.button--secondary:focus-visible {
+  color: var(--color-primary-hover);
+  background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+  border-color: color-mix(in srgb, var(--color-primary) 38%, var(--color-border));
+}
+
+:root[data-theme="light"] .button--secondary:hover,
+:root[data-theme="light"] .button--secondary:focus-visible {
+  color: var(--color-primary-hover);
+  background: color-mix(in srgb, var(--color-primary) 12%, #ffffff);
+}
+
 .button--ghost {
   color: var(--color-text);
   background: var(--color-surface-soft);
+}
+
+.button--ghost:hover,
+.button--ghost:focus-visible {
+  color: var(--color-text);
+  background: var(--color-surface-raised);
+  border-color: color-mix(in srgb, var(--color-primary) 32%, var(--color-border));
+}
+
+.button--secondary:active,
+.button--ghost:active {
+  transform: translateY(0);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.backup-actions .button {
+  min-width: 250px;
+  color: var(--color-text);
+  background: var(--color-surface-soft);
+  border-color: var(--color-border);
+}
+
+.backup-actions .button:hover,
+.backup-actions .button:focus-visible {
+  color: var(--color-text);
+  background: var(--color-surface-raised);
+  border-color: color-mix(in srgb, var(--color-primary) 42%, var(--color-border));
+  box-shadow: 0 0 0 3px rgba(45, 156, 255, 0.14);
+}
+
+:root[data-theme="light"] .backup-actions .button {
+  color: var(--color-text);
+  background: var(--color-surface-raised);
+}
+
+.backup-actions .button:active {
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface-raised));
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 .button--danger {
@@ -734,7 +830,7 @@ a {
 }
 
 .panel--sites .empty-state {
-  width: min(760px, 100%);
+  width: min(920px, 100%);
   padding: 14px 16px;
   background:
     linear-gradient(135deg, rgba(45, 156, 255, 0.07), transparent 64%),
@@ -769,6 +865,14 @@ a {
 .empty-state span {
   margin-top: 3px;
   line-height: 1.5;
+}
+
+.backup-note {
+  max-width: 720px;
+  margin: -2px 0 0;
+  color: var(--color-subtle);
+  font-size: 0.84rem;
+  line-height: 1.55;
 }
 
 .empty-state[hidden],
@@ -901,7 +1005,7 @@ a {
   }
 
   .settings-page-intro h1 {
-    max-width: 780px;
+    max-width: min(100%, 1040px);
   }
 
   .brand__subtitle {
@@ -946,7 +1050,7 @@ a {
   }
 
   .site-form {
-    grid-template-columns: minmax(320px, 1fr) 200px auto;
+    grid-template-columns: minmax(300px, min(50%, 520px)) minmax(180px, 210px) auto;
   }
 }
 
@@ -963,6 +1067,7 @@ a {
   .summary-grid,
   .panel--general,
   .panel--sites,
+  .panel--backup,
   .panel--permissions,
   .options__status {
     grid-column: 1;
@@ -1063,6 +1168,11 @@ a {
     grid-column: 1;
   }
 
+  .panel--backup {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
   .panel--sites {
     grid-column: 1;
     grid-row: auto;
@@ -1074,7 +1184,7 @@ a {
   }
 
   .site-form {
-    grid-template-columns: minmax(420px, 1fr) 240px auto;
+    grid-template-columns: minmax(340px, min(48%, 620px)) minmax(200px, 240px) auto;
   }
 }
 
@@ -1112,7 +1222,7 @@ a {
     justify-self: start;
     width: min(252px, 100%);
     min-width: 0;
-    text-align: left;
+    text-align: right;
   }
 
   .settings-sidebar {
@@ -1132,7 +1242,7 @@ a {
   }
 
   .settings-nav {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
@@ -1152,6 +1262,11 @@ a {
   .site-form .button {
     width: 100%;
     min-width: 0;
+    margin-top: 0;
+  }
+
+  .backup-actions .button {
+    width: 100%;
   }
 }
 
@@ -1176,6 +1291,7 @@ a {
 
   .settings-page-intro h1 {
     font-size: clamp(2rem, 11vw, 2.75rem);
+    white-space: normal;
   }
 
   .settings-page-intro__status {

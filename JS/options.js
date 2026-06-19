@@ -1,26 +1,36 @@
-// RecarregaAi! 1.9.1
+// RecarregaAi! 2.0.0
 
 import { initFloatingTools } from "./modules/floating-tools.js";
 import {
   defaultLanguage,
-  initLanguageDialog
+  initLanguageDialog,
+  normalizeLanguage
 } from "./modules/language-dialog.js";
 import {
   defaultAppSettings,
   getPermissionPatternForOrigin,
+  getUrlOrigin,
   storageKeys
 } from "./modules/shared.js";
 import {
   loadThemePreference,
+  normalizeTheme,
+  saveThemePreference,
   toggleThemePreference
 } from "./modules/theme.js";
 
 const optionsPreviewStorageKey = "recarregaAiOptionsPreviewSettings";
+const optionsPageLanguageStorageKey = "recarregaAiPageLanguage";
+const settingsExportType = "recarregaai-settings";
+const settingsExportVersion = 1;
 
 const optionsElements = {
   addSiteButton: document.querySelector("#add-site-button"),
   defaultIntervalInput: document.querySelector("#default-interval-input"),
   extensionVersion: document.querySelector("#extension-version"),
+  exportSettingsButton: document.querySelector("#export-settings-button"),
+  importSettingsButton: document.querySelector("#import-settings-button"),
+  importSettingsInput: document.querySelector("#import-settings-input"),
   optionsStatus: document.querySelector("#options-status"),
   saveSettingsButton: document.querySelector("#save-settings-button"),
   siteIntervalInput: document.querySelector("#site-interval-input"),
@@ -41,6 +51,14 @@ const optionsTranslations = {
       "Quando uma página desses sites abrir, o RecarregaAi! liga uma atualização separada para ela.",
     autoStartEyebrow: "Início automático",
     backToTop: "Voltar ao início",
+    backupDescription:
+      "Leve tempo padrão, sites automáticos, tema e idioma para outro navegador ou uma nova instalação.",
+    backupEyebrow: "Portabilidade",
+    backupExport: "Exportar configurações",
+    backupImport: "Importar configurações",
+    backupNote:
+      "Timers ativos por aba não entram no arquivo porque dependem das guias abertas neste navegador.",
+    backupTitle: "Importar e exportar configurações",
     closeDialog: "Fechar",
     cleanupDescription:
       "Remove dados antigos do endereço aberto para buscar conteúdo novo.",
@@ -59,7 +77,7 @@ const optionsTranslations = {
     footerFeedback: "Feedback",
     footerDeveloper: "Desenvolvido por:",
     footerHome: "Início",
-    footerLegal: "© RecarregaAi! 1.9.1. Todos os direitos reservados.",
+    footerLegal: "© RecarregaAi! 2.0.0. Todos os direitos reservados.",
     footerPrivacy: "Privacidade",
     formInvalidInterval: "Informe um intervalo padrão de pelo menos 1 minuto.",
     formInvalidOrigin: "Use um endereço http ou https.",
@@ -74,6 +92,13 @@ const optionsTranslations = {
     formSettingsLoadError: "Erro ao carregar configurações.",
     formSettingsSaved: "Tempo padrão salvo.",
     formThemeError: "Erro ao alternar tema.",
+    formExportError: "Erro ao exportar configurações.",
+    formExported: "Configurações exportadas.",
+    formImportError: "Erro ao importar configurações.",
+    formImported: "Configurações importadas.",
+    formImportInvalid: "Arquivo de configurações inválido.",
+    formImportPermissionDenied:
+      "Permissão negada. Autorize os sites importados para concluir a importação.",
     headerHome: "Página inicial",
     headerTitle: "Configurações",
     heroCardBody:
@@ -81,7 +106,6 @@ const optionsTranslations = {
     heroCardLabel: "Resumo rápido",
     heroCardBadge: "Pronto para personalizar",
     heroCardTitle: "Controle simples, por guia e por site.",
-    heroEyebrow: "Configurações",
     introStatusLabel: "Configuração local",
     introStatusText: "Salva no navegador",
     languageDialogDescription:
@@ -97,12 +121,13 @@ const optionsTranslations = {
     localPreferencesTitle: "Preferências locais",
     minutePlural: "{count} minutos",
     minuteSingular: "1 minuto",
+    navBackup: "Backup",
     navGeneral: "Geral",
     navPermissions: "Permissões",
     navSites: "Sites",
     pageDescription:
       "Ajuste o tempo padrão, organize sites de início automático e revise as permissões usadas pela extensão.",
-    pageTitle: "Central de configurações do RecarregaAi!",
+    pageTitle: "Configurações do RecarregaAi!",
     permissionsDescription:
       "A extensão usa apenas o necessário para atualizar a página escolhida e salvar suas preferências localmente.",
     permissionsGridLabel: "Permissões usadas pela extensão",
@@ -140,6 +165,14 @@ const optionsTranslations = {
       "When one of these sites opens, RecarregaAi! starts a separate refresh for it.",
     autoStartEyebrow: "Automatic start",
     backToTop: "Back to top",
+    backupDescription:
+      "Take default time, automatic sites, theme and language to another browser or a new installation.",
+    backupEyebrow: "Portability",
+    backupExport: "Export settings",
+    backupImport: "Import settings",
+    backupNote:
+      "Active timers by tab are not included in the file because they depend on the tabs open in this browser.",
+    backupTitle: "Import and export settings",
     closeDialog: "Close",
     cleanupDescription:
       "Removes old data from the open address to fetch fresh content.",
@@ -158,7 +191,7 @@ const optionsTranslations = {
     footerFeedback: "Feedback",
     footerDeveloper: "Developed by:",
     footerHome: "Home",
-    footerLegal: "© RecarregaAi! 1.9.1. All rights reserved.",
+    footerLegal: "© RecarregaAi! 2.0.0. All rights reserved.",
     footerPrivacy: "Privacy",
     formInvalidInterval: "Enter a default interval of at least 1 minute.",
     formInvalidOrigin: "Use an http or https address.",
@@ -173,6 +206,13 @@ const optionsTranslations = {
     formSettingsLoadError: "Error loading settings.",
     formSettingsSaved: "Default time saved.",
     formThemeError: "Error switching theme.",
+    formExportError: "Error exporting settings.",
+    formExported: "Settings exported.",
+    formImportError: "Error importing settings.",
+    formImported: "Settings imported.",
+    formImportInvalid: "Invalid settings file.",
+    formImportPermissionDenied:
+      "Permission denied. Allow the imported sites to complete the import.",
     headerHome: "Home page",
     headerTitle: "Settings",
     heroCardBody:
@@ -180,7 +220,6 @@ const optionsTranslations = {
     heroCardLabel: "Quick summary",
     heroCardBadge: "Ready to personalize",
     heroCardTitle: "Simple control, by tab and by site.",
-    heroEyebrow: "Settings",
     introStatusLabel: "Local settings",
     introStatusText: "Saved in the browser",
     languageDialogDescription:
@@ -196,12 +235,13 @@ const optionsTranslations = {
     localPreferencesTitle: "Local preferences",
     minutePlural: "{count} minutes",
     minuteSingular: "1 minute",
+    navBackup: "Backup",
     navGeneral: "General",
     navPermissions: "Permissions",
     navSites: "Sites",
     pageDescription:
       "Adjust the default time, organize automatic-start sites and review the permissions used by the extension.",
-    pageTitle: "RecarregaAi! settings center",
+    pageTitle: "RecarregaAi! settings",
     permissionsDescription:
       "The extension uses only what is necessary to refresh the selected page and save your preferences locally.",
     permissionsGridLabel: "Permissions used by the extension",
@@ -239,6 +279,14 @@ const optionsTranslations = {
       "Cuando se abre una página de esos sitios, RecarregaAi! activa una actualización separada para ella.",
     autoStartEyebrow: "Inicio automático",
     backToTop: "Volver al inicio",
+    backupDescription:
+      "Lleva tiempo predeterminado, sitios automáticos, tema e idioma a otro navegador o una nueva instalación.",
+    backupEyebrow: "Portabilidad",
+    backupExport: "Exportar configuración",
+    backupImport: "Importar configuración",
+    backupNote:
+      "Los timers activos por pestaña no entran en el archivo porque dependen de las pestañas abiertas en este navegador.",
+    backupTitle: "Importar y exportar configuración",
     closeDialog: "Cerrar",
     cleanupDescription:
       "Elimina datos antiguos de la dirección abierta para buscar contenido nuevo.",
@@ -257,7 +305,7 @@ const optionsTranslations = {
     footerFeedback: "Feedback",
     footerDeveloper: "Desarrollado por:",
     footerHome: "Inicio",
-    footerLegal: "© RecarregaAi! 1.9.1. Todos los derechos reservados.",
+    footerLegal: "© RecarregaAi! 2.0.0. Todos los derechos reservados.",
     footerPrivacy: "Privacidad",
     formInvalidInterval: "Ingresa un intervalo predeterminado de al menos 1 minuto.",
     formInvalidOrigin: "Usa una dirección http o https.",
@@ -272,6 +320,13 @@ const optionsTranslations = {
     formSettingsLoadError: "Error al cargar la configuración.",
     formSettingsSaved: "Tiempo predeterminado guardado.",
     formThemeError: "Error al cambiar el tema.",
+    formExportError: "Error al exportar la configuración.",
+    formExported: "Configuración exportada.",
+    formImportError: "Error al importar la configuración.",
+    formImported: "Configuración importada.",
+    formImportInvalid: "Archivo de configuración inválido.",
+    formImportPermissionDenied:
+      "Permiso denegado. Autoriza los sitios importados para concluir la importación.",
     headerHome: "Página inicial",
     headerTitle: "Configuración",
     heroCardBody:
@@ -279,7 +334,6 @@ const optionsTranslations = {
     heroCardLabel: "Resumen rápido",
     heroCardBadge: "Listo para personalizar",
     heroCardTitle: "Control simple, por pestaña y por sitio.",
-    heroEyebrow: "Configuración",
     introStatusLabel: "Configuración local",
     introStatusText: "Guardada en el navegador",
     languageDialogDescription:
@@ -295,12 +349,13 @@ const optionsTranslations = {
     localPreferencesTitle: "Preferencias locales",
     minutePlural: "{count} minutos",
     minuteSingular: "1 minuto",
+    navBackup: "Backup",
     navGeneral: "General",
     navPermissions: "Permisos",
     navSites: "Sitios",
     pageDescription:
       "Ajusta el tiempo predeterminado, organiza sitios de inicio automático y revisa los permisos usados por la extensión.",
-    pageTitle: "Centro de configuración de RecarregaAi!",
+    pageTitle: "Configuración de RecarregaAi!",
     permissionsDescription:
       "La extensión usa solo lo necesario para actualizar la página elegida y guardar tus preferencias localmente.",
     permissionsGridLabel: "Permisos usados por la extensión",
@@ -335,6 +390,7 @@ const optionsTranslations = {
 
 let currentSettings = { ...defaultAppSettings };
 let activeOptionsLanguage = defaultLanguage;
+let optionsLanguageDialog = null;
 
 const getOptionsCopy = (key) => (
   optionsTranslations[activeOptionsLanguage]?.[key]
@@ -470,6 +526,285 @@ const saveOptionsSettings = async () => {
   await storageArea.set({
     [storageKeys.appSettings]: currentSettings
   });
+};
+
+const hasOwnProperty = (object, property) => (
+  Object.prototype.hasOwnProperty.call(object, property)
+);
+
+const normalizeOptionsInterval = (
+  interval,
+  fallback = defaultAppSettings.defaultIntervalInMinutes
+) => {
+  const intervalInMinutes = Number(interval);
+
+  if (!Number.isFinite(intervalInMinutes) || intervalInMinutes < 1) {
+    return fallback;
+  }
+
+  return Math.floor(intervalInMinutes);
+};
+
+const normalizeAutoStartSite = (site, fallbackInterval) => {
+  const origin = getUrlOrigin(site?.origin);
+
+  if (!origin) {
+    return null;
+  }
+
+  return {
+    enabled: site.enabled !== false,
+    intervalInMinutes: normalizeOptionsInterval(
+      site.intervalInMinutes,
+      fallbackInterval
+    ),
+    origin
+  };
+};
+
+const normalizeOptionsSettings = (settings) => {
+  if (!settings || typeof settings !== "object" || Array.isArray(settings)) {
+    throw new Error(getOptionsCopy("formImportInvalid"));
+  }
+
+  if (
+    !hasOwnProperty(settings, "defaultIntervalInMinutes")
+    && !hasOwnProperty(settings, "autoStartSites")
+  ) {
+    throw new Error(getOptionsCopy("formImportInvalid"));
+  }
+
+  if (
+    hasOwnProperty(settings, "autoStartSites")
+    && !Array.isArray(settings.autoStartSites)
+  ) {
+    throw new Error(getOptionsCopy("formImportInvalid"));
+  }
+
+  const defaultIntervalInMinutes = normalizeOptionsInterval(
+    settings.defaultIntervalInMinutes
+  );
+  const siteMap = new Map();
+
+  (settings.autoStartSites || []).forEach((site) => {
+    const normalizedSite = normalizeAutoStartSite(
+      site,
+      defaultIntervalInMinutes
+    );
+
+    if (normalizedSite) {
+      siteMap.set(normalizedSite.origin, normalizedSite);
+    }
+  });
+
+  return {
+    autoStartSites: [...siteMap.values()],
+    defaultIntervalInMinutes
+  };
+};
+
+const getOptionsVersionLabel = () => {
+  if (typeof chrome === "undefined" || !chrome.runtime?.getManifest) {
+    return "preview";
+  }
+
+  const manifest = chrome.runtime.getManifest();
+
+  return manifest.version_name || manifest.version;
+};
+
+const getCurrentOptionsLanguage = () => (
+  normalizeLanguage(
+    localStorage.getItem(optionsPageLanguageStorageKey)
+    || document.documentElement.lang
+  )
+);
+
+const getCurrentOptionsTheme = () => (
+  normalizeTheme(document.documentElement.dataset.theme)
+);
+
+const createSettingsExportPayload = () => ({
+  app: "RecarregaAi!",
+  exportedAt: new Date().toISOString(),
+  extensionVersion: getOptionsVersionLabel(),
+  preferences: {
+    language: getCurrentOptionsLanguage(),
+    theme: getCurrentOptionsTheme()
+  },
+  settings: normalizeOptionsSettings(currentSettings),
+  type: settingsExportType,
+  version: settingsExportVersion
+});
+
+const downloadJsonFile = (fileName, payload) => {
+  const downloadUrl = URL.createObjectURL(
+    new Blob([`${JSON.stringify(payload, null, 2)}\n`], {
+      type: "application/json"
+    })
+  );
+  const downloadLink = document.createElement("a");
+
+  downloadLink.href = downloadUrl;
+  downloadLink.download = fileName;
+  downloadLink.hidden = true;
+  document.body.append(downloadLink);
+  downloadLink.click();
+  downloadLink.remove();
+
+  window.setTimeout(() => {
+    URL.revokeObjectURL(downloadUrl);
+  }, 0);
+};
+
+const exportOptionsSettings = () => {
+  const exportDate = new Date().toISOString().slice(0, 10);
+  const fileName = `recarregaai-configuracoes-${exportDate}.json`;
+
+  downloadJsonFile(fileName, createSettingsExportPayload());
+  updateOptionsStatus(getOptionsCopy("formExported"), "success");
+};
+
+const parseSettingsImportPayload = (fileText) => {
+  let payload;
+
+  try {
+    payload = JSON.parse(fileText);
+  } catch {
+    throw new Error(getOptionsCopy("formImportInvalid"));
+  }
+
+  if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
+    throw new Error(getOptionsCopy("formImportInvalid"));
+  }
+
+  const isWrappedPayload = payload.type === settingsExportType
+    || hasOwnProperty(payload, "settings")
+    || hasOwnProperty(payload, "preferences");
+  const settings = normalizeOptionsSettings(
+    isWrappedPayload ? payload.settings : payload
+  );
+  const preferences = isWrappedPayload && payload.preferences
+    && typeof payload.preferences === "object"
+    && !Array.isArray(payload.preferences)
+    ? payload.preferences
+    : {};
+
+  return {
+    preferences: {
+      language: hasOwnProperty(preferences, "language")
+        ? normalizeLanguage(preferences.language)
+        : null,
+      theme: hasOwnProperty(preferences, "theme")
+        ? normalizeTheme(preferences.theme)
+        : null
+    },
+    settings
+  };
+};
+
+const requestAutoStartPermissions = async (autoStartSites) => {
+  if (typeof chrome === "undefined" || !chrome.permissions?.request) {
+    return true;
+  }
+
+  const origins = [...new Set(
+    autoStartSites
+      .filter((site) => site.enabled !== false)
+      .map((site) => getPermissionPatternForOrigin(site.origin))
+  )];
+
+  if (origins.length === 0) {
+    return true;
+  }
+
+  return chrome.permissions.request({
+    origins
+  });
+};
+
+const removeUnusedAutoStartPermissions = async (
+  previousAutoStartSites,
+  nextAutoStartSites
+) => {
+  if (typeof chrome === "undefined" || !chrome.permissions?.remove) {
+    return;
+  }
+
+  const nextOrigins = new Set(nextAutoStartSites.map((site) => site.origin));
+  const previousOrigins = [...new Set(
+    previousAutoStartSites.map((site) => site.origin)
+  )];
+  const originsToRemove = previousOrigins.filter((origin) => (
+    !nextOrigins.has(origin)
+  ));
+
+  await Promise.all(originsToRemove.map(async (origin) => {
+    try {
+      await chrome.permissions.remove({
+        origins: [getPermissionPatternForOrigin(origin)]
+      });
+    } catch (error) {
+      console.debug("Permissão antiga mantida pelo navegador:", error);
+    }
+  }));
+};
+
+const applyImportedPreferences = async (preferences) => {
+  if (preferences.theme) {
+    await saveThemePreference({
+      onChange: updateOptionsThemeButtonLabel,
+      theme: preferences.theme
+    });
+  }
+
+  if (!preferences.language) {
+    return;
+  }
+
+  if (optionsLanguageDialog) {
+    optionsLanguageDialog.applyLanguage(preferences.language);
+    return;
+  }
+
+  localStorage.setItem(optionsPageLanguageStorageKey, preferences.language);
+  applyOptionsLanguage(preferences.language);
+};
+
+const importOptionsSettingsFromFile = async (file) => {
+  if (!file) {
+    return;
+  }
+
+  const importedData = parseSettingsImportPayload(await file.text());
+  const hasPermission = await requestAutoStartPermissions(
+    importedData.settings.autoStartSites
+  );
+
+  if (!hasPermission) {
+    throw new Error(getOptionsCopy("formImportPermissionDenied"));
+  }
+
+  const previousSettings = currentSettings;
+
+  currentSettings = importedData.settings;
+
+  try {
+    await saveOptionsSettings();
+    await removeUnusedAutoStartPermissions(
+      previousSettings.autoStartSites,
+      currentSettings.autoStartSites
+    );
+    await applyImportedPreferences(importedData.preferences);
+  } catch (error) {
+    currentSettings = previousSettings;
+    throw error;
+  }
+
+  optionsElements.defaultIntervalInput.value =
+    currentSettings.defaultIntervalInMinutes;
+  renderSites();
+  updateOptionsStatus(getOptionsCopy("formImported"), "success");
 };
 
 const requestAutoStartPermission = async (origin) => {
@@ -677,11 +1012,11 @@ const applyOptionsLanguage = (language) => {
   setTexts(".settings-nav__label", [
     "navGeneral",
     "navSites",
+    "navBackup",
     "navPermissions"
   ]);
   setText(".settings-header__link", "headerHome");
   setText(".settings-header__title", "headerTitle");
-  setText(".settings-page-intro__eyebrow", "heroEyebrow");
   setText("#options-title", "pageTitle");
   setText(".brand__subtitle", "pageDescription");
   setText(".settings-page-intro__status span", "introStatusLabel");
@@ -701,6 +1036,12 @@ const applyOptionsLanguage = (language) => {
   setText("#add-site-button", "addSite");
   setText(".empty-state strong", "emptySitesTitle");
   setText(".empty-state div span", "emptySitesDescription");
+  setText(".panel--backup .panel__eyebrow", "backupEyebrow");
+  setText("#backup-title", "backupTitle");
+  setText(".panel--backup .panel__description", "backupDescription");
+  setText("#export-settings-label", "backupExport");
+  setText("#import-settings-label", "backupImport");
+  setText(".backup-note", "backupNote");
   setText("#permissions-title", "permissionsTitle");
   setTextAt(".summary-card strong", 0, "defaultTimeLabel");
   setTextAt(".summary-card strong", 1, "autoSitesLabel");
@@ -708,8 +1049,8 @@ const applyOptionsLanguage = (language) => {
   setTextAt(".summary-card div > span", 2, "localControlText");
   setTextAt(".panel .panel__eyebrow", 1, "autoStartEyebrow");
   setTextAt(".panel .panel__description", 1, "autoStartDescription");
-  setTextAt(".panel .panel__eyebrow", 2, "transparencyEyebrow");
-  setTextAt(".panel .panel__description", 2, "permissionsDescription");
+  setTextAt(".panel .panel__eyebrow", 3, "transparencyEyebrow");
+  setTextAt(".panel .panel__description", 3, "permissionsDescription");
   setTexts(".permission-card strong", [
     "currentPageTitle",
     "cleanupTitle",
@@ -785,6 +1126,28 @@ optionsElements.sitesList.addEventListener("click", (event) => {
   });
 });
 
+optionsElements.exportSettingsButton.addEventListener("click", () => {
+  try {
+    exportOptionsSettings();
+  } catch (error) {
+    updateOptionsStatus(error.message || getOptionsCopy("formExportError"), "error");
+  }
+});
+
+optionsElements.importSettingsButton.addEventListener("click", () => {
+  optionsElements.importSettingsInput.click();
+});
+
+optionsElements.importSettingsInput.addEventListener("change", (event) => {
+  const [file] = event.target.files || [];
+
+  importOptionsSettingsFromFile(file).catch((error) => {
+    updateOptionsStatus(error.message || getOptionsCopy("formImportError"), "error");
+  }).finally(() => {
+    event.target.value = "";
+  });
+});
+
 optionsElements.themeToggleButton.addEventListener("click", () => {
   toggleOptionsTheme().catch((error) => {
     updateOptionsStatus(error.message || getOptionsCopy("formThemeError"), "error");
@@ -792,9 +1155,9 @@ optionsElements.themeToggleButton.addEventListener("click", () => {
 });
 
 initFloatingTools();
-initLanguageDialog({
+optionsLanguageDialog = initLanguageDialog({
   onChange: applyOptionsLanguage,
-  storageKey: "recarregaAiPageLanguage"
+  storageKey: optionsPageLanguageStorageKey
 });
 
 loadOptionsVersion();

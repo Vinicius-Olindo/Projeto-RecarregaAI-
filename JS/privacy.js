@@ -1,4 +1,4 @@
-// RecarregaAi! 2.0.7
+// RecarregaAi! 2.1.6
 
 import { initFloatingTools } from "./modules/floating-tools.js";
 import { extendPageTranslations } from "./modules/extended-translations.js";
@@ -10,6 +10,9 @@ import {
   loadThemePreference,
   toggleThemePreference
 } from "./modules/theme.js";
+import { enforceTopLevelPublicPage } from "./modules/public-page-security.js";
+
+enforceTopLevelPublicPage();
 
 const policyNavLinks = [...document.querySelectorAll(".policy-nav a[href^='#']")];
 const privacyHeader = document.querySelector(".privacy-header");
@@ -31,7 +34,7 @@ const privacyTranslations = extendPageTranslations({
     footerFeedback: "Feedback",
     footerDeveloper: "Desenvolvido por:",
     footerHome: "Início",
-    footerLegal: "© RecarregaAi! 2.0.7. Política atualizada em 19/06/2026.",
+    footerLegal: "© RecarregaAi! 2.1.6. Política atualizada em 19/06/2026.",
     footerPrivacy: "Privacidade",
     headerContact: "Contato",
     headerNavLabel: "Navegação da política",
@@ -64,7 +67,7 @@ const privacyTranslations = extendPageTranslations({
     themeToDark: "Tema escuro",
     themeToLight: "Tema claro",
     sectionContactBody:
-      "Para dúvidas sobre privacidade, solicitações sobre feedback enviado ou esclarecimentos sobre dados processados pela extensão, use o canal de contato oficial que será informado nesta política assim que definido.",
+      "Para dúvidas sobre privacidade, solicitações sobre feedback enviado ou esclarecimentos sobre dados processados pela extensão, use o e-mail onlibytedigital@gmail.com.",
     sectionContactTitle: "10. Contato",
     sectionControlBody1:
       "O usuário pode alterar tema, idioma, timers, sites automáticos e permissões a qualquer momento nas páginas da extensão ou nas configurações do navegador.",
@@ -73,12 +76,12 @@ const privacyTranslations = extendPageTranslations({
     sectionControlBody3:
       "O usuário pode revogar permissões concedidas a sites ou remover a extensão. Ao removê-la, o Chrome exclui os dados associados ao armazenamento local da extensão.",
     sectionControlBody4:
-      "Arquivos exportados permanecem no local escolhido pelo usuário e devem ser excluídos manualmente. Caso tenha enviado feedback e deseje solicitar remoção ou esclarecimento, poderá usar o canal oficial informado nesta política quando ele estiver definido.",
+      "Arquivos exportados permanecem no local escolhido pelo usuário e devem ser excluídos manualmente. Para solicitar remoção ou esclarecimento sobre um feedback enviado, use o e-mail onlibytedigital@gmail.com.",
     sectionControlTitle: "9. Controle do usuário",
     sectionDataBody1:
       "Para funcionar corretamente, a extensão processa localmente o endereço e a origem da página atual e de alguns recursos carregados por ela. Esses dados são usados para identificar o site, limpar cache, CacheStorage e service workers relacionados e recarregar a guia.",
     sectionDataBody2:
-      "A extensão também pode salvar localmente o tema, o idioma, o intervalo padrão, os sites configurados para auto-início e, para as guias com timers ativos, endereço, título, estado, próxima execução e último resultado do timer.",
+      "A extensão também pode salvar localmente o tema, o idioma, o intervalo padrão, os sites configurados para auto-início e, para as guias com timers ativos, endereço, título, estado, próxima execução e último resultado do timer. Também mantém um histórico local e limitado das ações realizadas pela extensão.",
     sectionDataBody3:
       "Essas informações ficam no navegador por meio de <code>chrome.storage.local</code> e, para a preferência de idioma das páginas, do armazenamento local do próprio navegador. A extensão não envia essas informações para servidores externos.",
     sectionDataTitle: "1. Informações processadas pela extensão",
@@ -97,13 +100,15 @@ const privacyTranslations = extendPageTranslations({
     sectionLocalStorageBody1:
       "As preferências e os estados necessários ao funcionamento da extensão são salvos no armazenamento local do navegador para manter a experiência entre sessões.",
     sectionLocalStorageBody2:
-      "Ao exportar configurações, a extensão cria localmente um arquivo JSON com tema, idioma, intervalo padrão e sites de auto-início. Timers ativos não entram no arquivo. Na importação, apenas o arquivo escolhido pelo usuário é lido localmente; ele não é enviado a servidores.",
+      "Ao exportar configurações, a extensão cria localmente um arquivo JSON com tema, idioma, intervalo padrão e sites de auto-início. Timers ativos e o histórico de ações não entram no arquivo. Na importação, apenas o arquivo escolhido pelo usuário é lido localmente; ele não é enviado a servidores.",
     sectionLocalStorageList1: "Tema escolhido.",
     sectionLocalStorageList2: "Idioma escolhido para as páginas da extensão.",
     sectionLocalStorageList3: "Intervalo padrão dos timers.",
     sectionLocalStorageList4: "Sites e intervalos configurados para auto-início.",
     sectionLocalStorageList5: "Estado dos timers ativos e dados da guia associada.",
     sectionLocalStorageList6: "Último resultado de execução do timer.",
+    sectionLocalStorageList7:
+      "Histórico das 100 ações mais recentes, com tipo, horário, domínio, intervalo e resultado.",
     sectionLocalStorageTitle: "4. Armazenamento local",
     sectionNotCollectedBody1:
       "A extensão não coleta senhas, textos digitados, mensagens, arquivos, dados bancários, dados de formulários, gravações de áudio ou vídeo, conteúdo textual das páginas nem cria um histórico geral de navegação ou um perfil de uso do usuário.",
@@ -121,7 +126,7 @@ const privacyTranslations = extendPageTranslations({
     sectionTypingBody1:
       "Quando um timer está ativo, o RecarregaAi! verifica localmente se há foco em campos como <code>input</code>, <code>textarea</code> ou áreas editáveis da página. Ele também pode identificar se há áudio, vídeo, gravação, fluxo de mídia ou contexto de áudio em uso. Se houver atividade sensível, o timer daquela guia pode ser pausado temporariamente e retomado depois que a atividade terminar.",
     sectionTypingBody2:
-      "Essa verificação recebe apenas o estado de interação com campos editáveis ou mídia ativa. Ela não acessa o texto digitado, não grava áudio, não captura vídeo, não cria histórico de atividade e não envia esse estado para servidores externos.",
+      "Essa verificação recebe apenas o estado de interação com campos editáveis ou mídia ativa. Ela não acessa o texto digitado, não grava áudio nem captura vídeo. O histórico local pode registrar apenas que o timer foi pausado por digitação ou mídia, sem guardar o conteúdo da atividade e sem enviar esse estado para servidores.",
     sectionTypingTitle: "3. Proteção de digitação e mídia",
     permissionActiveTab:
       "Usada para executar ações na guia atual quando o usuário interage com a extensão.",
@@ -163,7 +168,7 @@ const privacyTranslations = extendPageTranslations({
     footerFeedback: "Feedback",
     footerDeveloper: "Developed by:",
     footerHome: "Home",
-    footerLegal: "© RecarregaAi! 2.0.7. Policy updated on 06/19/2026.",
+    footerLegal: "© RecarregaAi! 2.1.6. Policy updated on 06/19/2026.",
     footerPrivacy: "Privacy",
     headerContact: "Contact",
     headerNavLabel: "Policy navigation",
@@ -196,7 +201,7 @@ const privacyTranslations = extendPageTranslations({
     themeToDark: "Dark theme",
     themeToLight: "Light theme",
     sectionContactBody:
-      "For privacy questions, requests about submitted feedback or clarifications about data processed by the extension, use the official contact channel that will be added to this policy once defined.",
+      "For privacy questions, requests about submitted feedback or clarifications about data processed by the extension, email onlibytedigital@gmail.com.",
     sectionContactTitle: "10. Contact",
     sectionControlBody1:
       "The user can change the theme, language, timers, automatic sites and permissions at any time through extension pages or browser settings.",
@@ -205,12 +210,12 @@ const privacyTranslations = extendPageTranslations({
     sectionControlBody3:
       "The user can revoke permissions granted to sites or remove the extension. When it is removed, Chrome deletes data associated with the extension's local storage.",
     sectionControlBody4:
-      "Exported files remain in the location selected by the user and must be deleted manually. If feedback was submitted and removal or clarification is requested, the official channel listed in this policy may be used once it is defined.",
+      "Exported files remain in the location selected by the user and must be deleted manually. To request removal or clarification about submitted feedback, email onlibytedigital@gmail.com.",
     sectionControlTitle: "9. User control",
     sectionDataBody1:
       "To work properly, the extension locally processes the address and origin of the current page and some resources loaded by it. This data is used to identify the site, clear related cache, CacheStorage and service workers, and reload the tab.",
     sectionDataBody2:
-      "The extension may also locally save the theme, language, default interval, sites configured for automatic start and, for tabs with active timers, the address, title, state, next run and last timer result.",
+      "The extension may also locally save the theme, language, default interval, sites configured for automatic start and, for tabs with active timers, the address, title, state, next run and last timer result. It also keeps a limited local history of actions performed by the extension.",
     sectionDataBody3:
       "This information remains in the browser through <code>chrome.storage.local</code> and, for the page language preference, the browser's own local storage. The extension does not send this information to external servers.",
     sectionDataTitle: "1. Information processed by the extension",
@@ -229,13 +234,15 @@ const privacyTranslations = extendPageTranslations({
     sectionLocalStorageBody1:
       "Preferences and states required for the extension to operate are saved in the browser's local storage to maintain the experience across sessions.",
     sectionLocalStorageBody2:
-      "When settings are exported, the extension locally creates a JSON file containing the theme, language, default interval and automatic-start sites. Active timers are not included. During import, only the file selected by the user is read locally; it is not sent to servers.",
+      "When settings are exported, the extension locally creates a JSON file containing the theme, language, default interval and automatic-start sites. Active timers and action history are not included. During import, only the file selected by the user is read locally; it is not sent to servers.",
     sectionLocalStorageList1: "Selected theme.",
     sectionLocalStorageList2: "Language selected for extension pages.",
     sectionLocalStorageList3: "Default timer interval.",
     sectionLocalStorageList4: "Sites and intervals configured for automatic start.",
     sectionLocalStorageList5: "Active timer state and associated tab data.",
     sectionLocalStorageList6: "Last timer execution result.",
+    sectionLocalStorageList7:
+      "History of the 100 most recent actions, with type, time, domain, interval and result.",
     sectionLocalStorageTitle: "4. Local storage",
     sectionNotCollectedBody1:
       "The extension does not collect passwords, typed text, messages, files, banking data, form data, audio or video recordings, textual page content, and does not create a general browsing history or user profile.",
@@ -253,7 +260,7 @@ const privacyTranslations = extendPageTranslations({
     sectionTypingBody1:
       "When a timer is active, RecarregaAi! locally checks whether fields such as <code>input</code>, <code>textarea</code> or editable page areas have focus. It may also identify whether audio, video, recording, a media stream or an audio context is in use. If sensitive activity is detected, that tab's timer may be paused temporarily and resumed after the activity ends.",
     sectionTypingBody2:
-      "This check receives only the interaction state of editable fields or active media. It does not access typed text, record audio, capture video, create activity history or send this state to external servers.",
+      "This check receives only the interaction state of editable fields or active media. It does not access typed text, record audio or capture video. Local history may only record that a timer paused for typing or media, without storing the activity content or sending that state to external servers.",
     sectionTypingTitle: "3. Typing and media protection",
     permissionActiveTab:
       "Used to run actions on the current tab when the user interacts with the extension.",
@@ -295,7 +302,7 @@ const privacyTranslations = extendPageTranslations({
     footerFeedback: "Feedback",
     footerDeveloper: "Desarrollado por:",
     footerHome: "Inicio",
-    footerLegal: "© RecarregaAi! 2.0.7. Política actualizada el 19/06/2026.",
+    footerLegal: "© RecarregaAi! 2.1.6. Política actualizada el 19/06/2026.",
     footerPrivacy: "Privacidad",
     headerContact: "Contacto",
     headerNavLabel: "Navegación de la política",
@@ -328,7 +335,7 @@ const privacyTranslations = extendPageTranslations({
     themeToDark: "Tema oscuro",
     themeToLight: "Tema claro",
     sectionContactBody:
-      "Para dudas sobre privacidad, solicitudes sobre feedback enviado o aclaraciones sobre datos procesados por la extensión, usa el canal oficial de contacto que se informará en esta política cuando esté definido.",
+      "Para dudas sobre privacidad, solicitudes sobre feedback enviado o aclaraciones sobre datos procesados por la extensión, usa el correo onlibytedigital@gmail.com.",
     sectionContactTitle: "10. Contacto",
     sectionControlBody1:
       "El usuario puede cambiar el tema, el idioma, los timers, los sitios automáticos y los permisos en cualquier momento desde las páginas de la extensión o la configuración del navegador.",
@@ -337,12 +344,12 @@ const privacyTranslations = extendPageTranslations({
     sectionControlBody3:
       "El usuario puede revocar permisos concedidos a sitios o eliminar la extensión. Al eliminarla, Chrome borra los datos asociados al almacenamiento local de la extensión.",
     sectionControlBody4:
-      "Los archivos exportados permanecen en la ubicación elegida por el usuario y deben eliminarse manualmente. Si se envió feedback y se desea solicitar su eliminación o una aclaración, podrá usarse el canal oficial indicado en esta política cuando esté definido.",
+      "Los archivos exportados permanecen en la ubicación elegida por el usuario y deben eliminarse manualmente. Para solicitar la eliminación o una aclaración sobre feedback enviado, usa el correo onlibytedigital@gmail.com.",
     sectionControlTitle: "9. Control del usuario",
     sectionDataBody1:
       "Para funcionar correctamente, la extensión procesa localmente la dirección y el origen de la página actual y de algunos recursos cargados por ella. Estos datos se usan para identificar el sitio, limpiar caché, CacheStorage y service workers relacionados y recargar la pestaña.",
     sectionDataBody2:
-      "La extensión también puede guardar localmente el tema, el idioma, el intervalo predeterminado, los sitios configurados para inicio automático y, para las pestañas con timers activos, la dirección, el título, el estado, la próxima ejecución y el último resultado del timer.",
+      "La extensión también puede guardar localmente el tema, el idioma, el intervalo predeterminado, los sitios configurados para inicio automático y, para las pestañas con timers activos, la dirección, el título, el estado, la próxima ejecución y el último resultado del timer. También mantiene un historial local y limitado de las acciones realizadas por la extensión.",
     sectionDataBody3:
       "Esta información permanece en el navegador mediante <code>chrome.storage.local</code> y, para la preferencia de idioma de las páginas, el almacenamiento local del propio navegador. La extensión no envía esta información a servidores externos.",
     sectionDataTitle: "1. Información procesada por la extensión",
@@ -361,13 +368,15 @@ const privacyTranslations = extendPageTranslations({
     sectionLocalStorageBody1:
       "Las preferencias y los estados necesarios para el funcionamiento de la extensión se guardan en el almacenamiento local del navegador para mantener la experiencia entre sesiones.",
     sectionLocalStorageBody2:
-      "Al exportar configuraciones, la extensión crea localmente un archivo JSON con el tema, el idioma, el intervalo predeterminado y los sitios de inicio automático. Los timers activos no se incluyen. Durante la importación, solo se lee localmente el archivo elegido por el usuario; no se envía a servidores.",
+      "Al exportar configuraciones, la extensión crea localmente un archivo JSON con el tema, el idioma, el intervalo predeterminado y los sitios de inicio automático. Los temporizadores activos y el historial de acciones no se incluyen. Durante la importación, solo se lee localmente el archivo elegido por el usuario; no se envía a servidores.",
     sectionLocalStorageList1: "Tema elegido.",
     sectionLocalStorageList2: "Idioma elegido para las páginas de la extensión.",
     sectionLocalStorageList3: "Intervalo predeterminado de los timers.",
     sectionLocalStorageList4: "Sitios e intervalos configurados para inicio automático.",
     sectionLocalStorageList5: "Estado de los timers activos y datos de la pestaña asociada.",
     sectionLocalStorageList6: "Último resultado de ejecución del timer.",
+    sectionLocalStorageList7:
+      "Historial de las 100 acciones más recientes, con tipo, hora, dominio, intervalo y resultado.",
     sectionLocalStorageTitle: "4. Almacenamiento local",
     sectionNotCollectedBody1:
       "La extensión no recopila contraseñas, textos escritos, mensajes, archivos, datos bancarios, datos de formularios, grabaciones de audio o video ni contenido textual de las páginas, y no crea un historial general de navegación ni un perfil del usuario.",
@@ -385,7 +394,7 @@ const privacyTranslations = extendPageTranslations({
     sectionTypingBody1:
       "Cuando un timer está activo, RecarregaAi! verifica localmente si hay foco en campos como <code>input</code>, <code>textarea</code> o áreas editables de la página. También puede identificar si hay audio, video, grabación, un flujo de medios o un contexto de audio en uso. Si hay actividad sensible, el timer de esa pestaña puede pausarse temporalmente y reanudarse cuando la actividad termine.",
     sectionTypingBody2:
-      "Esta verificación recibe solo el estado de interacción con campos editables o medios activos. No accede al texto escrito, no graba audio, no captura video, no crea historial de actividad ni envía ese estado a servidores externos.",
+      "Esta verificación recibe solo el estado de interacción con campos editables o medios activos. No accede al texto escrito, no graba audio ni captura video. El historial local puede registrar únicamente que un temporizador se pausó por escritura o contenido multimedia, sin guardar el contenido de la actividad ni enviar ese estado a servidores.",
     sectionTypingTitle: "3. Protección de escritura y medios",
     permissionActiveTab:
       "Usada para ejecutar acciones en la pestaña actual cuando el usuario interactúa con la extensión.",
@@ -652,7 +661,8 @@ const applyPrivacyLanguage = (language) => {
     "sectionLocalStorageList3",
     "sectionLocalStorageList4",
     "sectionLocalStorageList5",
-    "sectionLocalStorageList6"
+    "sectionLocalStorageList6",
+    "sectionLocalStorageList7"
   ]);
   setSectionText("feedback-title", "sectionFeedbackTitle", [
     "sectionFeedbackBody1",

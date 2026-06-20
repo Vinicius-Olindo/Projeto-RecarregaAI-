@@ -1,4 +1,4 @@
-// RecarregaAi! 2.0.7
+// RecarregaAi! 2.1.6
 
 import { initFloatingTools } from "./modules/floating-tools.js";
 import { extendPageTranslations } from "./modules/extended-translations.js";
@@ -8,9 +8,12 @@ import {
   normalizeLanguage
 } from "./modules/language-dialog.js";
 import {
+  actionHistoryStatuses,
+  actionHistoryTypes,
   defaultAppSettings,
   getPermissionPatternForOrigin,
   getUrlOrigin,
+  runtimeMessageTypes,
   storageKeys
 } from "./modules/shared.js";
 import {
@@ -27,13 +30,21 @@ const settingsExportVersion = 1;
 
 const optionsElements = {
   addSiteButton: document.querySelector("#add-site-button"),
+  clearHistoryButton: document.querySelector("#clear-history-button"),
+  closeOptionsButton: document.querySelector("#close-options-button"),
   defaultIntervalInput: document.querySelector("#default-interval-input"),
   extensionVersion: document.querySelector("#extension-version"),
   exportSettingsButton: document.querySelector("#export-settings-button"),
   importSettingsButton: document.querySelector("#import-settings-button"),
   importSettingsInput: document.querySelector("#import-settings-input"),
+  historyCount: document.querySelector("#history-count"),
+  historyEmptyState: document.querySelector("#history-empty-state"),
+  historyFilterButtons: document.querySelectorAll("[data-history-filter]"),
+  historyList: document.querySelector("#history-list"),
   optionsStatus: document.querySelector("#options-status"),
   saveSettingsButton: document.querySelector("#save-settings-button"),
+  siteFormAlert: document.querySelector("#site-form-alert"),
+  siteFormAlertText: document.querySelector("#site-form-alert-text"),
   siteIntervalInput: document.querySelector("#site-interval-input"),
   siteOriginInput: document.querySelector("#site-origin-input"),
   sitesEmptyState: document.querySelector("#sites-empty-state"),
@@ -56,9 +67,13 @@ const optionsTranslations = extendPageTranslations({
       "Leve tempo padrão, sites automáticos, tema e idioma para outro navegador ou uma nova instalação.",
     backupEyebrow: "Portabilidade",
     backupExport: "Exportar configurações",
+    backupExportDescription: "Baixe uma cópia das suas preferências.",
     backupImport: "Importar configurações",
+    backupImportDescription: "Restaure preferências de um arquivo JSON.",
     backupNote:
       "Timers ativos por aba não entram no arquivo porque dependem das guias abertas neste navegador.",
+    backupNoteWithHistory:
+      "Timers ativos e o histórico local não entram no arquivo porque pertencem a esta instalação do navegador.",
     backupTitle: "Importar e exportar configurações",
     closeDialog: "Fechar",
     cleanupDescription:
@@ -74,17 +89,19 @@ const optionsTranslations = extendPageTranslations({
     documentTitle: "Configurações do RecarregaAi!",
     emptySitesDescription:
       "Adicione um endereço acima para o RecarregaAi! iniciar sozinho quando esse site abrir.",
+    emptySitesStatus: "Lista vazia",
     emptySitesTitle: "Nenhum site automático cadastrado.",
     footerFeedback: "Feedback",
     footerDeveloper: "Desenvolvido por:",
     footerHome: "Início",
-    footerLegal: "© RecarregaAi! 2.0.7. Todos os direitos reservados.",
+    footerLegal: "© RecarregaAi! 2.1.6. Todos os direitos reservados.",
     footerPrivacy: "Privacidade",
     formInvalidInterval: "Informe um intervalo padrão de pelo menos 1 minuto.",
     formInvalidOrigin: "Use um endereço http ou https.",
     formPermissionDenied:
       "Permissão negada. Autorize este site para usar o início automático.",
     formSiteAddError: "Não consegui adicionar o site.",
+    formSiteDuplicate: "Este site já está na lista de início automático.",
     formSiteSaved: "Site salvo para iniciar automaticamente.",
     formSiteSaveError: "Erro ao salvar site.",
     formSiteRemoved: "Site removido.",
@@ -100,8 +117,43 @@ const optionsTranslations = extendPageTranslations({
     formImportInvalid: "Arquivo de configurações inválido.",
     formImportPermissionDenied:
       "Permissão negada. Autorize os sites importados para concluir a importação.",
-    headerHome: "Página inicial",
+    headerExit: "Sair",
     headerTitle: "Configurações",
+    historyAutomaticRefresh: "Atualização automática",
+    historyClear: "Limpar histórico",
+    historyClearConfirm: "Confirmar limpeza",
+    historyCleared: "Histórico limpo.",
+    historyCountPlural: "{count} ações",
+    historyCountSingular: "1 ação",
+    historyDescription:
+      "Acompanhe limpezas, atualizações automáticas e mudanças feitas nos timers deste navegador.",
+    historyEmptyDescription:
+      "As próximas atividades da extensão aparecerão aqui.",
+    historyEmptyTitle: "Nenhuma ação registrada.",
+    historyEyebrow: "Atividade local",
+    historyFilterAll: "Todas",
+    historyFilterLabel: "Filtrar histórico",
+    historyFilterRefreshes: "Atualizações",
+    historyFilterTimers: "Timers",
+    historyInterval: "A cada {interval}",
+    historyLimitNote:
+      "São mantidas somente as 100 ações mais recentes, salvas localmente.",
+    historyManualCleanup: "Limpeza manual",
+    historyNavLabel: "Histórico",
+    historyPauseManual: "Pausado pelo usuário",
+    historyPauseMedia: "Pausado por mídia ativa",
+    historyPauseNavigation: "Pausado após sair do site",
+    historyPauseTyping: "Pausado durante a digitação",
+    historyStatusError: "Falhou",
+    historyStatusInfo: "Informação",
+    historyStatusSuccess: "Concluído",
+    historyStatusWarning: "Pausado",
+    historyTimerPaused: "Timer pausado",
+    historyTimerResumed: "Timer retomado",
+    historyTimerStarted: "Timer iniciado",
+    historyTimerStopped: "Timer removido",
+    historyTitle: "Histórico de ações",
+    historyUnknownSite: "Site não identificado",
     heroCardBody:
       "Tudo fica salvo localmente no navegador e pode ser ajustado quando seu fluxo mudar.",
     heroCardLabel: "Resumo rápido",
@@ -140,7 +192,11 @@ const optionsTranslations = extendPageTranslations({
     readySitesSingular: "1 site cadastrado",
     removeSite: "Remover",
     saveDefaultInterval: "Salvar tempo padrão",
+    siteAddressHint: "Use o endereço principal do site.",
     siteAddressLabel: "Endereço do site",
+    siteFormDescription:
+      "Informe o endereço e escolha quando a página deve ser atualizada.",
+    siteFormTitle: "Novo site automático",
     siteIntervalHint: "Deixe vazio para usar o tempo padrão.",
     siteIntervalLabel: "Tempo em minutos",
     siteListLabel: "Sites automáticos",
@@ -170,9 +226,13 @@ const optionsTranslations = extendPageTranslations({
       "Take default time, automatic sites, theme and language to another browser or a new installation.",
     backupEyebrow: "Portability",
     backupExport: "Export settings",
+    backupExportDescription: "Download a copy of your preferences.",
     backupImport: "Import settings",
+    backupImportDescription: "Restore preferences from a JSON file.",
     backupNote:
       "Active timers by tab are not included in the file because they depend on the tabs open in this browser.",
+    backupNoteWithHistory:
+      "Active timers and local history are not included because they belong to this browser installation.",
     backupTitle: "Import and export settings",
     closeDialog: "Close",
     cleanupDescription:
@@ -188,17 +248,19 @@ const optionsTranslations = extendPageTranslations({
     documentTitle: "RecarregaAi! Settings",
     emptySitesDescription:
       "Add an address above so RecarregaAi! can start automatically when that site opens.",
+    emptySitesStatus: "Empty list",
     emptySitesTitle: "No automatic site added.",
     footerFeedback: "Feedback",
     footerDeveloper: "Developed by:",
     footerHome: "Home",
-    footerLegal: "© RecarregaAi! 2.0.7. All rights reserved.",
+    footerLegal: "© RecarregaAi! 2.1.6. All rights reserved.",
     footerPrivacy: "Privacy",
     formInvalidInterval: "Enter a default interval of at least 1 minute.",
     formInvalidOrigin: "Use an http or https address.",
     formPermissionDenied:
       "Permission denied. Allow this site to use automatic start.",
     formSiteAddError: "I could not add the site.",
+    formSiteDuplicate: "This site is already in the automatic-start list.",
     formSiteSaved: "Site saved for automatic start.",
     formSiteSaveError: "Error saving site.",
     formSiteRemoved: "Site removed.",
@@ -214,8 +276,42 @@ const optionsTranslations = extendPageTranslations({
     formImportInvalid: "Invalid settings file.",
     formImportPermissionDenied:
       "Permission denied. Allow the imported sites to complete the import.",
-    headerHome: "Home page",
+    headerExit: "Exit",
     headerTitle: "Settings",
+    historyAutomaticRefresh: "Automatic refresh",
+    historyClear: "Clear history",
+    historyClearConfirm: "Confirm clear",
+    historyCleared: "History cleared.",
+    historyCountPlural: "{count} actions",
+    historyCountSingular: "1 action",
+    historyDescription:
+      "Review cleanups, automatic refreshes and timer changes made in this browser.",
+    historyEmptyDescription: "The extension's next activities will appear here.",
+    historyEmptyTitle: "No actions recorded.",
+    historyEyebrow: "Local activity",
+    historyFilterAll: "All",
+    historyFilterLabel: "Filter history",
+    historyFilterRefreshes: "Refreshes",
+    historyFilterTimers: "Timers",
+    historyInterval: "Every {interval}",
+    historyLimitNote:
+      "Only the 100 most recent actions are kept and stored locally.",
+    historyManualCleanup: "Manual cleanup",
+    historyNavLabel: "History",
+    historyPauseManual: "Paused by the user",
+    historyPauseMedia: "Paused for active media",
+    historyPauseNavigation: "Paused after leaving the site",
+    historyPauseTyping: "Paused while typing",
+    historyStatusError: "Failed",
+    historyStatusInfo: "Information",
+    historyStatusSuccess: "Completed",
+    historyStatusWarning: "Paused",
+    historyTimerPaused: "Timer paused",
+    historyTimerResumed: "Timer resumed",
+    historyTimerStarted: "Timer started",
+    historyTimerStopped: "Timer removed",
+    historyTitle: "Action history",
+    historyUnknownSite: "Unknown site",
     heroCardBody:
       "Everything is saved locally in the browser and can be adjusted whenever your flow changes.",
     heroCardLabel: "Quick summary",
@@ -254,7 +350,11 @@ const optionsTranslations = extendPageTranslations({
     readySitesSingular: "1 site added",
     removeSite: "Remove",
     saveDefaultInterval: "Save default time",
+    siteAddressHint: "Use the site's main address.",
     siteAddressLabel: "Site address",
+    siteFormDescription:
+      "Enter the address and choose when the page should refresh.",
+    siteFormTitle: "New automatic site",
     siteIntervalHint: "Leave empty to use the default time.",
     siteIntervalLabel: "Time in minutes",
     siteListLabel: "Automatic sites",
@@ -284,9 +384,13 @@ const optionsTranslations = extendPageTranslations({
       "Lleva tiempo predeterminado, sitios automáticos, tema e idioma a otro navegador o una nueva instalación.",
     backupEyebrow: "Portabilidad",
     backupExport: "Exportar configuración",
+    backupExportDescription: "Descarga una copia de tus preferencias.",
     backupImport: "Importar configuración",
+    backupImportDescription: "Restaura preferencias desde un archivo JSON.",
     backupNote:
       "Los timers activos por pestaña no entran en el archivo porque dependen de las pestañas abiertas en este navegador.",
+    backupNoteWithHistory:
+      "Los temporizadores activos y el historial local no se incluyen porque pertenecen a esta instalación del navegador.",
     backupTitle: "Importar y exportar configuración",
     closeDialog: "Cerrar",
     cleanupDescription:
@@ -302,17 +406,19 @@ const optionsTranslations = extendPageTranslations({
     documentTitle: "Configuración de RecarregaAi!",
     emptySitesDescription:
       "Agrega una dirección arriba para que RecarregaAi! se inicie solo cuando ese sitio se abra.",
+    emptySitesStatus: "Lista vacía",
     emptySitesTitle: "No hay sitios automáticos registrados.",
     footerFeedback: "Feedback",
     footerDeveloper: "Desarrollado por:",
     footerHome: "Inicio",
-    footerLegal: "© RecarregaAi! 2.0.7. Todos los derechos reservados.",
+    footerLegal: "© RecarregaAi! 2.1.6. Todos los derechos reservados.",
     footerPrivacy: "Privacidad",
     formInvalidInterval: "Ingresa un intervalo predeterminado de al menos 1 minuto.",
     formInvalidOrigin: "Usa una dirección http o https.",
     formPermissionDenied:
       "Permiso denegado. Autoriza este sitio para usar el inicio automático.",
     formSiteAddError: "No pude agregar el sitio.",
+    formSiteDuplicate: "Este sitio ya está en la lista de inicio automático.",
     formSiteSaved: "Sitio guardado para inicio automático.",
     formSiteSaveError: "Error al guardar el sitio.",
     formSiteRemoved: "Sitio eliminado.",
@@ -328,8 +434,42 @@ const optionsTranslations = extendPageTranslations({
     formImportInvalid: "Archivo de configuración inválido.",
     formImportPermissionDenied:
       "Permiso denegado. Autoriza los sitios importados para concluir la importación.",
-    headerHome: "Página inicial",
+    headerExit: "Salir",
     headerTitle: "Configuración",
+    historyAutomaticRefresh: "Actualización automática",
+    historyClear: "Borrar historial",
+    historyClearConfirm: "Confirmar borrado",
+    historyCleared: "Historial borrado.",
+    historyCountPlural: "{count} acciones",
+    historyCountSingular: "1 acción",
+    historyDescription:
+      "Consulta limpiezas, actualizaciones automáticas y cambios de temporizadores realizados en este navegador.",
+    historyEmptyDescription: "Las próximas actividades de la extensión aparecerán aquí.",
+    historyEmptyTitle: "No hay acciones registradas.",
+    historyEyebrow: "Actividad local",
+    historyFilterAll: "Todas",
+    historyFilterLabel: "Filtrar historial",
+    historyFilterRefreshes: "Actualizaciones",
+    historyFilterTimers: "Temporizadores",
+    historyInterval: "Cada {interval}",
+    historyLimitNote:
+      "Solo se conservan las 100 acciones más recientes, guardadas localmente.",
+    historyManualCleanup: "Limpieza manual",
+    historyNavLabel: "Historial",
+    historyPauseManual: "Pausado por el usuario",
+    historyPauseMedia: "Pausado por contenido multimedia activo",
+    historyPauseNavigation: "Pausado al salir del sitio",
+    historyPauseTyping: "Pausado mientras escribes",
+    historyStatusError: "Falló",
+    historyStatusInfo: "Información",
+    historyStatusSuccess: "Completado",
+    historyStatusWarning: "Pausado",
+    historyTimerPaused: "Temporizador pausado",
+    historyTimerResumed: "Temporizador reanudado",
+    historyTimerStarted: "Temporizador iniciado",
+    historyTimerStopped: "Temporizador eliminado",
+    historyTitle: "Historial de acciones",
+    historyUnknownSite: "Sitio no identificado",
     heroCardBody:
       "Todo queda guardado localmente en el navegador y puede ajustarse cuando tu flujo cambie.",
     heroCardLabel: "Resumen rápido",
@@ -368,7 +508,11 @@ const optionsTranslations = extendPageTranslations({
     readySitesSingular: "1 sitio registrado",
     removeSite: "Eliminar",
     saveDefaultInterval: "Guardar tiempo predeterminado",
+    siteAddressHint: "Usa la dirección principal del sitio.",
     siteAddressLabel: "Dirección del sitio",
+    siteFormDescription:
+      "Introduce la dirección y elige cuándo se debe actualizar la página.",
+    siteFormTitle: "Nuevo sitio automático",
     siteIntervalHint: "Déjalo vacío para usar el tiempo predeterminado.",
     siteIntervalLabel: "Tiempo en minutos",
     siteListLabel: "Sitios automáticos",
@@ -389,8 +533,219 @@ const optionsTranslations = extendPageTranslations({
   }
 }, "options");
 
+const localizedHistoryTranslations = {
+  fr: {
+    backupExportDescription: "Téléchargez une copie de vos préférences.",
+    backupImportDescription: "Restaurez les préférences depuis un fichier JSON.",
+    backupNoteWithHistory:
+      "Les minuteurs actifs et l'historique local ne sont pas inclus, car ils appartiennent à cette installation du navigateur.",
+    historyAutomaticRefresh: "Actualisation automatique",
+    historyClear: "Effacer l'historique",
+    historyClearConfirm: "Confirmer l'effacement",
+    historyCleared: "Historique effacé.",
+    historyCountPlural: "{count} actions",
+    historyCountSingular: "1 action",
+    historyDescription:
+      "Consultez les nettoyages, les actualisations automatiques et les changements de minuteur effectués dans ce navigateur.",
+    historyEmptyDescription: "Les prochaines activités de l'extension apparaîtront ici.",
+    historyEmptyTitle: "Aucune action enregistrée.",
+    historyEyebrow: "Activité locale",
+    historyFilterAll: "Toutes",
+    historyFilterLabel: "Filtrer l'historique",
+    historyFilterRefreshes: "Actualisations",
+    historyFilterTimers: "Minuteurs",
+    historyInterval: "Toutes les {interval}",
+    historyLimitNote:
+      "Seules les 100 actions les plus récentes sont conservées localement.",
+    historyManualCleanup: "Nettoyage manuel",
+    historyNavLabel: "Historique",
+    historyPauseManual: "Mis en pause par l'utilisateur",
+    historyPauseMedia: "Mis en pause pour un média actif",
+    historyPauseNavigation: "Mis en pause après avoir quitté le site",
+    historyPauseTyping: "Mis en pause pendant la saisie",
+    historyStatusError: "Échec",
+    historyStatusInfo: "Information",
+    historyStatusSuccess: "Terminé",
+    historyStatusWarning: "En pause",
+    historyTimerPaused: "Minuteur en pause",
+    historyTimerResumed: "Minuteur repris",
+    historyTimerStarted: "Minuteur démarré",
+    historyTimerStopped: "Minuteur supprimé",
+    historyTitle: "Historique des actions",
+    historyUnknownSite: "Site non identifié"
+  },
+  de: {
+    backupExportDescription: "Laden Sie eine Kopie Ihrer Einstellungen herunter.",
+    backupImportDescription: "Stellen Sie Einstellungen aus einer JSON-Datei wieder her.",
+    backupNoteWithHistory:
+      "Aktive Timer und der lokale Verlauf sind nicht enthalten, da sie zu dieser Browserinstallation gehören.",
+    historyAutomaticRefresh: "Automatische Aktualisierung",
+    historyClear: "Verlauf löschen",
+    historyClearConfirm: "Löschen bestätigen",
+    historyCleared: "Verlauf gelöscht.",
+    historyCountPlural: "{count} Aktionen",
+    historyCountSingular: "1 Aktion",
+    historyDescription:
+      "Überprüfen Sie Bereinigungen, automatische Aktualisierungen und Timer-Änderungen in diesem Browser.",
+    historyEmptyDescription: "Die nächsten Aktivitäten der Erweiterung erscheinen hier.",
+    historyEmptyTitle: "Keine Aktionen aufgezeichnet.",
+    historyEyebrow: "Lokale Aktivität",
+    historyFilterAll: "Alle",
+    historyFilterLabel: "Verlauf filtern",
+    historyFilterRefreshes: "Aktualisierungen",
+    historyFilterTimers: "Timer",
+    historyInterval: "Alle {interval}",
+    historyLimitNote:
+      "Nur die 100 neuesten Aktionen werden lokal gespeichert.",
+    historyManualCleanup: "Manuelle Bereinigung",
+    historyNavLabel: "Verlauf",
+    historyPauseManual: "Vom Benutzer pausiert",
+    historyPauseMedia: "Wegen aktiver Medien pausiert",
+    historyPauseNavigation: "Nach Verlassen der Website pausiert",
+    historyPauseTyping: "Während der Eingabe pausiert",
+    historyStatusError: "Fehlgeschlagen",
+    historyStatusInfo: "Information",
+    historyStatusSuccess: "Abgeschlossen",
+    historyStatusWarning: "Pausiert",
+    historyTimerPaused: "Timer pausiert",
+    historyTimerResumed: "Timer fortgesetzt",
+    historyTimerStarted: "Timer gestartet",
+    historyTimerStopped: "Timer entfernt",
+    historyTitle: "Aktionsverlauf",
+    historyUnknownSite: "Unbekannte Website"
+  },
+  it: {
+    backupExportDescription: "Scarica una copia delle tue preferenze.",
+    backupImportDescription: "Ripristina le preferenze da un file JSON.",
+    backupNoteWithHistory:
+      "I timer attivi e la cronologia locale non sono inclusi perché appartengono a questa installazione del browser.",
+    historyAutomaticRefresh: "Aggiornamento automatico",
+    historyClear: "Cancella cronologia",
+    historyClearConfirm: "Conferma cancellazione",
+    historyCleared: "Cronologia cancellata.",
+    historyCountPlural: "{count} azioni",
+    historyCountSingular: "1 azione",
+    historyDescription:
+      "Controlla le pulizie, gli aggiornamenti automatici e le modifiche ai timer effettuate in questo browser.",
+    historyEmptyDescription: "Le prossime attività dell'estensione appariranno qui.",
+    historyEmptyTitle: "Nessuna azione registrata.",
+    historyEyebrow: "Attività locale",
+    historyFilterAll: "Tutte",
+    historyFilterLabel: "Filtra cronologia",
+    historyFilterRefreshes: "Aggiornamenti",
+    historyFilterTimers: "Timer",
+    historyInterval: "Ogni {interval}",
+    historyLimitNote:
+      "Solo le 100 azioni più recenti vengono conservate localmente.",
+    historyManualCleanup: "Pulizia manuale",
+    historyNavLabel: "Cronologia",
+    historyPauseManual: "Messo in pausa dall'utente",
+    historyPauseMedia: "Messo in pausa per contenuti multimediali attivi",
+    historyPauseNavigation: "Messo in pausa dopo aver lasciato il sito",
+    historyPauseTyping: "Messo in pausa durante la digitazione",
+    historyStatusError: "Non riuscito",
+    historyStatusInfo: "Informazione",
+    historyStatusSuccess: "Completato",
+    historyStatusWarning: "In pausa",
+    historyTimerPaused: "Timer in pausa",
+    historyTimerResumed: "Timer ripreso",
+    historyTimerStarted: "Timer avviato",
+    historyTimerStopped: "Timer rimosso",
+    historyTitle: "Cronologia delle azioni",
+    historyUnknownSite: "Sito non identificato"
+  },
+  id: {
+    backupExportDescription: "Unduh salinan preferensi Anda.",
+    backupImportDescription: "Pulihkan preferensi dari file JSON.",
+    backupNoteWithHistory:
+      "Pengatur waktu aktif dan riwayat lokal tidak disertakan karena terkait dengan pemasangan browser ini.",
+    historyAutomaticRefresh: "Penyegaran otomatis",
+    historyClear: "Hapus riwayat",
+    historyClearConfirm: "Konfirmasi penghapusan",
+    historyCleared: "Riwayat dihapus.",
+    historyCountPlural: "{count} tindakan",
+    historyCountSingular: "1 tindakan",
+    historyDescription:
+      "Tinjau pembersihan, penyegaran otomatis, dan perubahan pengatur waktu di browser ini.",
+    historyEmptyDescription: "Aktivitas ekstensi berikutnya akan muncul di sini.",
+    historyEmptyTitle: "Belum ada tindakan yang tercatat.",
+    historyEyebrow: "Aktivitas lokal",
+    historyFilterAll: "Semua",
+    historyFilterLabel: "Filter riwayat",
+    historyFilterRefreshes: "Penyegaran",
+    historyFilterTimers: "Pengatur waktu",
+    historyInterval: "Setiap {interval}",
+    historyLimitNote:
+      "Hanya 100 tindakan terbaru yang disimpan secara lokal.",
+    historyManualCleanup: "Pembersihan manual",
+    historyNavLabel: "Riwayat",
+    historyPauseManual: "Dijeda oleh pengguna",
+    historyPauseMedia: "Dijeda karena media aktif",
+    historyPauseNavigation: "Dijeda setelah meninggalkan situs",
+    historyPauseTyping: "Dijeda saat mengetik",
+    historyStatusError: "Gagal",
+    historyStatusInfo: "Informasi",
+    historyStatusSuccess: "Selesai",
+    historyStatusWarning: "Dijeda",
+    historyTimerPaused: "Pengatur waktu dijeda",
+    historyTimerResumed: "Pengatur waktu dilanjutkan",
+    historyTimerStarted: "Pengatur waktu dimulai",
+    historyTimerStopped: "Pengatur waktu dihapus",
+    historyTitle: "Riwayat tindakan",
+    historyUnknownSite: "Situs tidak dikenal"
+  },
+  tr: {
+    backupExportDescription: "Tercihlerinizin bir kopyasını indirin.",
+    backupImportDescription: "Tercihleri bir JSON dosyasından geri yükleyin.",
+    backupNoteWithHistory:
+      "Etkin zamanlayıcılar ve yerel geçmiş bu tarayıcı kurulumuna ait olduğundan dahil edilmez.",
+    historyAutomaticRefresh: "Otomatik yenileme",
+    historyClear: "Geçmişi temizle",
+    historyClearConfirm: "Temizlemeyi onayla",
+    historyCleared: "Geçmiş temizlendi.",
+    historyCountPlural: "{count} işlem",
+    historyCountSingular: "1 işlem",
+    historyDescription:
+      "Bu tarayıcıdaki temizlemeleri, otomatik yenilemeleri ve zamanlayıcı değişikliklerini inceleyin.",
+    historyEmptyDescription: "Uzantının sonraki etkinlikleri burada görünecek.",
+    historyEmptyTitle: "Kaydedilmiş işlem yok.",
+    historyEyebrow: "Yerel etkinlik",
+    historyFilterAll: "Tümü",
+    historyFilterLabel: "Geçmişi filtrele",
+    historyFilterRefreshes: "Yenilemeler",
+    historyFilterTimers: "Zamanlayıcılar",
+    historyInterval: "Her {interval}",
+    historyLimitNote:
+      "Yalnızca en son 100 işlem yerel olarak saklanır.",
+    historyManualCleanup: "Elle temizleme",
+    historyNavLabel: "Geçmiş",
+    historyPauseManual: "Kullanıcı tarafından duraklatıldı",
+    historyPauseMedia: "Etkin medya nedeniyle duraklatıldı",
+    historyPauseNavigation: "Siteden ayrıldıktan sonra duraklatıldı",
+    historyPauseTyping: "Yazarken duraklatıldı",
+    historyStatusError: "Başarısız",
+    historyStatusInfo: "Bilgi",
+    historyStatusSuccess: "Tamamlandı",
+    historyStatusWarning: "Duraklatıldı",
+    historyTimerPaused: "Zamanlayıcı duraklatıldı",
+    historyTimerResumed: "Zamanlayıcı sürdürüldü",
+    historyTimerStarted: "Zamanlayıcı başlatıldı",
+    historyTimerStopped: "Zamanlayıcı kaldırıldı",
+    historyTitle: "İşlem geçmişi",
+    historyUnknownSite: "Bilinmeyen site"
+  }
+};
+
+Object.entries(localizedHistoryTranslations).forEach(([language, translations]) => {
+  Object.assign(optionsTranslations[language], translations);
+});
+
 let currentSettings = { ...defaultAppSettings };
+let currentActionHistory = [];
 let activeOptionsLanguage = defaultLanguage;
+let activeHistoryFilter = "all";
+let historyClearResetTimerId = null;
+let isHistoryClearPending = false;
 let optionsLanguageDialog = null;
 
 const getOptionsCopy = (key) => (
@@ -405,6 +760,247 @@ const replaceOptionsToken = (key, replacements) => (
     getOptionsCopy(key)
   )
 );
+
+const sendOptionsRuntimeMessage = (message) => new Promise((resolve, reject) => {
+  if (typeof chrome === "undefined" || !chrome.runtime?.sendMessage) {
+    resolve({
+      entries: [],
+      ok: true
+    });
+    return;
+  }
+
+  chrome.runtime.sendMessage(message, (response) => {
+    const runtimeError = chrome.runtime.lastError;
+
+    if (runtimeError) {
+      reject(new Error(runtimeError.message));
+      return;
+    }
+
+    if (response?.ok === false) {
+      reject(new Error(response.error));
+      return;
+    }
+
+    resolve(response);
+  });
+});
+
+const historyRefreshTypes = new Set([
+  actionHistoryTypes.automaticRefresh,
+  actionHistoryTypes.manualCleanup
+]);
+
+const historyTimerTypes = new Set([
+  actionHistoryTypes.timerPaused,
+  actionHistoryTypes.timerResumed,
+  actionHistoryTypes.timerStarted,
+  actionHistoryTypes.timerStopped
+]);
+
+const historyTitleKeys = Object.freeze({
+  [actionHistoryTypes.automaticRefresh]: "historyAutomaticRefresh",
+  [actionHistoryTypes.manualCleanup]: "historyManualCleanup",
+  [actionHistoryTypes.timerPaused]: "historyTimerPaused",
+  [actionHistoryTypes.timerResumed]: "historyTimerResumed",
+  [actionHistoryTypes.timerStarted]: "historyTimerStarted",
+  [actionHistoryTypes.timerStopped]: "historyTimerStopped"
+});
+
+const historyStatusKeys = Object.freeze({
+  [actionHistoryStatuses.error]: "historyStatusError",
+  [actionHistoryStatuses.info]: "historyStatusInfo",
+  [actionHistoryStatuses.success]: "historyStatusSuccess",
+  [actionHistoryStatuses.warning]: "historyStatusWarning"
+});
+
+const historyPauseKeys = Object.freeze({
+  manual: "historyPauseManual",
+  media: "historyPauseMedia",
+  navigation: "historyPauseNavigation",
+  typing: "historyPauseTyping"
+});
+
+const getHistoryEntryGroup = (entry) => (
+  historyRefreshTypes.has(entry.type) ? "refresh" : "timer"
+);
+
+const getFilteredActionHistory = () => {
+  if (activeHistoryFilter === "refresh") {
+    return currentActionHistory.filter((entry) => historyRefreshTypes.has(entry.type));
+  }
+
+  if (activeHistoryFilter === "timer") {
+    return currentActionHistory.filter((entry) => historyTimerTypes.has(entry.type));
+  }
+
+  return currentActionHistory;
+};
+
+const getHistoryOriginLabel = (origin) => {
+  try {
+    return new URL(origin).hostname || getOptionsCopy("historyUnknownSite");
+  } catch {
+    return getOptionsCopy("historyUnknownSite");
+  }
+};
+
+const formatHistoryDate = (createdAt) => {
+  const createdAtDate = new Date(createdAt);
+
+  if (!Number.isFinite(createdAtDate.getTime())) {
+    return "";
+  }
+
+  return new Intl.DateTimeFormat(activeOptionsLanguage, {
+    dateStyle: "medium",
+    timeStyle: "short"
+  }).format(createdAtDate);
+};
+
+const createHistoryIcon = (group) => {
+  const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  const paths = group === "refresh"
+    ? [
+      "M20 7v5h-5",
+      "M4 17v-5h5",
+      "M6.1 8.5A7 7 0 0 1 18.7 7L20 12",
+      "M4 12l1.3 5A7 7 0 0 0 17.9 15.5"
+    ]
+    : [
+      "M4 12a8 8 0 1 0 2.3-5.7",
+      "M4 4v5h5",
+      "M12 8v5l3 2"
+    ];
+
+  icon.setAttribute("viewBox", "0 0 24 24");
+  icon.setAttribute("aria-hidden", "true");
+
+  paths.forEach((pathData) => {
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+
+    path.setAttribute("d", pathData);
+    icon.append(path);
+  });
+
+  return icon;
+};
+
+const getHistoryDetails = (entry) => {
+  const details = [getHistoryOriginLabel(entry.origin)];
+
+  if (entry.intervalInMinutes) {
+    details.push(replaceOptionsToken("historyInterval", {
+      interval: formatMinuteLabel(entry.intervalInMinutes)
+    }));
+  }
+
+  if (entry.type === actionHistoryTypes.timerPaused && historyPauseKeys[entry.detail]) {
+    details.push(getOptionsCopy(historyPauseKeys[entry.detail]));
+  }
+
+  return details;
+};
+
+const updateHistoryCount = () => {
+  const count = currentActionHistory.length;
+
+  optionsElements.historyCount.textContent = count === 1
+    ? getOptionsCopy("historyCountSingular")
+    : replaceOptionsToken("historyCountPlural", {
+      count
+    });
+  optionsElements.clearHistoryButton.disabled = count === 0;
+};
+
+const renderActionHistory = () => {
+  const filteredHistory = getFilteredActionHistory();
+
+  optionsElements.historyList.replaceChildren();
+  optionsElements.historyList.hidden = filteredHistory.length === 0;
+  optionsElements.historyEmptyState.hidden = filteredHistory.length > 0;
+
+  filteredHistory.forEach((entry) => {
+    const item = document.createElement("li");
+    const icon = document.createElement("span");
+    const content = document.createElement("div");
+    const heading = document.createElement("div");
+    const title = document.createElement("strong");
+    const status = document.createElement("span");
+    const details = document.createElement("p");
+    const time = document.createElement("time");
+    const historyGroup = getHistoryEntryGroup(entry);
+
+    item.className = "history-item";
+    item.dataset.historyGroup = historyGroup;
+    icon.className = "history-item__icon";
+    icon.append(createHistoryIcon(historyGroup));
+    content.className = "history-item__content";
+    heading.className = "history-item__heading";
+    title.textContent = getOptionsCopy(historyTitleKeys[entry.type]);
+    status.className = "history-item__status";
+    status.dataset.status = entry.status;
+    status.textContent = getOptionsCopy(
+      historyStatusKeys[entry.status] || "historyStatusInfo"
+    );
+    details.className = "history-item__details";
+    details.textContent = getHistoryDetails(entry).join(" · ");
+    time.className = "history-item__time";
+    time.dateTime = entry.createdAt;
+    time.textContent = formatHistoryDate(entry.createdAt);
+
+    heading.append(title, status);
+    content.append(heading, details, time);
+    item.append(icon, content);
+    optionsElements.historyList.append(item);
+  });
+
+  updateHistoryCount();
+};
+
+const loadActionHistory = async () => {
+  const response = await sendOptionsRuntimeMessage({
+    type: runtimeMessageTypes.getActionHistory
+  });
+
+  currentActionHistory = Array.isArray(response?.entries) ? response.entries : [];
+  renderActionHistory();
+};
+
+const resetHistoryClearConfirmation = () => {
+  isHistoryClearPending = false;
+  optionsElements.clearHistoryButton.classList.remove("is-confirming");
+  optionsElements.clearHistoryButton.textContent = getOptionsCopy("historyClear");
+
+  if (historyClearResetTimerId) {
+    window.clearTimeout(historyClearResetTimerId);
+    historyClearResetTimerId = null;
+  }
+};
+
+const clearStoredActionHistory = async () => {
+  if (!isHistoryClearPending) {
+    isHistoryClearPending = true;
+    optionsElements.clearHistoryButton.classList.add("is-confirming");
+    optionsElements.clearHistoryButton.textContent = getOptionsCopy(
+      "historyClearConfirm"
+    );
+    historyClearResetTimerId = window.setTimeout(
+      resetHistoryClearConfirmation,
+      5000
+    );
+    return;
+  }
+
+  await sendOptionsRuntimeMessage({
+    type: runtimeMessageTypes.clearActionHistory
+  });
+  currentActionHistory = [];
+  resetHistoryClearConfirmation();
+  renderActionHistory();
+  updateOptionsStatus(getOptionsCopy("historyCleared"), "success");
+};
 
 const setText = (selector, key) => {
   const element = document.querySelector(selector);
@@ -463,6 +1059,27 @@ const savePreviewSettings = (settings) => {
 const updateOptionsStatus = (message, status = "neutral") => {
   optionsElements.optionsStatus.textContent = message;
   optionsElements.optionsStatus.dataset.status = status;
+};
+
+const updateSiteFormAlert = (message = "") => {
+  optionsElements.siteFormAlertText.textContent = message;
+  optionsElements.siteFormAlert.hidden = !message;
+};
+
+const closeOptionsPage = () => {
+  if (typeof chrome === "undefined" || !chrome.tabs?.getCurrent || !chrome.tabs?.remove) {
+    window.close();
+    return;
+  }
+
+  chrome.tabs.getCurrent((currentTab) => {
+    if (chrome.runtime.lastError || !currentTab?.id) {
+      window.close();
+      return;
+    }
+
+    chrome.tabs.remove(currentTab.id);
+  });
 };
 
 const formatMinuteLabel = (minutes) => {
@@ -916,7 +1533,20 @@ const saveDefaultInterval = async () => {
 
 const addAutoStartSite = async () => {
   try {
+    updateSiteFormAlert();
+
     const origin = normalizeSiteOrigin(optionsElements.siteOriginInput.value);
+    const isDuplicateSite = currentSettings.autoStartSites.some(
+      (site) => site.origin === origin
+    );
+
+    if (isDuplicateSite) {
+      updateSiteFormAlert(getOptionsCopy("formSiteDuplicate"));
+      optionsElements.siteOriginInput.focus();
+      optionsElements.siteOriginInput.select();
+      return;
+    }
+
     const hasPermission = await requestAutoStartPermission(origin);
 
     if (!hasPermission) {
@@ -1014,9 +1644,10 @@ const applyOptionsLanguage = (language) => {
     "navGeneral",
     "navSites",
     "navBackup",
+    "historyNavLabel",
     "navPermissions"
   ]);
-  setText(".settings-header__link", "headerHome");
+  setText(".settings-header__link span", "headerExit");
   setText(".settings-header__title", "headerTitle");
   setText("#options-title", "pageTitle");
   setText(".brand__subtitle", "pageDescription");
@@ -1031,18 +1662,38 @@ const applyOptionsLanguage = (language) => {
   setText(".settings-row .field__label", "defaultIntervalInputLabel");
   setText("#save-settings-button", "saveDefaultInterval");
   setText("#sites-title", "sitesTitle");
-  setText(".site-form .field:nth-child(1) .field__label", "siteAddressLabel");
-  setText(".site-form .field:nth-child(2) .field__label", "siteIntervalLabel");
-  setText(".site-form .field__hint", "siteIntervalHint");
-  setText("#add-site-button", "addSite");
+  setText("#site-form-title", "siteFormTitle");
+  setText("#site-form-description", "siteFormDescription");
+  setText("#site-origin-label .field__label-text", "siteAddressLabel");
+  setText("#site-origin-hint", "siteAddressHint");
+  setText("#site-interval-label .field__label-text", "siteIntervalLabel");
+  setText("#site-interval-hint", "siteIntervalHint");
+  setText("#add-site-button .button__label", "addSite");
   setText(".empty-state strong", "emptySitesTitle");
   setText(".empty-state div span", "emptySitesDescription");
+  setText(".panel--sites .empty-state__status", "emptySitesStatus");
   setText(".panel--backup .panel__eyebrow", "backupEyebrow");
   setText("#backup-title", "backupTitle");
   setText(".panel--backup .panel__description", "backupDescription");
   setText("#export-settings-label", "backupExport");
+  setText("#export-settings-description", "backupExportDescription");
   setText("#import-settings-label", "backupImport");
-  setText(".backup-note", "backupNote");
+  setText("#import-settings-description", "backupImportDescription");
+  setText(".backup-note__text", "backupNoteWithHistory");
+  setText(".panel--history .panel__eyebrow", "historyEyebrow");
+  setText("#history-title", "historyTitle");
+  setText(".panel--history .panel__description", "historyDescription");
+  setText("#clear-history-button", isHistoryClearPending
+    ? "historyClearConfirm"
+    : "historyClear");
+  setTexts(".history-filter", [
+    "historyFilterAll",
+    "historyFilterRefreshes",
+    "historyFilterTimers"
+  ]);
+  setText(".history-empty-state strong", "historyEmptyTitle");
+  setText(".history-empty-state div span", "historyEmptyDescription");
+  setText(".history-note", "historyLimitNote");
   setText("#permissions-title", "permissionsTitle");
   setTextAt(".summary-card strong", 0, "defaultTimeLabel");
   setTextAt(".summary-card strong", 1, "autoSitesLabel");
@@ -1050,8 +1701,8 @@ const applyOptionsLanguage = (language) => {
   setTextAt(".summary-card div > span", 2, "localControlText");
   setTextAt(".panel .panel__eyebrow", 1, "autoStartEyebrow");
   setTextAt(".panel .panel__description", 1, "autoStartDescription");
-  setTextAt(".panel .panel__eyebrow", 3, "transparencyEyebrow");
-  setTextAt(".panel .panel__description", 3, "permissionsDescription");
+  setText(".panel--permissions .panel__eyebrow", "transparencyEyebrow");
+  setText(".panel--permissions .panel__description", "permissionsDescription");
   setTexts(".permission-card strong", [
     "currentPageTitle",
     "cleanupTitle",
@@ -1085,6 +1736,8 @@ const applyOptionsLanguage = (language) => {
   setAttribute(".settings-nav", "aria-label", "settingsNavLabel");
   setAttribute(".settings-sidebar-card", "aria-label", "heroCardLabel");
   setAttribute("#sites-list", "aria-label", "siteListLabel");
+  setAttribute("#history-list", "aria-label", "historyTitle");
+  setAttribute(".history-toolbar", "aria-label", "historyFilterLabel");
   setAttribute(".privacy-footer__nav", "aria-label", "linksLabel");
   setAttribute(".privacy-footer__social", "aria-label", "contactChannelsLabel");
   setAttribute(".language-grid", "aria-label", "languageGridLabel");
@@ -1095,6 +1748,7 @@ const applyOptionsLanguage = (language) => {
 
   updateSettingsSummary();
   renderSites();
+  renderActionHistory();
   updateOptionsThemeButtonLabel({
     isDarkTheme: document.documentElement.dataset.theme === "dark"
   });
@@ -1155,6 +1809,51 @@ optionsElements.themeToggleButton.addEventListener("click", () => {
   });
 });
 
+optionsElements.closeOptionsButton.addEventListener("click", () => {
+  closeOptionsPage();
+});
+
+optionsElements.siteOriginInput.addEventListener("input", () => {
+  updateSiteFormAlert();
+});
+
+optionsElements.historyFilterButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    activeHistoryFilter = button.dataset.historyFilter;
+
+    optionsElements.historyFilterButtons.forEach((filterButton) => {
+      const isActive = filterButton === button;
+
+      filterButton.classList.toggle("is-active", isActive);
+      filterButton.setAttribute("aria-pressed", String(isActive));
+    });
+
+    renderActionHistory();
+  });
+});
+
+optionsElements.clearHistoryButton.addEventListener("click", () => {
+  clearStoredActionHistory().catch((error) => {
+    resetHistoryClearConfirmation();
+    updateOptionsStatus(error.message || getOptionsCopy("formSettingsError"), "error");
+  });
+});
+
+if (typeof chrome !== "undefined" && chrome.storage?.onChanged) {
+  chrome.storage.onChanged.addListener((changes, areaName) => {
+    const historyChange = changes[storageKeys.actionHistory];
+
+    if (areaName !== "local" || !historyChange) {
+      return;
+    }
+
+    currentActionHistory = Array.isArray(historyChange.newValue)
+      ? historyChange.newValue
+      : [];
+    renderActionHistory();
+  });
+}
+
 initFloatingTools();
 optionsLanguageDialog = initLanguageDialog({
   onChange: applyOptionsLanguage,
@@ -1168,6 +1867,12 @@ loadOptionsTheme().catch((error) => {
 loadOptionsSettings().catch((error) => {
   updateOptionsStatus(
     error.message || "Erro ao carregar configurações.",
+    "error"
+  );
+});
+loadActionHistory().catch((error) => {
+  updateOptionsStatus(
+    error.message || getOptionsCopy("formSettingsLoadError"),
     "error"
   );
 });

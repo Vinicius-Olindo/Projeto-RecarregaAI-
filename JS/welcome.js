@@ -1,4 +1,4 @@
-// RecarregaAi! 2.0.7
+// RecarregaAi! 2.1.6
 
 import { initFloatingTools } from "./modules/floating-tools.js";
 import {
@@ -7,6 +7,9 @@ import {
 } from "./modules/theme.js";
 import { extendPageTranslations } from "./modules/extended-translations.js";
 import { supportedLanguages } from "./modules/language-dialog.js";
+import { enforceTopLevelPublicPage } from "./modules/public-page-security.js";
+
+enforceTopLevelPublicPage();
 
 const welcomeLanguageStorageKey = "recarregaAiPageLanguage";
 const legacyWelcomeLanguageStorageKey = "recarregaAiWelcomeLanguage";
@@ -66,7 +69,7 @@ const welcomeTranslations = extendPageTranslations({
     footerDeveloper: "Desenvolvido por:",
     footerFeedback: "Feedback",
     footerHome: "Início",
-    footerLegal: "© RecarregaAi! 2.0.7. Todos os direitos reservados.",
+    footerLegal: "© RecarregaAi! 2.1.6. Todos os direitos reservados.",
     footerPrivacy: "Privacidade",
     heroDescription:
       "Use timers por guia, limpe o cache do site aberto e mantenha sistemas como Drive, painéis internos e páginas de trabalho sempre atualizados.",
@@ -166,7 +169,7 @@ const welcomeTranslations = extendPageTranslations({
     footerDeveloper: "Developed by:",
     footerFeedback: "Feedback",
     footerHome: "Home",
-    footerLegal: "© RecarregaAi! 2.0.7. All rights reserved.",
+    footerLegal: "© RecarregaAi! 2.1.6. All rights reserved.",
     footerPrivacy: "Privacy",
     heroDescription:
       "Use timers by tab, clear the open site's cache and keep systems such as Drive, internal dashboards and work pages always updated.",
@@ -265,7 +268,7 @@ const welcomeTranslations = extendPageTranslations({
     footerDeveloper: "Desarrollado por:",
     footerFeedback: "Feedback",
     footerHome: "Inicio",
-    footerLegal: "© RecarregaAi! 2.0.7. Todos los derechos reservados.",
+    footerLegal: "© RecarregaAi! 2.1.6. Todos los derechos reservados.",
     footerPrivacy: "Privacidad",
     heroDescription:
       "Usa timers por pestaña, limpia la caché del sitio abierto y mantén sistemas como Drive, paneles internos y páginas de trabajo siempre actualizados.",

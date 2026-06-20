@@ -1,4 +1,4 @@
-// RecarregaAi! 2.0.7
+// RecarregaAi! 2.1.6
 
 import { appConfig } from "./modules/config.js";
 import {
@@ -10,12 +10,18 @@ import {
   loadThemePreference,
   toggleThemePreference
 } from "./modules/theme.js";
+import { enforceTopLevelPublicPage } from "./modules/public-page-security.js";
+
+enforceTopLevelPublicPage();
 
 const feedbackSubmitUrl = appConfig.feedbackSubmitUrl;
-const feedbackFallbackUrl = appConfig.feedbackFallbackUrl;
-const defaultVersionLabel = "2.0.7";
+const defaultVersionLabel = "2.1.6";
 const defaultLanguage = "pt-BR";
 const defaultReason = "Não informou motivo";
+const feedbackCooldownInMilliseconds = 60 * 1000;
+const feedbackLastSubmitAtKey = "recarregaAiFeedbackLastSubmitAt";
+const feedbackMessageMaxLength = 1200;
+const feedbackEmailMaxLength = 254;
 const languageStorageKey = "recarregaAiPageLanguage";
 const legacyLanguageStorageKey = "recarregaAiUninstallLanguage";
 
@@ -30,13 +36,15 @@ const translations = extendPageTranslations({
     footerDeveloper: "Desenvolvido por:",
     footerFeedback: "Feedback",
     footerHome: "Início",
-    footerLegal: "© RecarregaAi! 2.0.7. Todos os direitos reservados.",
+    footerLegal: "© RecarregaAi! 2.1.6. Todos os direitos reservados.",
     footerPrivacy: "Privacidade",
     formSubmitError:
       "Não consegui confirmar o envio agora. Tente novamente em alguns instantes.",
     formSubmitFallbackSuccess:
       "Feedback registrado. Obrigado por ajudar a melhorar o RecarregaAi!",
     formSubmitLoading: "Enviando feedback...",
+    formSubmitRateLimit:
+      "Aguarde {seconds} segundos antes de enviar outro feedback.",
     formSubmitSuccess: "Feedback enviado com sucesso. Obrigado por ajudar.",
     introFirst: [
       "Antes de desinstalar de vez, conte rapidamente o que não funcionou bem.",
@@ -57,7 +65,7 @@ const translations = extendPageTranslations({
     reasonRequired: "Selecione um motivo antes de enviar.",
     selectedPrefix: "Selecionado: ",
     sendButton: "Enviar feedback",
-    versionLabel: "2.0.7"
+    versionLabel: "2.1.6"
   },
   en: {
     backToTop: "Back to start",
@@ -69,13 +77,15 @@ const translations = extendPageTranslations({
     footerDeveloper: "Developed by:",
     footerFeedback: "Feedback",
     footerHome: "Home",
-    footerLegal: "© RecarregaAi! 2.0.7. All rights reserved.",
+    footerLegal: "© RecarregaAi! 2.1.6. All rights reserved.",
     footerPrivacy: "Privacy",
     formSubmitError:
       "I could not confirm the send right now. Try again in a few moments.",
     formSubmitFallbackSuccess:
       "Feedback registered. Thanks for helping improve RecarregaAi!",
     formSubmitLoading: "Sending feedback...",
+    formSubmitRateLimit:
+      "Wait {seconds} seconds before sending more feedback.",
     formSubmitSuccess: "Feedback sent successfully. Thanks for helping.",
     introFirst: [
       "Before uninstalling for good, quickly tell us what did not work well.",
@@ -95,7 +105,7 @@ const translations = extendPageTranslations({
     reasonRequired: "Select a reason before sending.",
     selectedPrefix: "Selected: ",
     sendButton: "Send feedback",
-    versionLabel: "2.0.7"
+    versionLabel: "2.1.6"
   },
   es: {
     backToTop: "Volver al inicio",
@@ -107,13 +117,15 @@ const translations = extendPageTranslations({
     footerDeveloper: "Desarrollado por:",
     footerFeedback: "Feedback",
     footerHome: "Inicio",
-    footerLegal: "© RecarregaAi! 2.0.7. Todos los derechos reservados.",
+    footerLegal: "© RecarregaAi! 2.1.6. Todos los derechos reservados.",
     footerPrivacy: "Privacidad",
     formSubmitError:
       "No pude confirmar el envío ahora. Inténtalo de nuevo en unos momentos.",
     formSubmitFallbackSuccess:
       "Feedback registrado. Gracias por ayudar a mejorar RecarregaAi!",
     formSubmitLoading: "Enviando feedback...",
+    formSubmitRateLimit:
+      "Espera {seconds} segundos antes de enviar otro feedback.",
     formSubmitSuccess: "Feedback enviado correctamente. Gracias por ayudar.",
     introFirst: [
       "Antes de desinstalar definitivamente, cuéntanos rápidamente qué no funcionó bien.",
@@ -133,7 +145,7 @@ const translations = extendPageTranslations({
     reasonRequired: "Selecciona un motivo antes de enviar.",
     selectedPrefix: "Seleccionado: ",
     sendButton: "Enviar feedback",
-    versionLabel: "2.0.7"
+    versionLabel: "2.1.6"
   }
 }, "uninstall");
 
@@ -371,12 +383,17 @@ const prepareHiddenFields = () => {
 };
 
 const buildFeedbackPayload = () => {
-  const message = uninstallElements.feedbackMessage.value.trim()
+  const message = uninstallElements.feedbackMessage.value.trim().slice(
+    0,
+    feedbackMessageMaxLength
+  )
     || "O usuário não informou detalhes adicionais.";
-  const contactEmail = uninstallElements.contactEmail.value.trim();
+  const contactEmail = uninstallElements.contactEmail.value.trim().slice(
+    0,
+    feedbackEmailMaxLength
+  );
   const emailLabel = contactEmail || "Não informado";
   const payload = {
-    _captcha: "false",
     _subject: "Feedback RecarregaAi!",
     _template: "table",
     Comentario: message,
@@ -410,41 +427,38 @@ const createEncodedPayload = (payload) => {
   return encodedPayload;
 };
 
-const submitFeedbackWithHiddenForm = (payload) => new Promise((resolve) => {
-  const frameName = `recarregaai-feedback-${Date.now()}`;
-  const iframe = document.createElement("iframe");
-  const form = document.createElement("form");
+const getFeedbackCooldownSeconds = () => {
+  const lastSubmitAt = Number(localStorage.getItem(feedbackLastSubmitAtKey));
 
-  iframe.name = frameName;
-  iframe.hidden = true;
+  if (!Number.isFinite(lastSubmitAt)) {
+    return 0;
+  }
 
-  form.action = feedbackFallbackUrl;
-  form.hidden = true;
-  form.method = "POST";
-  form.target = frameName;
-
-  Object.entries(payload).forEach(([key, value]) => {
-    const input = document.createElement("input");
-
-    input.name = key;
-    input.type = "hidden";
-    input.value = value;
-    form.append(input);
-  });
-
-  document.body.append(iframe, form);
-
-  window.setTimeout(() => {
-    form.remove();
-    iframe.remove();
-    resolve();
-  }, 1400);
-
-  form.submit();
-});
+  return Math.max(
+    0,
+    Math.ceil(
+      (lastSubmitAt + feedbackCooldownInMilliseconds - Date.now()) / 1000
+    )
+  );
+};
 
 const submitFeedback = async () => {
   if (isSendingFeedback || !hasSelectedReason()) {
+    return;
+  }
+
+  const cooldownSeconds = getFeedbackCooldownSeconds();
+
+  if (cooldownSeconds > 0) {
+    updateStatus(
+      getCopy("formSubmitRateLimit").replace(
+        "{seconds}",
+        String(cooldownSeconds)
+      ),
+      {
+        isError: true
+      }
+    );
     return;
   }
 
@@ -469,15 +483,15 @@ const submitFeedback = async () => {
       throw new Error("Envio automático recusado.");
     }
 
+    localStorage.setItem(feedbackLastSubmitAtKey, String(Date.now()));
     updateStatus(getCopy("formSubmitSuccess"));
     clearOptionalFields();
     prepareHiddenFields();
   } catch (error) {
     console.error("Erro ao enviar feedback automaticamente:", error);
-    await submitFeedbackWithHiddenForm(feedbackPayload);
-    updateStatus(getCopy("formSubmitFallbackSuccess"));
-    clearOptionalFields();
-    prepareHiddenFields();
+    updateStatus(getCopy("formSubmitError"), {
+      isError: true
+    });
   } finally {
     isSendingFeedback = false;
     setFeedbackControlsDisabled(false);

@@ -1,14 +1,31 @@
-// RecarregaAi! 2.0.7
+// RecarregaAi! 2.1.6
 
 export const oneSecondInMilliseconds = 1000;
 export const mediaResumeSafetySeconds = 3;
 
 export const storageKeys = Object.freeze({
+  actionHistory: "recarregaAiActionHistory",
   appSettings: "recarregaAiSettings",
   lastTimerRun: "recarregaAiLastTimerRun",
   theme: "recarregaAiTheme",
   timerSettingsPrefix: "recarregaAiTimer:",
   timerSettings: "recarregaAiTimerSettings"
+});
+
+export const actionHistoryTypes = Object.freeze({
+  automaticRefresh: "automatic-refresh",
+  manualCleanup: "manual-cleanup",
+  timerPaused: "timer-paused",
+  timerResumed: "timer-resumed",
+  timerStarted: "timer-started",
+  timerStopped: "timer-stopped"
+});
+
+export const actionHistoryStatuses = Object.freeze({
+  error: "error",
+  info: "info",
+  success: "success",
+  warning: "warning"
 });
 
 export const alarmNames = Object.freeze({
@@ -18,11 +35,14 @@ export const alarmNames = Object.freeze({
 });
 
 export const runtimeMessageTypes = Object.freeze({
+  clearActionHistory: "RECARREGA_AI_CLEAR_ACTION_HISTORY",
+  getActionHistory: "RECARREGA_AI_GET_ACTION_HISTORY",
   getTimerState: "RECARREGA_AI_GET_TIMER_STATE",
   openTimerTab: "RECARREGA_AI_OPEN_TIMER_TAB",
   pauseTimer: "RECARREGA_AI_PAUSE_TIMER",
   resumeTimer: "RECARREGA_AI_RESUME_TIMER",
   mediaState: "RECARREGA_AI_MEDIA_STATE",
+  recordManualCleanup: "RECARREGA_AI_RECORD_MANUAL_CLEANUP",
   startTimer: "RECARREGA_AI_START_TIMER",
   stopTimer: "RECARREGA_AI_STOP_TIMER",
   typingState: "RECARREGA_AI_TYPING_STATE"

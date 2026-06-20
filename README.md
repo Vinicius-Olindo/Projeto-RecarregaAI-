@@ -1,6 +1,6 @@
 # RecarregaAi!
 
-Versao atual: **2.0.7**.
+Versao atual: **2.1.6**.
 
 Extensao para Google Chrome que limpa o cache do site aberto, tenta limpar o cache
 dos recursos carregados pela pagina e recarrega a aba atual. Tambem permite ativar
@@ -20,15 +20,28 @@ RecarregaAI-/
 |   |-- options.css
 |   |-- privacy.css
 |   |-- popup.css
+|   |-- shared-floating-tools.css
+|   |-- shared-footer.css
+|   |-- shared-language-dialog.css
 |   |-- uninstall.css
 |   `-- welcome.css
 |-- JS/
 |   |-- background.js
 |   |-- content.js
+|   |-- page-media-guard.js
 |   |-- options.js
 |   |-- popup.js
+|   |-- privacy.js
 |   |-- uninstall.js
-|   `-- welcome.js
+|   |-- welcome.js
+|   `-- modules/
+|       |-- cache.js
+|       |-- config.js
+|       |-- history.js
+|       |-- shared.js
+|       |-- storage.js
+|       |-- tabs.js
+|       `-- theme.js
 `-- assets/
     |-- icons/
     |   |-- icon16.png
@@ -118,10 +131,17 @@ A pagina `options.html` permite:
 - Definir o intervalo padrao do timer.
 - Cadastrar sites para auto-inicio.
 - Remover sites cadastrados.
+- Consultar e limpar o historico local de acoes.
 - Ver uma explicacao clara das permissoes usadas pela extensao.
 
 O auto-inicio cria um timer separado para cada guia carregada com um site
 favorito, desde que aquela guia ainda nao tenha timer ativo.
+
+O historico mantem localmente apenas as 100 acoes mais recentes. Ele registra
+limpezas manuais, atualizacoes automaticas e mudancas dos timers, guardando
+somente tipo, horario, dominio, intervalo e resultado. URLs completas, conteudo
+das paginas e texto digitado nao sao armazenados. O historico pode ser filtrado
+ou apagado na pagina de configuracoes e nao entra no arquivo de backup.
 
 Ao ativar um timer manual ou cadastrar um site de auto-inicio, a permissao do
 dominio e solicitada durante a acao do usuario. Isso deixa o timer mais
@@ -134,6 +154,7 @@ A pagina `privacy.html` resume como a extensao lida com dados:
 - Nao vende dados.
 - Nao coleta conteudo das paginas.
 - Salva configuracoes localmente no Chrome.
+- Mantem localmente um historico limitado das acoes da extensao.
 - Usa permissoes opcionais apenas para dominios escolhidos pelo usuario.
 - Feedback de desinstalacao e opcional e enviado via FormSubmit.
 - Email de contato no feedback tambem e opcional.
@@ -146,16 +167,17 @@ propria pagina. Comentario e email continuam opcionais, mas ficam em uma area
 recolhida para nao alongar o fluxo.
 
 Tambem possui acoes flutuantes compactas para idioma e voltar ao inicio. Os
-nomes aparecem no hover ou foco, e o idioma abre uma janela com os 3 idiomas
-disponiveis: Portugues (BR), English e Espanol.
+nomes aparecem no hover ou foco, e o idioma abre uma janela com os idiomas
+disponiveis: Portugues (BR), English, Espanol, Francais, Deutsch, Italiano,
+Bahasa Indonesia e Turkce.
 
 O topo da pagina possui um botao `Adicionar ao Chrome`, pensado para apontar
 para a pagina publica da extensao quando ela estiver publicada.
 
 O envio automatico vai direto para o email do projeto por FormSubmit, sem abrir
-GitHub, tela intermediaria ou outro formulario. A pagina tenta primeiro o envio
-AJAX e, se o servico recusar o envio automatico, faz uma segunda tentativa em
-segundo plano usando o formulario comum.
+GitHub, tela intermediaria ou outro formulario. O envio usa AJAX e so informa
+sucesso depois da confirmacao do servico. A protecao antispam do FormSubmit fica
+ativa, e a pagina limita o tamanho dos campos e o intervalo entre envios.
 
 O background configura a URL de desinstalacao com:
 
@@ -182,7 +204,7 @@ pagina em vez da interface.
 O formulario envia para:
 
 ```text
-https://formsubmit.co/ajax/vinim0106@icloud.com
+https://formsubmit.co/ajax/onlibytedigital@gmail.com
 ```
 
 No primeiro envio, o FormSubmit pode pedir confirmacao no email de destino.
@@ -198,6 +220,7 @@ No primeiro envio, o FormSubmit pode pedir confirmacao no email de destino.
 - URLs e endpoints fixos ficam em `JS/modules/config.js`.
 - Tema claro/escuro fica centralizado em `JS/modules/theme.js`.
 - Timers ficam em chaves individuais no storage, como `recarregaAiTimer:123`.
+- O historico local usa uma fila de gravacao e mantem no maximo 100 acoes.
 - Use `npm run check` para validar scripts, manifest e lint quando instalado.
 - Use `npm run lint` para rodar ESLint apos `npm install`.
 - Use `npm run zip` para gerar o pacote em `dist/recarregaai.zip`.
@@ -219,4 +242,4 @@ navegador.
 - A pagina de configuracoes fica em `options.html`.
 - A cada alteracao da extensao, incremente a versao.
 - Quando a ultima casa chegar em `9`, suba a casa anterior.
-- Exemplo: depois de `V.1.2.9`, use `V.1.3.0`.
+- Exemplo: depois de `2.1.9`, use `2.2.0`.

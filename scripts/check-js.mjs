@@ -1,26 +1,30 @@
-// RecarregaAi! 2.0.7
+// RecarregaAi! 2.1.6
 
 import { spawnSync } from "node:child_process";
+import { readdirSync } from "node:fs";
+import { join } from "node:path";
+
+const collectFiles = (directoryPath, extension) => (
+  readdirSync(directoryPath, {
+    withFileTypes: true
+  }).flatMap((entry) => {
+    const entryPath = join(directoryPath, entry.name);
+
+    if (entry.isDirectory()) {
+      return collectFiles(entryPath, extension);
+    }
+
+    return entry.isFile() && entry.name.endsWith(extension)
+      ? [entryPath]
+      : [];
+  })
+);
 
 const filesToCheck = [
   "eslint.config.mjs",
-  "JS/background.js",
-  "JS/popup.js",
-  "JS/options.js",
-  "JS/privacy.js",
-  "JS/uninstall.js",
-  "JS/welcome.js",
-  "JS/content.js",
-  "JS/modules/cache.js",
-  "JS/modules/config.js",
-  "JS/modules/shared.js",
-  "JS/modules/storage.js",
-  "JS/modules/tabs.js",
-  "JS/modules/theme.js",
-  "scripts/check-js.mjs",
-  "scripts/check-manifest.mjs",
-  "scripts/package-extension.mjs"
-];
+  ...collectFiles("JS", ".js"),
+  ...collectFiles("scripts", ".mjs")
+].sort();
 
 for (const filePath of filesToCheck) {
   const result = spawnSync("node", ["--check", filePath], {

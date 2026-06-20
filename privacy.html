@@ -1,9 +1,12 @@
 <!doctype html>
-<!-- RecarregaAi! 2.0.7 -->
+<!-- RecarregaAi! 2.1.6 -->
 <html lang="pt-BR" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="no-referrer" />
+    <meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; base-uri 'none'; object-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; frame-src 'none'; upgrade-insecure-requests" />
     <title>Política de Privacidade do RecarregaAi!</title>
     <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/icon16.png" />
     <link rel="stylesheet" href="CSS/privacy.css" />
@@ -22,7 +25,7 @@
         />
         <span>
           <strong>RecarregaAi!</strong>
-          <small>2.0.7</small>
+          <small>2.1.6</small>
         </span>
       </a>
 
@@ -125,7 +128,8 @@
               A extensão também pode salvar localmente o tema, o idioma, o
               intervalo padrão, os sites configurados para auto-início e, para
               as guias com timers ativos, endereço, título, estado, próxima
-              execução e último resultado do timer.
+              execução e último resultado do timer. Também mantém um histórico
+              local e limitado das ações realizadas pela extensão.
             </p>
             <p>
               Essas informações ficam no navegador por meio de
@@ -167,8 +171,9 @@
             <p>
               Essa verificação recebe apenas o estado de interação com campos
               editáveis ou mídia ativa. Ela não acessa o texto digitado, não
-              grava áudio, não captura vídeo, não cria histórico de atividade e
-              não envia esse estado para servidores externos.
+              grava áudio nem captura vídeo. O histórico local pode registrar
+              apenas que o timer foi pausado por digitação ou mídia, sem guardar
+              o conteúdo da atividade e sem enviar esse estado para servidores.
             </p>
           </section>
 
@@ -186,13 +191,17 @@
               <li>Sites e intervalos configurados para auto-início.</li>
               <li>Estado dos timers ativos e dados da guia associada.</li>
               <li>Último resultado de execução do timer.</li>
+              <li>
+                Histórico das 100 ações mais recentes, com tipo, horário,
+                domínio, intervalo e resultado.
+              </li>
             </ul>
             <p>
               Ao exportar configurações, a extensão cria localmente um arquivo
               JSON com tema, idioma, intervalo padrão e sites de auto-início.
-              Timers ativos não entram no arquivo. Na importação, apenas o
-              arquivo escolhido pelo usuário é lido localmente; ele não é
-              enviado a servidores.
+              Timers ativos e o histórico de ações não entram no arquivo. Na
+              importação, apenas o arquivo escolhido pelo usuário é lido
+              localmente; ele não é enviado a servidores.
             </p>
           </section>
 
@@ -320,9 +329,9 @@
             </p>
             <p>
               Arquivos exportados permanecem no local escolhido pelo usuário e
-              devem ser excluídos manualmente. Caso tenha enviado feedback e
-              deseje solicitar remoção ou esclarecimento, poderá usar o canal
-              oficial informado nesta política quando ele estiver definido.
+              devem ser excluídos manualmente. Para solicitar remoção ou
+              esclarecimento sobre um feedback enviado, use o e-mail
+              onlibytedigital@gmail.com.
             </p>
           </section>
 
@@ -331,8 +340,7 @@
             <p>
               Para dúvidas sobre privacidade, solicitações sobre feedback
               enviado ou esclarecimentos sobre dados processados pela extensão,
-              use o canal de contato oficial que será informado nesta política
-              assim que definido.
+              use o e-mail onlibytedigital@gmail.com.
             </p>
           </section>
         </article>
@@ -357,7 +365,8 @@
         </nav>
 
         <nav class="privacy-footer__social" aria-label="Canais de contato">
-          <a class="privacy-footer__icon-link" href="mailto:" aria-label="E-mail" title="E-mail">
+          <a class="privacy-footer__icon-link" href="mailto:onlibytedigital@gmail.com" aria-label="E-mail"
+            title="E-mail">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M4 6h16v12H4z" />
               <path d="m4 7 8 6 8-6" />
@@ -365,7 +374,7 @@
           </a>
           <a
             class="privacy-footer__icon-link"
-            href="https://www.instagram.com/"
+            href="https://www.instagram.com/olinbytedigital/"
             rel="noopener"
             target="_blank"
             aria-label="Instagram"
@@ -392,7 +401,7 @@
         </nav>
 
         <p class="privacy-footer__legal">
-          © RecarregaAi! 2.0.7. Política atualizada em 19/06/2026.
+          © RecarregaAi! 2.1.6. Política atualizada em 19/06/2026.
         </p>
 
         <p class="privacy-footer__developer">

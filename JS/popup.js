@@ -1,6 +1,7 @@
-// RecarregaAi! 2.0.7
+// RecarregaAi! 2.1.6
 
 import {
+  actionHistoryStatuses,
   formatCountdownTime,
   getPermissionPatternForOrigin,
   getRemainingSeconds,
@@ -486,7 +487,28 @@ const requestTimerPermission = async (origin) => (
   })
 );
 
+const recordManualCleanupHistory = async ({
+  detail = null,
+  origin,
+  status
+}) => {
+  try {
+    await sendRuntimeMessage({
+      payload: {
+        detail,
+        origin,
+        status
+      },
+      type: runtimeMessageTypes.recordManualCleanup
+    });
+  } catch (error) {
+    console.warn("Nao foi possivel registrar a limpeza no historico:", error);
+  }
+};
+
 const clearCacheAndReloadCurrentPage = async () => {
+  let cleanupOrigin = null;
+
   try {
     updateButtonState(
       popupElements.reloadPageButton,
@@ -510,6 +532,8 @@ const clearCacheAndReloadCurrentPage = async () => {
       return;
     }
 
+    cleanupOrigin = origin;
+
     const loadedOrigins = await collectLoadedOrigins(activeTab.id, [origin]);
 
     updateStatusMessage(
@@ -519,10 +543,23 @@ const clearCacheAndReloadCurrentPage = async () => {
 
     await clearCacheForOrigins(loadedOrigins);
     await reloadTabIgnoringCache(activeTab.id);
+    await recordManualCleanupHistory({
+      origin: cleanupOrigin,
+      status: actionHistoryStatuses.success
+    });
 
     updateStatusMessage(getPopupCopy("cleanupSuccess"), "success");
   } catch (error) {
     console.error("Erro ao limpar cache e recarregar:", error);
+
+    if (cleanupOrigin) {
+      await recordManualCleanupHistory({
+        detail: error.message,
+        origin: cleanupOrigin,
+        status: actionHistoryStatuses.error
+      });
+    }
+
     updateStatusMessage(getPopupCopy("cleanupError"), "error");
   } finally {
     updateButtonState(

@@ -1,9 +1,12 @@
 <!doctype html>
-<!-- RecarregaAi! 2.0.7 -->
+<!-- RecarregaAi! 2.1.6 -->
 <html id="page-root" lang="pt-BR" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="no-referrer" />
+    <meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; base-uri 'none'; object-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src https://formsubmit.co; form-action https://formsubmit.co; frame-src 'none'; upgrade-insecure-requests" />
     <title>Feedback do RecarregaAi!</title>
     <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/icon16.png" />
     <link rel="stylesheet" href="CSS/uninstall.css" />
@@ -22,7 +25,7 @@
 
         <div>
           <p class="brand__name">RecarregaAi!</p>
-          <p id="extension-version" class="brand__version">2.0.7</p>
+          <p id="extension-version" class="brand__version">2.1.6</p>
         </div>
       </div>
 
@@ -59,12 +62,11 @@
       <form
         id="feedback-form"
         class="feedback-form"
-        action="https://formsubmit.co/vinim0106@icloud.com"
+        action="https://formsubmit.co/onlibytedigital@gmail.com"
         method="POST"
       >
         <input type="hidden" name="_subject" value="Feedback RecarregaAi!" />
         <input type="hidden" name="_template" value="table" />
-        <input type="hidden" name="_captcha" value="false" />
         <input id="feedback-version-input" type="hidden" name="Versao" />
         <input id="feedback-date-input" type="hidden" name="Data" />
         <input id="feedback-browser-input" type="hidden" name="Navegador" />
@@ -165,6 +167,7 @@
                 id="feedback-message"
                 name="Comentario"
                 rows="4"
+                maxlength="1200"
                 placeholder="Conte em poucas palavras o que poderiamos melhorar."
                 data-i18n-placeholder="commentPlaceholder"
               ></textarea>
@@ -176,6 +179,7 @@
                 id="contact-email"
                 type="email"
                 name="email"
+                maxlength="254"
                 placeholder="voce@email.com"
               />
             </label>
@@ -213,7 +217,8 @@
         </nav>
 
         <nav class="privacy-footer__social" aria-label="Canais de contato">
-          <a class="privacy-footer__icon-link" href="mailto:" aria-label="E-mail" title="E-mail">
+          <a class="privacy-footer__icon-link" href="mailto:onlibytedigital@gmail.com" aria-label="E-mail"
+            title="E-mail">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M4 6h16v12H4z" />
               <path d="m4 7 8 6 8-6" />
@@ -221,7 +226,7 @@
           </a>
           <a
             class="privacy-footer__icon-link"
-            href="https://www.instagram.com/"
+            href="https://www.instagram.com/olinbytedigital/"
             rel="noopener"
             target="_blank"
             aria-label="Instagram"
@@ -248,7 +253,7 @@
         </nav>
 
         <p class="privacy-footer__legal" data-i18n="footerLegal">
-          © RecarregaAi! 2.0.7. Todos os direitos reservados.
+          © RecarregaAi! 2.1.6. Todos os direitos reservados.
         </p>
 
         <p class="privacy-footer__developer">

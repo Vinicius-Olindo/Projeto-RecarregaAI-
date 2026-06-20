@@ -1,4 +1,4 @@
-// RecarregaAi! 2.0.7
+// RecarregaAi! 2.1.6
 
 import { appConfig } from "./modules/config.js";
 import {
@@ -6,6 +6,8 @@ import {
   reloadTabIgnoringCache
 } from "./modules/cache.js";
 import {
+  actionHistoryStatuses,
+  actionHistoryTypes,
   alarmNames,
   defaultAppSettings,
   formatCountdownTime,
@@ -26,6 +28,11 @@ import {
   pauseReasons,
   runtimeMessageTypes
 } from "./modules/shared.js";
+import {
+  appendActionHistory,
+  clearActionHistory,
+  getActionHistory
+} from "./modules/history.js";
 import {
   getAllTimerSettings,
   getAllTimerSettingsFromCollection,
@@ -65,6 +72,47 @@ const mediaBadgeStates = Object.freeze({
     badgeText: "VID",
     countdownTime: "video em uso"
   }
+});
+const contentScriptMessageTypes = new Set([
+  runtimeMessageTypes.mediaState,
+  runtimeMessageTypes.typingState
+]);
+const extensionPageMessageTypes = new Set([
+  runtimeMessageTypes.clearActionHistory,
+  runtimeMessageTypes.getActionHistory,
+  runtimeMessageTypes.getTimerState,
+  runtimeMessageTypes.openTimerTab,
+  runtimeMessageTypes.pauseTimer,
+  runtimeMessageTypes.recordManualCleanup,
+  runtimeMessageTypes.resumeTimer,
+  runtimeMessageTypes.startTimer,
+  runtimeMessageTypes.stopTimer
+]);
+const extensionBaseUrl = chrome.runtime.getURL("");
+
+const recordHistoryEntry = async (entry) => {
+  try {
+    return await appendActionHistory(entry);
+  } catch (error) {
+    console.warn("Nao foi possivel registrar o historico do RecarregaAi:", error);
+    return null;
+  }
+};
+
+const recordTimerHistoryEntry = async (
+  timerSettings,
+  type,
+  {
+    detail = null,
+    status = actionHistoryStatuses.info
+  } = {}
+) => recordHistoryEntry({
+  detail,
+  intervalInMinutes: timerSettings?.intervalInMinutes,
+  origin: timerSettings?.mainOrigin,
+  source: timerSettings?.source,
+  status,
+  type
 });
 
 const configureUninstallFeedbackPage = async () => {
@@ -531,6 +579,14 @@ const startTimer = async (payload) => {
   await injectTypingProtection(timerSettings.tabId);
   await createTimerAlarm(timerSettings);
   await startBadgeCountdown();
+  await recordTimerHistoryEntry(
+    timerSettings,
+    actionHistoryTypes.timerStarted,
+    {
+      detail: timerSettings.source,
+      status: actionHistoryStatuses.success
+    }
+  );
 
   return timerSettings;
 };
@@ -560,6 +616,14 @@ const pauseTimer = async (tabId) => {
   await upsertTimerSettings(pausedTimerSettings);
   await clearTimerAlarm(tabId);
   await updateTimerBadge(pausedTimerSettings);
+  await recordTimerHistoryEntry(
+    pausedTimerSettings,
+    actionHistoryTypes.timerPaused,
+    {
+      detail: pauseReasons.manual,
+      status: actionHistoryStatuses.warning
+    }
+  );
 
   return pausedTimerSettings;
 };
@@ -597,6 +661,14 @@ const pauseTimerForAutomaticReason = async (
       await upsertTimerSettings(pausedTimerSettings);
       await clearTimerAlarm(timerSettings.tabId);
       await updateTimerBadge(pausedTimerSettings);
+      await recordTimerHistoryEntry(
+        pausedTimerSettings,
+        actionHistoryTypes.timerPaused,
+        {
+          detail: pauseReason,
+          status: actionHistoryStatuses.warning
+        }
+      );
 
       return pausedTimerSettings;
     }
@@ -622,6 +694,14 @@ const pauseTimerForAutomaticReason = async (
   await upsertTimerSettings(pausedTimerSettings);
   await clearTimerAlarm(timerSettings.tabId);
   await updateTimerBadge(pausedTimerSettings);
+  await recordTimerHistoryEntry(
+    pausedTimerSettings,
+    actionHistoryTypes.timerPaused,
+    {
+      detail: pauseReason,
+      status: actionHistoryStatuses.warning
+    }
+  );
 
   return pausedTimerSettings;
 };
@@ -690,6 +770,14 @@ const pauseTimerForNavigation = async (timerSettings, tab) => {
   await upsertTimerSettings(pausedTimerSettings);
   await clearTimerAlarm(timerSettings.tabId);
   await updateTimerBadge(pausedTimerSettings);
+  await recordTimerHistoryEntry(
+    pausedTimerSettings,
+    actionHistoryTypes.timerPaused,
+    {
+      detail: pauseReasons.navigation,
+      status: actionHistoryStatuses.warning
+    }
+  );
 
   return pausedTimerSettings;
 };
@@ -733,6 +821,14 @@ const resumeTimer = async (tabId, { expectedPauseReason = null } = {}) => {
   await injectTypingProtection(resumedTimerSettings.tabId);
   await createTimerAlarm(resumedTimerSettings, remainingSeconds / 60);
   await startBadgeCountdown();
+  await recordTimerHistoryEntry(
+    resumedTimerSettings,
+    actionHistoryTypes.timerResumed,
+    {
+      detail: timerSettings.pauseReason,
+      status: actionHistoryStatuses.success
+    }
+  );
 
   return resumedTimerSettings;
 };
@@ -749,6 +845,13 @@ const stopTimer = async (tabId) => {
 
   await clearTimerAlarm(tabId);
   await clearTimerBadge(timerSettings);
+  await recordTimerHistoryEntry(
+    timerSettings,
+    actionHistoryTypes.timerStopped,
+    {
+      status: actionHistoryStatuses.info
+    }
+  );
 
   if (timerSettingsList.length === 0) {
     await clearChromeAlarm(alarmNames.badgeCountdown);
@@ -899,6 +1002,16 @@ const saveTimerRunResult = async (timerSettings, result) => {
 
   await saveLastTimerRun(result);
   await upsertTimerSettings(updatedTimerSettings);
+  await recordTimerHistoryEntry(
+    updatedTimerSettings,
+    actionHistoryTypes.automaticRefresh,
+    {
+      detail: result.error || null,
+      status: result.status === "success"
+        ? actionHistoryStatuses.success
+        : actionHistoryStatuses.error
+    }
+  );
 
   if (!updatedTimerSettings.paused) {
     await createTimerAlarm(updatedTimerSettings);
@@ -1138,6 +1251,12 @@ const getTimerStateResponse = async (activeTabId) => {
 };
 
 const getMessageTabId = (message, sender) => {
+  const senderTabId = Number(sender?.tab?.id);
+
+  if (Number.isInteger(senderTabId)) {
+    return senderTabId;
+  }
+
   const payloadTabId = Number(message?.payload?.tabId);
 
   if (Number.isInteger(payloadTabId)) {
@@ -1147,12 +1266,93 @@ const getMessageTabId = (message, sender) => {
   return sender?.tab?.id;
 };
 
+const isOwnExtensionSender = (sender) => (
+  sender?.id === chrome.runtime.id
+);
+
+const isExtensionPageSender = (sender) => (
+  isOwnExtensionSender(sender)
+  && typeof sender.url === "string"
+  && sender.url.startsWith(extensionBaseUrl)
+);
+
+const isContentScriptSender = (sender) => (
+  isOwnExtensionSender(sender)
+  && Number.isInteger(sender?.tab?.id)
+  && !isExtensionPageSender(sender)
+);
+
+const validateRuntimeMessageSender = (message, sender) => {
+  if (contentScriptMessageTypes.has(message?.type)) {
+    if (!isContentScriptSender(sender)) {
+      throw new Error("Mensagem de pagina com remetente invalido.");
+    }
+
+    return;
+  }
+
+  if (extensionPageMessageTypes.has(message?.type)) {
+    if (!isExtensionPageSender(sender)) {
+      throw new Error("Acao privilegiada com remetente invalido.");
+    }
+
+    return;
+  }
+
+  throw new Error("Mensagem desconhecida.");
+};
+
+const validateTimerStartPayload = async (payload) => {
+  const tabId = Number(payload?.tabId);
+
+  if (!Number.isInteger(tabId)) {
+    throw new Error("Guia invalida para ativar o timer.");
+  }
+
+  const tab = await chrome.tabs.get(tabId);
+  const tabOrigin = getUrlOrigin(tab.url);
+  const requestedOrigin = getUrlOrigin(payload?.mainOrigin);
+
+  if (!tabOrigin || tabOrigin !== requestedOrigin) {
+    throw new Error("A origem solicitada nao pertence a guia informada.");
+  }
+
+  const hasPermission = await chrome.permissions.contains({
+    origins: [getPermissionPatternForOrigin(tabOrigin)]
+  });
+
+  if (!hasPermission) {
+    throw new Error("Permissao ausente para iniciar o timer nesta guia.");
+  }
+
+  return {
+    ...payload,
+    mainOrigin: tabOrigin,
+    tabId,
+    tabTitle: tab.title || null,
+    tabUrl: tab.url,
+    windowId: tab.windowId
+  };
+};
+
 const createTimerSettingsResponse = (timerSettings) => ({
   ok: true,
   timerSettings
 });
 
 const runtimeMessageHandlers = {
+  [runtimeMessageTypes.clearActionHistory]: async () => {
+    await clearActionHistory();
+
+    return {
+      entries: [],
+      ok: true
+    };
+  },
+  [runtimeMessageTypes.getActionHistory]: async () => ({
+    entries: await getActionHistory(),
+    ok: true
+  }),
   [runtimeMessageTypes.getTimerState]: async (message) => {
     const activeTabId = Number(message?.payload?.activeTabId);
 
@@ -1173,6 +1373,22 @@ const runtimeMessageHandlers = {
 
     return createTimerSettingsResponse(timerSettings);
   },
+  [runtimeMessageTypes.recordManualCleanup]: async (message) => {
+    const isError = message.payload?.status === actionHistoryStatuses.error;
+    const historyEntry = await recordHistoryEntry({
+      detail: isError ? message.payload?.detail : null,
+      origin: message.payload?.origin,
+      status: isError
+        ? actionHistoryStatuses.error
+        : actionHistoryStatuses.success,
+      type: actionHistoryTypes.manualCleanup
+    });
+
+    return {
+      historyEntry,
+      ok: true
+    };
+  },
   [runtimeMessageTypes.pauseTimer]: async (message, sender) => {
     const timerSettings = await pauseTimer(getMessageTabId(message, sender));
 
@@ -1184,7 +1400,9 @@ const runtimeMessageHandlers = {
     return createTimerSettingsResponse(timerSettings);
   },
   [runtimeMessageTypes.startTimer]: async (message) => {
-    const timerSettings = await startTimer(message.payload);
+    const timerSettings = await startTimer(
+      await validateTimerStartPayload(message.payload)
+    );
 
     return createTimerSettingsResponse(timerSettings);
   },
@@ -1206,6 +1424,8 @@ const runtimeMessageHandlers = {
 };
 
 const handleRuntimeMessage = async (message, sender = {}) => {
+  validateRuntimeMessageSender(message, sender);
+
   const messageHandler = runtimeMessageHandlers[message?.type];
 
   if (messageHandler) {

@@ -1,4 +1,4 @@
-// RecarregaAi! 2.2.1
+// RecarregaAi! 2.2.3
 
 import { appConfig } from "./modules/config.js";
 import {
@@ -15,7 +15,7 @@ import { enforceTopLevelPublicPage } from "./modules/public-page-security.js";
 enforceTopLevelPublicPage();
 
 const feedbackSubmitUrl = appConfig.feedbackSubmitUrl;
-const defaultVersionLabel = "2.2.1";
+const defaultVersionLabel = "2.2.3";
 const defaultLanguage = "pt-BR";
 const defaultReason = "Não informou motivo";
 const feedbackCooldownInMilliseconds = 60 * 1000;
@@ -36,7 +36,7 @@ const translations = extendPageTranslations({
     footerDeveloper: "Desenvolvido por:",
     footerFeedback: "Feedback",
     footerHome: "Início",
-    footerLegal: "© RecarregaAi! 2.2.1. Todos os direitos reservados.",
+    footerLegal: "© RecarregaAi! 2.2.3. Todos os direitos reservados.",
     footerPrivacy: "Privacidade",
     formSubmitError:
       "Não consegui confirmar o envio agora. Tente novamente em alguns instantes.",
@@ -65,7 +65,7 @@ const translations = extendPageTranslations({
     reasonRequired: "Selecione um motivo antes de enviar.",
     selectedPrefix: "Selecionado: ",
     sendButton: "Enviar feedback",
-    versionLabel: "2.2.1"
+    versionLabel: "2.2.3"
   },
   en: {
     backToTop: "Back to start",
@@ -77,7 +77,7 @@ const translations = extendPageTranslations({
     footerDeveloper: "Developed by:",
     footerFeedback: "Feedback",
     footerHome: "Home",
-    footerLegal: "© RecarregaAi! 2.2.1. All rights reserved.",
+    footerLegal: "© RecarregaAi! 2.2.3. All rights reserved.",
     footerPrivacy: "Privacy",
     formSubmitError:
       "I could not confirm the send right now. Try again in a few moments.",
@@ -105,7 +105,7 @@ const translations = extendPageTranslations({
     reasonRequired: "Select a reason before sending.",
     selectedPrefix: "Selected: ",
     sendButton: "Send feedback",
-    versionLabel: "2.2.1"
+    versionLabel: "2.2.3"
   },
   es: {
     backToTop: "Volver al inicio",
@@ -117,7 +117,7 @@ const translations = extendPageTranslations({
     footerDeveloper: "Desarrollado por:",
     footerFeedback: "Feedback",
     footerHome: "Inicio",
-    footerLegal: "© RecarregaAi! 2.2.1. Todos los derechos reservados.",
+    footerLegal: "© RecarregaAi! 2.2.3. Todos los derechos reservados.",
     footerPrivacy: "Privacidad",
     formSubmitError:
       "No pude confirmar el envío ahora. Inténtalo de nuevo en unos momentos.",
@@ -145,7 +145,7 @@ const translations = extendPageTranslations({
     reasonRequired: "Selecciona un motivo antes de enviar.",
     selectedPrefix: "Seleccionado: ",
     sendButton: "Enviar feedback",
-    versionLabel: "2.2.1"
+    versionLabel: "2.2.3"
   }
 }, "uninstall");
 
@@ -437,6 +437,25 @@ const createEncodedPayload = (payload) => {
   return encodedPayload;
 };
 
+const validateFormSubmitResponse = async (response) => {
+  let responsePayload;
+
+  try {
+    responsePayload = await response.json();
+  } catch {
+    throw new Error("Resposta inválida do serviço de feedback.");
+  }
+
+  const wasAccepted = responsePayload?.success === true
+    || responsePayload?.success === "true";
+
+  if (!response.ok || !wasAccepted) {
+    throw new Error(
+      responsePayload?.message || "Envio automático recusado."
+    );
+  }
+};
+
 const getFeedbackCooldownSeconds = () => {
   const lastSubmitAt = Number(localStorage.getItem(feedbackLastSubmitAtKey));
 
@@ -489,9 +508,7 @@ const submitFeedback = async () => {
       method: "POST"
     });
 
-    if (!response.ok) {
-      throw new Error("Envio automático recusado.");
-    }
+    await validateFormSubmitResponse(response);
 
     localStorage.setItem(feedbackLastSubmitAtKey, String(Date.now()));
     updateStatus(getCopy("formSubmitSuccess"));

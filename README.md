@@ -1,6 +1,6 @@
 # RecarregaAi!
 
-**Versão atual: 2.2.1**
+**Versão atual: 2.2.3**
 
 Extensão para Google Chrome que limpa dados antigos do site aberto, recarrega a
 página sem depender do cache anterior e permite automatizar esse processo com
@@ -174,10 +174,18 @@ O formulário envia os dados diretamente para o endpoint configurado em
 `JS/modules/config.js`. A proteção antispam do FormSubmit permanece ativa, e o
 cliente limita o tamanho dos campos e o intervalo entre envios.
 
+Ao configurar um novo e-mail de destino, o primeiro envio faz o FormSubmit
+encaminhar uma mensagem de ativação para esse endereço. O responsável deve
+abrir o link recebido e enviar o formulário novamente; sem essa confirmação, o
+serviço aceita a requisição HTTP, mas não entrega o feedback.
+
 ## Estrutura do projeto
 
 ```text
 RecarregaAI-/
+|-- .github/
+|   `-- workflows/
+|       `-- validate.yml
 |-- index.html
 |-- manifest.json
 |-- popup.html
@@ -249,6 +257,16 @@ npm ci --ignore-scripts
 | `npm run lint` | Executa o ESLint sem aceitar avisos. |
 | `npm audit` | Verifica vulnerabilidades conhecidas nas dependências. |
 
+## Integração contínua
+
+O workflow `.github/workflows/validate.yml` é executado em pushes e pull
+requests para `main`, além de permitir execução manual pelo GitHub Actions.
+
+A rotina instala as dependências com `npm ci`, valida o projeto, bloqueia
+vulnerabilidades de severidade alta ou crítica, gera `dist/recarregaai.zip` e
+disponibiliza o pacote como artefato por 14 dias. O workflow possui apenas
+permissão de leitura e não publica, não cria commits e não altera o repositório.
+
 ## Empacotamento
 
 O pacote oficial é gerado com Node.js:
@@ -287,7 +305,7 @@ direcionar o usuário a uma página genérica.
 - Cada card ou alteração concluída gera uma nova versão.
 - A versão deve permanecer sincronizada em todos os arquivos do projeto.
 - Quando a última casa chegar a `9`, a casa anterior é incrementada.
-- Exemplo: depois de `2.2.1`, use `2.2.1`.
+- Exemplo: depois de `2.2.3`, use `2.2.3`.
 
 ## Contato
 

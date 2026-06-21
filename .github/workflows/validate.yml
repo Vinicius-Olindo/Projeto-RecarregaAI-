@@ -1,0 +1,55 @@
+# RecarregaAi! 2.2.3
+
+name: Validar extensao
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validar e empacotar
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Baixar repositorio
+        uses: actions/checkout@v4
+
+      - name: Preparar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci --ignore-scripts
+
+      - name: Validar projeto
+        run: npm run check
+
+      - name: Auditar dependencias
+        run: npm audit --audit-level=high
+
+      - name: Gerar pacote
+        run: node scripts/package-extension.mjs
+
+      - name: Disponibilizar pacote
+        uses: actions/upload-artifact@v4
+        with:
+          name: recarregaai-${{ github.sha }}
+          path: dist/recarregaai.zip
+          if-no-files-found: error
+          retention-days: 14

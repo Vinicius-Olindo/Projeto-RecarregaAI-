@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- RecarregaAi! 2.3.1 -->
+<!-- RecarregaAi! 2.3.6 -->
 <html lang="pt-BR" data-theme="light">
   <head>
     <meta charset="UTF-8" />
@@ -25,7 +25,7 @@
         />
         <span>
           <strong>RecarregaAi!</strong>
-          <small>2.3.1</small>
+          <small>2.3.6</small>
         </span>
       </a>
 
@@ -43,7 +43,7 @@
         <div class="hero__content">
           <p class="eyebrow">Política de Privacidade</p>
           <h1 id="privacy-title">Transparência para usar sem surpresa.</h1>
-          <p class="policy-meta">Última atualização: 19/06/2026</p>
+          <p class="policy-meta">Última atualização: 22/06/2026</p>
           <p>
             O RecarregaAi! é uma extensão para navegador criada para limpar
             dados temporários do site atual, recarregar abas, executar timers
@@ -134,8 +134,9 @@
             <p>
               Essas informações ficam no navegador por meio de
               <code>chrome.storage.local</code> e, para a preferência de idioma
-              das páginas, do armazenamento local do próprio navegador. A
-              extensão não envia essas informações para servidores externos.
+              das páginas públicas, do armazenamento local do próprio site. A
+              extensão não envia esses dados operacionais para servidores
+              externos.
             </p>
           </section>
 
@@ -151,10 +152,11 @@
             </p>
             <p>
               A extensão pode detectar localmente quando o usuário está
-              interagindo com campos editáveis ou usando áudio, vídeo e gravação
-              para evitar recarregamentos em momentos sensíveis. Essa detecção
-              não lê, armazena ou envia o conteúdo digitado, reproduzido ou
-              gravado.
+              interagindo com campos editáveis, usando áudio, vídeo ou gravação
+              ou visualizando uma imagem aberta sozinha, em tela cheia ou em um
+              visualizador. Essa detecção evita recarregamentos em momentos
+              sensíveis e não lê, armazena ou envia o conteúdo digitado,
+              reproduzido, gravado ou visualizado.
             </p>
           </section>
 
@@ -164,16 +166,22 @@
               Quando um timer está ativo, o RecarregaAi! verifica localmente se
               há foco em campos como <code>input</code>, <code>textarea</code>
               ou áreas editáveis da página. Ele também pode identificar se há
-              áudio, vídeo, gravação, fluxo de mídia ou contexto de áudio em uso.
-              Se houver atividade sensível, o timer daquela guia pode ser
-              pausado temporariamente e retomado depois que a atividade terminar.
+              reprodução de áudio ou vídeo, uma gravação feita por
+              <code>MediaRecorder</code> ou uma imagem aberta sozinha, em tela
+              cheia ou em um visualizador/modal visível. Imagens comuns que
+              apenas fazem parte da página não pausam o timer. Se houver
+              atividade sensível, o timer daquela guia pode ser pausado
+              temporariamente. Quando a atividade termina, a extensão aguarda
+              três segundos de segurança e retoma a contagem a partir do tempo
+              restante.
             </p>
             <p>
               Essa verificação recebe apenas o estado de interação com campos
               editáveis ou mídia ativa. Ela não acessa o texto digitado, não
-              grava áudio nem captura vídeo. O histórico local pode registrar
-              apenas que o timer foi pausado por digitação ou mídia, sem guardar
-              o conteúdo da atividade e sem enviar esse estado para servidores.
+              grava áudio, não captura vídeo e não analisa, copia ou armazena a
+              imagem visualizada. O histórico local pode registrar apenas que o
+              timer foi pausado por digitação ou mídia, sem guardar o conteúdo
+              da atividade e sem enviar esse estado para servidores.
             </p>
           </section>
 
@@ -198,10 +206,12 @@
             </ul>
             <p>
               Ao exportar configurações, a extensão cria localmente um arquivo
-              JSON com tema, idioma, intervalo padrão e sites de auto-início.
+              JSON com tema, idioma, intervalo padrão, sites de auto-início e
+              metadados técnicos do arquivo, como versão e data de exportação.
               Timers ativos e o histórico de ações não entram no arquivo. Na
               importação, apenas o arquivo escolhido pelo usuário é lido
-              localmente; ele não é enviado a servidores.
+              localmente; ele não é enviado a servidores. A extensão solicita
+              permissão para os domínios importados antes de ativá-los.
             </p>
           </section>
 
@@ -215,12 +225,18 @@
             <p>
               Caso enviado, o formulário pode incluir motivo da desinstalação,
               comentário, e-mail opcional, idioma, navegador, versão da
-              extensão e data do envio.
+              extensão, data do envio, origem da página de feedback e um
+              identificador técnico aleatório da submissão. A origem e o
+              identificador são usados somente para confirmar o resultado e
+              evitar envios duplicados.
             </p>
             <p>
-              O envio do feedback é realizado por meio do serviço Google Apps Script.
-              Essas informações são usadas apenas para entender problemas,
-              corrigir falhas e melhorar a extensão.
+              O feedback é processado pelo Google Apps Script e entregue por
+              e-mail à Olinbyte Digital em olinbytedigital@gmail.com. O
+              identificador técnico pode permanecer no cache temporário do
+              serviço por até seis horas para impedir duplicidades. As
+              informações são usadas apenas para responder ao contato, entender
+              problemas, corrigir falhas e melhorar a extensão.
             </p>
           </section>
 
@@ -233,8 +249,10 @@
             </p>
             <p>
               O único envio externo previsto ocorre quando o usuário envia
-              voluntariamente o formulário de feedback de desinstalação,
-              processado pelo Google Apps Script.
+              voluntariamente o formulário de feedback de desinstalação. Ele é
+              processado pelos serviços Google Apps Script e e-mail e entregue
+              à Olinbyte Digital. Os dados operacionais da extensão não são
+              compartilhados com terceiros.
             </p>
           </section>
 
@@ -247,7 +265,9 @@
             </p>
             <p>
               As informações processadas pela extensão são usadas apenas para
-              fornecer ou melhorar suas funcionalidades principais.
+              fornecer ou melhorar suas funcionalidades principais. Elas não
+              são usadas para publicidade personalizada, avaliação de crédito
+              ou finalidades sem relação com o RecarregaAi!.
             </p>
           </section>
 
@@ -306,8 +326,8 @@
             <h2 id="control-title">9. Controle do usuário</h2>
             <p>
               O usuário pode alterar tema, idioma, timers, sites automáticos e
-              permissões a qualquer momento nas páginas da extensão ou nas
-              configurações do navegador.
+              permissões, além de limpar o histórico local, a qualquer momento
+              nas páginas da extensão ou nas configurações do navegador.
             </p>
             <p>
               A exportação e a importação de configurações só acontecem por ação
@@ -317,7 +337,9 @@
             <p>
               O usuário pode revogar permissões concedidas a sites ou remover a
               extensão. Ao removê-la, o Chrome exclui os dados associados ao
-              armazenamento local da extensão.
+              armazenamento local da extensão. A preferência de idioma salva
+              pelas páginas públicas pode ser removida nas configurações de
+              dados do site do navegador.
             </p>
             <p>
               Arquivos exportados permanecem no local escolhido pelo usuário e
@@ -393,7 +415,7 @@
         </nav>
 
         <p class="privacy-footer__legal">
-          © RecarregaAi! 2.3.1. Política atualizada em 19/06/2026.
+          © RecarregaAi! 2.3.6. Política atualizada em 22/06/2026.
         </p>
 
         <p class="privacy-footer__developer">

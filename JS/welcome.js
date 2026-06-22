@@ -1,4 +1,4 @@
-// RecarregaAi! 2.3.1
+// RecarregaAi! 2.3.6
 
 import { appConfig } from "./modules/config.js";
 import { initFloatingTools } from "./modules/floating-tools.js";
@@ -33,12 +33,12 @@ const welcomeTranslations = extendPageTranslations({
     faqAnswer2:
       "Sim. Cada guia pode ter seu próprio timer, então dois sistemas podem ficar ativos ao mesmo tempo.",
     faqAnswer3:
-      "A guia pausa enquanto um campo está ativo ou existe mídia em uso, e continua quando a atividade termina.",
+      "A guia pausa enquanto um campo, áudio, vídeo, gravação ou visualização dedicada de imagem está ativo e retoma após três segundos de segurança.",
     faqAnswer4:
       "Eles permitem auto-início. Quando uma guia abre um site cadastrado, o timer pode começar sozinho.",
     faqQuestion1: "O RecarregaAi! limpa o cache de todas as guias?",
     faqQuestion2: "Posso deixar dois sites recarregando juntos?",
-    faqQuestion3: "O que acontece se eu estiver digitando ou usando áudio?",
+    faqQuestion3: "O que acontece se eu estiver digitando ou usando mídia?",
     faqQuestion4: "Para que servem os sites favoritos?",
     faqTitle: "Perguntas frequentes",
     feature1Body:
@@ -54,7 +54,7 @@ const welcomeTranslations = extendPageTranslations({
       "Mantenha Drive e outro sistema recarregando ao mesmo tempo, cada um em sua guia.",
     feature4Title: "Timer por guia",
     feature5Body:
-      "Quando você está digitando, ouvindo áudio, vendo vídeo ou gravando, a guia pausa para evitar perdas.",
+      "Quando você está digitando, ouvindo áudio, vendo vídeo, gravando ou visualizando uma imagem aberta, a guia pausa para evitar perdas.",
     feature5Title: "Pausa inteligente",
     feature6Body:
       "Cadastre endereços para o RecarregaAi! iniciar sozinho quando a página abrir.",
@@ -70,7 +70,7 @@ const welcomeTranslations = extendPageTranslations({
     footerDeveloper: "Desenvolvido por:",
     footerFeedback: "Feedback",
     footerHome: "Início",
-    footerLegal: "© RecarregaAi! 2.3.1. Todos os direitos reservados.",
+    footerLegal: "© RecarregaAi! 2.3.6. Todos os direitos reservados.",
     footerPrivacy: "Privacidade",
     heroDescription:
       "Use timers por guia, limpe o cache do site aberto e mantenha sistemas como Drive, painéis internos e páginas de trabalho sempre atualizados.",
@@ -96,7 +96,8 @@ const welcomeTranslations = extendPageTranslations({
     trustTab: "Controle por guia",
     trustTabText: "Ative somente as guias que realmente precisam recarregar.",
     trustTyping: "Proteção ativa",
-    trustTypingText: "O timer pausa durante digitação, áudio, vídeo ou gravação.",
+    trustTypingText:
+      "O timer pausa durante digitação, áudio, vídeo, gravação ou visualização dedicada de imagem.",
     useCase1Body:
       "Quando você acompanha arquivos que mudam com frequência, o timer ajuda a atualizar a página sem precisar limpar cache manualmente.",
     useCase1Small: "Mantenha listas, pastas e documentos sempre renovados.",
@@ -133,12 +134,12 @@ const welcomeTranslations = extendPageTranslations({
     faqAnswer2:
       "Yes. Each tab can have its own timer, so two systems can stay active at the same time.",
     faqAnswer3:
-      "The tab pauses while a field is active or media is in use, and continues when the activity ends.",
+      "The tab pauses while a field, audio, video, recording or dedicated image view is active and resumes after a three-second safety period.",
     faqAnswer4:
       "They enable auto-start. When a tab opens a registered site, the timer can start by itself.",
     faqQuestion1: "Does RecarregaAi! clear the cache of every tab?",
     faqQuestion2: "Can I keep two sites refreshing together?",
-    faqQuestion3: "What happens if I am typing or using audio?",
+    faqQuestion3: "What happens if I am typing or using media?",
     faqQuestion4: "What are favorite sites for?",
     faqTitle: "Frequently asked questions",
     feature1Body:
@@ -154,7 +155,7 @@ const welcomeTranslations = extendPageTranslations({
       "Keep Drive and another system refreshing at the same time, each in its own tab.",
     feature4Title: "Timer by tab",
     feature5Body:
-      "When you are typing, listening to audio, watching video or recording, the tab pauses to avoid losses.",
+      "When you are typing, listening to audio, watching video, recording or viewing an opened image, the tab pauses to avoid losses.",
     feature5Title: "Smart pause",
     feature6Body:
       "Register addresses so RecarregaAi! can start automatically when the page opens.",
@@ -170,7 +171,7 @@ const welcomeTranslations = extendPageTranslations({
     footerDeveloper: "Developed by:",
     footerFeedback: "Feedback",
     footerHome: "Home",
-    footerLegal: "© RecarregaAi! 2.3.1. All rights reserved.",
+    footerLegal: "© RecarregaAi! 2.3.6. All rights reserved.",
     footerPrivacy: "Privacy",
     heroDescription:
       "Use timers by tab, clear the open site's cache and keep systems such as Drive, internal dashboards and work pages always updated.",
@@ -195,7 +196,8 @@ const welcomeTranslations = extendPageTranslations({
     trustTab: "Control by tab",
     trustTabText: "Enable only the tabs that really need to reload.",
     trustTyping: "Typing protection",
-    trustTypingText: "The timer pauses during typing, audio, video or recording.",
+    trustTypingText:
+      "The timer pauses during typing, audio, video, recording or dedicated image viewing.",
     useCase1Body:
       "When you follow files that change often, the timer helps refresh the page without manually clearing cache.",
     useCase1Small: "Keep lists, folders and documents refreshed.",
@@ -232,12 +234,12 @@ const welcomeTranslations = extendPageTranslations({
     faqAnswer2:
       "Sí. Cada pestaña puede tener su propio timer, así que dos sistemas pueden estar activos al mismo tiempo.",
     faqAnswer3:
-      "La pestaña pausa mientras un campo está activo o hay medios en uso, y continúa cuando la actividad termina.",
+      "La pestaña se pausa mientras hay un campo, audio, video, grabación o visualización dedicada de imagen activa y se reanuda tras tres segundos de seguridad.",
     faqAnswer4:
       "Permiten auto-inicio. Cuando una pestaña abre un sitio registrado, el timer puede comenzar solo.",
     faqQuestion1: "¿RecarregaAi! limpia la caché de todas las pestañas?",
     faqQuestion2: "¿Puedo dejar dos sitios recargando juntos?",
-    faqQuestion3: "¿Qué pasa si estoy escribiendo o usando audio?",
+    faqQuestion3: "¿Qué pasa si estoy escribiendo o usando medios?",
     faqQuestion4: "¿Para qué sirven los sitios favoritos?",
     faqTitle: "Preguntas frecuentes",
     feature1Body:
@@ -253,7 +255,7 @@ const welcomeTranslations = extendPageTranslations({
       "Mantén Drive y otro sistema recargando al mismo tiempo, cada uno en su pestaña.",
     feature4Title: "Timer por pestaña",
     feature5Body:
-      "Cuando estás escribiendo, escuchando audio, viendo video o grabando, la pestaña pausa para evitar pérdidas.",
+      "Cuando estás escribiendo, escuchando audio, viendo video, grabando o visualizando una imagen abierta, la pestaña se pausa para evitar pérdidas.",
     feature5Title: "Pausa inteligente",
     feature6Body:
       "Registra direcciones para que RecarregaAi! se inicie solo cuando la página se abra.",
@@ -269,7 +271,7 @@ const welcomeTranslations = extendPageTranslations({
     footerDeveloper: "Desarrollado por:",
     footerFeedback: "Feedback",
     footerHome: "Inicio",
-    footerLegal: "© RecarregaAi! 2.3.1. Todos los derechos reservados.",
+    footerLegal: "© RecarregaAi! 2.3.6. Todos los derechos reservados.",
     footerPrivacy: "Privacidad",
     heroDescription:
       "Usa timers por pestaña, limpia la caché del sitio abierto y mantén sistemas como Drive, paneles internos y páginas de trabajo siempre actualizados.",
@@ -295,7 +297,8 @@ const welcomeTranslations = extendPageTranslations({
     trustTab: "Control por pestaña",
     trustTabText: "Activa solo las pestañas que realmente necesitan recargar.",
     trustTyping: "Protección activa",
-    trustTypingText: "El timer pausa durante escritura, audio, video o grabación.",
+    trustTypingText:
+      "El timer se pausa durante escritura, audio, video, grabación o visualización dedicada de imagen.",
     useCase1Body:
       "Cuando acompañas archivos que cambian con frecuencia, el timer ayuda a actualizar la página sin limpiar caché manualmente.",
     useCase1Small: "Mantén listas, carpetas y documentos siempre renovados.",

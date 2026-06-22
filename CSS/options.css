@@ -1,4 +1,4 @@
-/* RecarregaAi! 2.3.1 */
+/* RecarregaAi! 2.3.6 */
 
 :root {
   --color-page-start: #07111f;
@@ -696,6 +696,41 @@ a {
   background: color-mix(in srgb, var(--color-surface-soft) 82%, transparent);
   border: 1px solid var(--color-border);
   border-radius: 8px;
+}
+
+.history-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 11px 14px;
+  background: color-mix(in srgb, var(--color-surface-soft) 82%, transparent);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.history-pagination[hidden],
+.history-pagination__more[hidden],
+.history-pagination__collapse[hidden] {
+  display: none;
+}
+
+.history-pagination__summary {
+  color: var(--color-muted);
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.history-pagination__actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.history-pagination .button {
+  min-height: 36px;
+  padding-inline: 13px;
+  font-size: 0.78rem;
 }
 
 .history-item {
@@ -1906,6 +1941,16 @@ a {
   .history-toolbar {
     display: grid;
     grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .history-pagination,
+  .history-pagination__actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .history-pagination .button {
     width: 100%;
   }
 

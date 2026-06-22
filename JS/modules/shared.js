@@ -1,4 +1,4 @@
-// RecarregaAi! 2.3.1
+// RecarregaAi! 2.3.6
 
 export const oneSecondInMilliseconds = 1000;
 export const mediaResumeSafetySeconds = 3;
@@ -58,6 +58,7 @@ export const pauseReasons = Object.freeze({
 export const mediaKinds = Object.freeze({
   audio: "audio",
   generic: "media",
+  image: "image",
   recording: "recording",
   video: "video"
 });

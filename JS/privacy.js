@@ -1,4 +1,4 @@
-// RecarregaAi! 2.3.1
+// RecarregaAi! 2.3.6
 
 import { initFloatingTools } from "./modules/floating-tools.js";
 import { extendPageTranslations } from "./modules/extended-translations.js";
@@ -24,6 +24,7 @@ const policyHeadings = policyNavLinks
   .map((link) => document.querySelector(link.getAttribute("href")))
   .filter(Boolean);
 const sectionTopGap = 34;
+const policyNavigationReleaseDelay = 900;
 
 const privacyTranslations = extendPageTranslations({
   "pt-BR": {
@@ -34,7 +35,7 @@ const privacyTranslations = extendPageTranslations({
     footerFeedback: "Feedback",
     footerDeveloper: "Desenvolvido por:",
     footerHome: "Início",
-    footerLegal: "© RecarregaAi! 2.3.1. Política atualizada em 19/06/2026.",
+    footerLegal: "© RecarregaAi! 2.3.6. Política atualizada em 22/06/2026.",
     footerPrivacy: "Privacidade",
     headerContact: "Contato",
     headerNavLabel: "Navegação da política",
@@ -44,7 +45,7 @@ const privacyTranslations = extendPageTranslations({
     heroEyebrow: "Política de Privacidade",
     heroIntro:
       "O RecarregaAi! é uma extensão para navegador criada para limpar dados temporários do site atual, recarregar abas, executar timers automáticos e proteger atividades de digitação e mídia contra recarregamentos inesperados.",
-    heroMeta: "Última atualização: 19/06/2026",
+    heroMeta: "Última atualização: 22/06/2026",
     heroTitle: "Transparência para usar sem surpresa.",
     languageDialogDescription:
       "Escolha o idioma preferido para navegar pelo RecarregaAi!.",
@@ -70,11 +71,11 @@ const privacyTranslations = extendPageTranslations({
       "Para dúvidas sobre privacidade, solicitações sobre feedback enviado ou esclarecimentos sobre dados processados pela extensão, use o e-mail olinbytedigital@gmail.com.",
     sectionContactTitle: "10. Contato",
     sectionControlBody1:
-      "O usuário pode alterar tema, idioma, timers, sites automáticos e permissões a qualquer momento nas páginas da extensão ou nas configurações do navegador.",
+      "O usuário pode alterar tema, idioma, timers, sites automáticos e permissões, além de limpar o histórico local, a qualquer momento nas páginas da extensão ou nas configurações do navegador.",
     sectionControlBody2:
       "A exportação e a importação de configurações só acontecem por ação do usuário. O arquivo JSON exportado pode ser examinado e excluído pelo próprio usuário, e o arquivo importado é escolhido manualmente.",
     sectionControlBody3:
-      "O usuário pode revogar permissões concedidas a sites ou remover a extensão. Ao removê-la, o Chrome exclui os dados associados ao armazenamento local da extensão.",
+      "O usuário pode revogar permissões concedidas a sites ou remover a extensão. Ao removê-la, o Chrome exclui os dados associados ao armazenamento local da extensão. A preferência de idioma salva pelas páginas públicas pode ser removida nas configurações de dados do site do navegador.",
     sectionControlBody4:
       "Arquivos exportados permanecem no local escolhido pelo usuário e devem ser excluídos manualmente. Para solicitar remoção ou esclarecimento sobre um feedback enviado, use o e-mail olinbytedigital@gmail.com.",
     sectionControlTitle: "9. Controle do usuário",
@@ -83,24 +84,24 @@ const privacyTranslations = extendPageTranslations({
     sectionDataBody2:
       "A extensão também pode salvar localmente o tema, o idioma, o intervalo padrão, os sites configurados para auto-início e, para as guias com timers ativos, endereço, título, estado, próxima execução e último resultado do timer. Também mantém um histórico local e limitado das ações realizadas pela extensão.",
     sectionDataBody3:
-      "Essas informações ficam no navegador por meio de <code>chrome.storage.local</code> e, para a preferência de idioma das páginas, do armazenamento local do próprio navegador. A extensão não envia essas informações para servidores externos.",
+      "Essas informações ficam no navegador por meio de <code>chrome.storage.local</code> e, para a preferência de idioma das páginas públicas, do armazenamento local do próprio site. A extensão não envia esses dados operacionais para servidores externos.",
     sectionDataTitle: "1. Informações processadas pela extensão",
     sectionFeedbackBody1:
       "Após a desinstalação, a página de feedback pode ser aberta automaticamente, mas nenhuma resposta é enviada sem uma ação do usuário. O envio é opcional.",
     sectionFeedbackBody2:
-      "Caso enviado, o formulário pode incluir motivo da desinstalação, comentário, e-mail opcional, idioma, navegador, versão da extensão e data do envio.",
+      "Caso enviado, o formulário pode incluir motivo da desinstalação, comentário, e-mail opcional, idioma, navegador, versão da extensão, data do envio, origem da página de feedback e um identificador técnico aleatório da submissão. A origem e o identificador são usados somente para confirmar o resultado e evitar envios duplicados.",
     sectionFeedbackBody3:
-      "O envio do feedback é realizado por meio do serviço Google Apps Script. Essas informações são usadas apenas para entender problemas, corrigir falhas e melhorar a extensão.",
+      "O feedback é processado pelo Google Apps Script e entregue por e-mail à Olinbyte Digital em olinbytedigital@gmail.com. O identificador técnico pode permanecer no cache temporário do serviço por até seis horas para impedir duplicidades. As informações são usadas apenas para responder ao contato, entender problemas, corrigir falhas e melhorar a extensão.",
     sectionFeedbackTitle: "5. Feedback de desinstalação",
     sectionLimitedUseBody1:
       "O uso das informações pela extensão segue a Política de Dados do Usuário da Chrome Web Store, incluindo os requisitos de Limited Use.",
     sectionLimitedUseBody2:
-      "As informações processadas pela extensão são usadas apenas para fornecer ou melhorar suas funcionalidades principais.",
+      "As informações processadas pela extensão são usadas apenas para fornecer ou melhorar suas funcionalidades principais. Elas não são usadas para publicidade personalizada, avaliação de crédito ou finalidades sem relação com o RecarregaAi!.",
     sectionLimitedUseTitle: "7. Limited Use",
     sectionLocalStorageBody1:
       "As preferências e os estados necessários ao funcionamento da extensão são salvos no armazenamento local do navegador para manter a experiência entre sessões.",
     sectionLocalStorageBody2:
-      "Ao exportar configurações, a extensão cria localmente um arquivo JSON com tema, idioma, intervalo padrão e sites de auto-início. Timers ativos e o histórico de ações não entram no arquivo. Na importação, apenas o arquivo escolhido pelo usuário é lido localmente; ele não é enviado a servidores.",
+      "Ao exportar configurações, a extensão cria localmente um arquivo JSON com tema, idioma, intervalo padrão, sites de auto-início e metadados técnicos do arquivo, como versão e data de exportação. Timers ativos e o histórico de ações não entram no arquivo. Na importação, apenas o arquivo escolhido pelo usuário é lido localmente; ele não é enviado a servidores. A extensão solicita permissão para os domínios importados antes de ativá-los.",
     sectionLocalStorageList1: "Tema escolhido.",
     sectionLocalStorageList2: "Idioma escolhido para as páginas da extensão.",
     sectionLocalStorageList3: "Intervalo padrão dos timers.",
@@ -113,7 +114,7 @@ const privacyTranslations = extendPageTranslations({
     sectionNotCollectedBody1:
       "A extensão não coleta senhas, textos digitados, mensagens, arquivos, dados bancários, dados de formulários, gravações de áudio ou vídeo, conteúdo textual das páginas nem cria um histórico geral de navegação ou um perfil de uso do usuário.",
     sectionNotCollectedBody2:
-      "A extensão pode detectar localmente quando o usuário está interagindo com campos editáveis ou usando áudio, vídeo e gravação para evitar recarregamentos em momentos sensíveis. Essa detecção não lê, armazena ou envia o conteúdo digitado, reproduzido ou gravado.",
+      "A extensão pode detectar localmente quando o usuário está interagindo com campos editáveis, usando áudio, vídeo ou gravação ou visualizando uma imagem aberta sozinha, em tela cheia ou em um visualizador. Essa detecção evita recarregamentos em momentos sensíveis e não lê, armazena ou envia o conteúdo digitado, reproduzido, gravado ou visualizado.",
     sectionNotCollectedTitle: "2. Informações que a extensão não coleta",
     sectionPermissionsBody:
       "A extensão solicita somente as permissões necessárias para suas funcionalidades principais.",
@@ -121,12 +122,12 @@ const privacyTranslations = extendPageTranslations({
     sectionSharingBody1:
       "A extensão não vende dados do usuário, não compartilha dados para publicidade e não utiliza analytics de terceiros nem informações para rastreamento.",
     sectionSharingBody2:
-      "O único envio externo previsto ocorre quando o usuário envia voluntariamente o formulário de feedback de desinstalação, processado pelo Google Apps Script.",
+      "O único envio externo previsto ocorre quando o usuário envia voluntariamente o formulário de feedback de desinstalação. Ele é processado pelos serviços Google Apps Script e e-mail e entregue à Olinbyte Digital. Os dados operacionais da extensão não são compartilhados com terceiros.",
     sectionSharingTitle: "6. Compartilhamento de dados",
     sectionTypingBody1:
-      "Quando um timer está ativo, o RecarregaAi! verifica localmente se há foco em campos como <code>input</code>, <code>textarea</code> ou áreas editáveis da página. Ele também pode identificar se há áudio, vídeo, gravação, fluxo de mídia ou contexto de áudio em uso. Se houver atividade sensível, o timer daquela guia pode ser pausado temporariamente e retomado depois que a atividade terminar.",
+      "Quando um timer está ativo, o RecarregaAi! verifica localmente se há foco em campos como <code>input</code>, <code>textarea</code> ou áreas editáveis da página. Ele também pode identificar reprodução de áudio ou vídeo, uma gravação feita por <code>MediaRecorder</code> ou uma imagem aberta sozinha, em tela cheia ou em um visualizador/modal visível. Imagens comuns que apenas fazem parte da página não pausam o timer. Se houver atividade sensível, o timer daquela guia pode ser pausado temporariamente. Quando a atividade termina, a extensão aguarda três segundos de segurança e retoma a contagem a partir do tempo restante.",
     sectionTypingBody2:
-      "Essa verificação recebe apenas o estado de interação com campos editáveis ou mídia ativa. Ela não acessa o texto digitado, não grava áudio nem captura vídeo. O histórico local pode registrar apenas que o timer foi pausado por digitação ou mídia, sem guardar o conteúdo da atividade e sem enviar esse estado para servidores.",
+      "Essa verificação recebe apenas o estado de interação com campos editáveis ou mídia ativa. Ela não acessa o texto digitado, não grava áudio, não captura vídeo e não analisa, copia ou armazena a imagem visualizada. O histórico local pode registrar apenas que o timer foi pausado por digitação ou mídia, sem guardar o conteúdo da atividade e sem enviar esse estado para servidores.",
     sectionTypingTitle: "3. Proteção de digitação e mídia",
     permissionActiveTab:
       "Usada para executar ações na guia atual quando o usuário interage com a extensão.",
@@ -166,7 +167,7 @@ const privacyTranslations = extendPageTranslations({
     footerFeedback: "Feedback",
     footerDeveloper: "Developed by:",
     footerHome: "Home",
-    footerLegal: "© RecarregaAi! 2.3.1. Policy updated on 06/19/2026.",
+    footerLegal: "© RecarregaAi! 2.3.6. Policy updated on 06/22/2026.",
     footerPrivacy: "Privacy",
     headerContact: "Contact",
     headerNavLabel: "Policy navigation",
@@ -176,7 +177,7 @@ const privacyTranslations = extendPageTranslations({
     heroEyebrow: "Privacy Policy",
     heroIntro:
       "RecarregaAi! is a browser extension created to clear temporary data from the current site, reload tabs, run automatic timers and protect typing and media activity from unexpected reloads.",
-    heroMeta: "Last updated: 06/19/2026",
+    heroMeta: "Last updated: 06/22/2026",
     heroTitle: "Transparency so you can use it without surprises.",
     languageDialogDescription:
       "Choose your preferred language to browse RecarregaAi!.",
@@ -202,11 +203,11 @@ const privacyTranslations = extendPageTranslations({
       "For privacy questions, requests about submitted feedback or clarifications about data processed by the extension, email olinbytedigital@gmail.com.",
     sectionContactTitle: "10. Contact",
     sectionControlBody1:
-      "The user can change the theme, language, timers, automatic sites and permissions at any time through extension pages or browser settings.",
+      "The user can change the theme, language, timers, automatic sites and permissions, and clear local history, at any time through extension pages or browser settings.",
     sectionControlBody2:
       "Settings are exported or imported only after a user action. The exported JSON file can be inspected and deleted by the user, and the imported file is selected manually.",
     sectionControlBody3:
-      "The user can revoke permissions granted to sites or remove the extension. When it is removed, Chrome deletes data associated with the extension's local storage.",
+      "The user can revoke permissions granted to sites or remove the extension. When it is removed, Chrome deletes data associated with the extension's local storage. The language preference saved by public pages can be removed through the browser's site data settings.",
     sectionControlBody4:
       "Exported files remain in the location selected by the user and must be deleted manually. To request removal or clarification about submitted feedback, email olinbytedigital@gmail.com.",
     sectionControlTitle: "9. User control",
@@ -215,24 +216,24 @@ const privacyTranslations = extendPageTranslations({
     sectionDataBody2:
       "The extension may also locally save the theme, language, default interval, sites configured for automatic start and, for tabs with active timers, the address, title, state, next run and last timer result. It also keeps a limited local history of actions performed by the extension.",
     sectionDataBody3:
-      "This information remains in the browser through <code>chrome.storage.local</code> and, for the page language preference, the browser's own local storage. The extension does not send this information to external servers.",
+      "This information remains in the browser through <code>chrome.storage.local</code> and, for the language preference of public pages, the site's local storage. The extension does not send this operational data to external servers.",
     sectionDataTitle: "1. Information processed by the extension",
     sectionFeedbackBody1:
       "After uninstalling the extension, the feedback page may open automatically, but no response is sent without a user action. Submission is optional.",
     sectionFeedbackBody2:
-      "If submitted, the form may include uninstall reason, comment, optional email, language, browser, extension version and submission date.",
+      "If submitted, the form may include uninstall reason, comment, optional email, language, browser, extension version, submission date, feedback page origin and a random technical submission identifier. The origin and identifier are used only to confirm the result and prevent duplicate submissions.",
     sectionFeedbackBody3:
-      "Feedback is submitted through Google Apps Script. This information is used only to understand problems, fix issues and improve the extension.",
+      "Feedback is processed by Google Apps Script and delivered by email to Olinbyte Digital at olinbytedigital@gmail.com. The technical identifier may remain in the service's temporary cache for up to six hours to prevent duplicates. The information is used only to respond to the contact, understand problems, fix issues and improve the extension.",
     sectionFeedbackTitle: "5. Uninstall feedback",
     sectionLimitedUseBody1:
       "The extension's use of information follows the Chrome Web Store User Data Policy, including Limited Use requirements.",
     sectionLimitedUseBody2:
-      "Information processed by the extension is used only to provide or improve its core features.",
+      "Information processed by the extension is used only to provide or improve its core features. It is not used for personalized advertising, credit assessment or purposes unrelated to RecarregaAi!.",
     sectionLimitedUseTitle: "7. Limited Use",
     sectionLocalStorageBody1:
       "Preferences and states required for the extension to operate are saved in the browser's local storage to maintain the experience across sessions.",
     sectionLocalStorageBody2:
-      "When settings are exported, the extension locally creates a JSON file containing the theme, language, default interval and automatic-start sites. Active timers and action history are not included. During import, only the file selected by the user is read locally; it is not sent to servers.",
+      "When settings are exported, the extension locally creates a JSON file containing the theme, language, default interval, automatic-start sites and technical file metadata such as the version and export date. Active timers and action history are not included. During import, only the file selected by the user is read locally; it is not sent to servers. The extension requests permission for imported domains before enabling them.",
     sectionLocalStorageList1: "Selected theme.",
     sectionLocalStorageList2: "Language selected for extension pages.",
     sectionLocalStorageList3: "Default timer interval.",
@@ -245,7 +246,7 @@ const privacyTranslations = extendPageTranslations({
     sectionNotCollectedBody1:
       "The extension does not collect passwords, typed text, messages, files, banking data, form data, audio or video recordings, textual page content, and does not create a general browsing history or user profile.",
     sectionNotCollectedBody2:
-      "The extension may locally detect when the user is interacting with editable fields or using audio, video and recording to avoid reloads during sensitive moments. This detection does not read, store or send typed, played or recorded content.",
+      "The extension may locally detect when the user is interacting with editable fields, using audio, video or recording, or viewing an image opened on its own, in full screen or in a viewer. This detection prevents reloads during sensitive moments and does not read, store or send typed, played, recorded or viewed content.",
     sectionNotCollectedTitle: "2. Information the extension does not collect",
     sectionPermissionsBody:
       "The extension requests only the permissions required for its core features.",
@@ -253,12 +254,12 @@ const privacyTranslations = extendPageTranslations({
     sectionSharingBody1:
       "The extension does not sell user data, does not share data for advertising, and does not use third-party analytics or information for tracking.",
     sectionSharingBody2:
-      "The only expected external submission happens when the user voluntarily sends the uninstall feedback form, processed by Google Apps Script.",
+      "The only expected external submission happens when the user voluntarily sends the uninstall feedback form. It is processed by Google Apps Script and email services and delivered to Olinbyte Digital. The extension's operational data is not shared with third parties.",
     sectionSharingTitle: "6. Data sharing",
     sectionTypingBody1:
-      "When a timer is active, RecarregaAi! locally checks whether fields such as <code>input</code>, <code>textarea</code> or editable page areas have focus. It may also identify whether audio, video, recording, a media stream or an audio context is in use. If sensitive activity is detected, that tab's timer may be paused temporarily and resumed after the activity ends.",
+      "When a timer is active, RecarregaAi! locally checks whether fields such as <code>input</code>, <code>textarea</code> or editable page areas have focus. It may also identify audio or video playback, a recording made with <code>MediaRecorder</code>, or an image opened on its own, in full screen or in a visible viewer or modal. Ordinary images that are simply part of a page do not pause the timer. If sensitive activity is detected, that tab's timer may be paused temporarily. When the activity ends, the extension waits for a three-second safety period and resumes the countdown from the remaining time.",
     sectionTypingBody2:
-      "This check receives only the interaction state of editable fields or active media. It does not access typed text, record audio or capture video. Local history may only record that a timer paused for typing or media, without storing the activity content or sending that state to external servers.",
+      "This check receives only the interaction state of editable fields or active media. It does not access typed text, record audio, capture video, or analyze, copy or store the viewed image. Local history may only record that a timer paused for typing or media, without storing the activity content or sending that state to external servers.",
     sectionTypingTitle: "3. Typing and media protection",
     permissionActiveTab:
       "Used to run actions on the current tab when the user interacts with the extension.",
@@ -298,7 +299,7 @@ const privacyTranslations = extendPageTranslations({
     footerFeedback: "Feedback",
     footerDeveloper: "Desarrollado por:",
     footerHome: "Inicio",
-    footerLegal: "© RecarregaAi! 2.3.1. Política actualizada el 19/06/2026.",
+    footerLegal: "© RecarregaAi! 2.3.6. Política actualizada el 22/06/2026.",
     footerPrivacy: "Privacidad",
     headerContact: "Contacto",
     headerNavLabel: "Navegación de la política",
@@ -308,7 +309,7 @@ const privacyTranslations = extendPageTranslations({
     heroEyebrow: "Política de Privacidad",
     heroIntro:
       "RecarregaAi! es una extensión para navegador creada para limpiar datos temporales del sitio actual, recargar pestañas, ejecutar timers automáticos y proteger la escritura y el uso de medios contra recargas inesperadas.",
-    heroMeta: "Última actualización: 19/06/2026",
+    heroMeta: "Última actualización: 22/06/2026",
     heroTitle: "Transparencia para usarla sin sorpresas.",
     languageDialogDescription:
       "Elige el idioma preferido para navegar por RecarregaAi!.",
@@ -334,11 +335,11 @@ const privacyTranslations = extendPageTranslations({
       "Para dudas sobre privacidad, solicitudes sobre feedback enviado o aclaraciones sobre datos procesados por la extensión, usa el correo olinbytedigital@gmail.com.",
     sectionContactTitle: "10. Contacto",
     sectionControlBody1:
-      "El usuario puede cambiar el tema, el idioma, los timers, los sitios automáticos y los permisos en cualquier momento desde las páginas de la extensión o la configuración del navegador.",
+      "El usuario puede cambiar el tema, el idioma, los timers, los sitios automáticos y los permisos, además de borrar el historial local, en cualquier momento desde las páginas de la extensión o la configuración del navegador.",
     sectionControlBody2:
       "La exportación y la importación de configuraciones solo ocurren por acción del usuario. El archivo JSON exportado puede ser examinado y eliminado por el usuario, y el archivo importado se selecciona manualmente.",
     sectionControlBody3:
-      "El usuario puede revocar permisos concedidos a sitios o eliminar la extensión. Al eliminarla, Chrome borra los datos asociados al almacenamiento local de la extensión.",
+      "El usuario puede revocar permisos concedidos a sitios o eliminar la extensión. Al eliminarla, Chrome borra los datos asociados al almacenamiento local de la extensión. La preferencia de idioma guardada por las páginas públicas puede eliminarse desde la configuración de datos de sitios del navegador.",
     sectionControlBody4:
       "Los archivos exportados permanecen en la ubicación elegida por el usuario y deben eliminarse manualmente. Para solicitar la eliminación o una aclaración sobre feedback enviado, usa el correo olinbytedigital@gmail.com.",
     sectionControlTitle: "9. Control del usuario",
@@ -347,24 +348,24 @@ const privacyTranslations = extendPageTranslations({
     sectionDataBody2:
       "La extensión también puede guardar localmente el tema, el idioma, el intervalo predeterminado, los sitios configurados para inicio automático y, para las pestañas con timers activos, la dirección, el título, el estado, la próxima ejecución y el último resultado del timer. También mantiene un historial local y limitado de las acciones realizadas por la extensión.",
     sectionDataBody3:
-      "Esta información permanece en el navegador mediante <code>chrome.storage.local</code> y, para la preferencia de idioma de las páginas, el almacenamiento local del propio navegador. La extensión no envía esta información a servidores externos.",
+      "Esta información permanece en el navegador mediante <code>chrome.storage.local</code> y, para la preferencia de idioma de las páginas públicas, el almacenamiento local del propio sitio. La extensión no envía estos datos operativos a servidores externos.",
     sectionDataTitle: "1. Información procesada por la extensión",
     sectionFeedbackBody1:
       "Después de desinstalar la extensión, la página de feedback puede abrirse automáticamente, pero no se envía ninguna respuesta sin una acción del usuario. El envío es opcional.",
     sectionFeedbackBody2:
-      "Si se envía, el formulario puede incluir motivo de desinstalación, comentario, email opcional, idioma, navegador, versión de la extensión y fecha de envío.",
+      "Si se envía, el formulario puede incluir motivo de desinstalación, comentario, email opcional, idioma, navegador, versión de la extensión, fecha de envío, origen de la página de feedback y un identificador técnico aleatorio del envío. El origen y el identificador se usan solo para confirmar el resultado y evitar envíos duplicados.",
     sectionFeedbackBody3:
-      "El feedback se envía por medio de Google Apps Script. Esta información se usa solo para entender problemas, corregir fallas y mejorar la extensión.",
+      "El feedback es procesado por Google Apps Script y entregado por email a Olinbyte Digital en olinbytedigital@gmail.com. El identificador técnico puede permanecer en la caché temporal del servicio hasta seis horas para evitar duplicados. La información se usa solo para responder al contacto, entender problemas, corregir fallas y mejorar la extensión.",
     sectionFeedbackTitle: "5. Feedback de desinstalación",
     sectionLimitedUseBody1:
       "El uso de la información por parte de la extensión sigue la Política de Datos del Usuario de Chrome Web Store, incluidos los requisitos de Limited Use.",
     sectionLimitedUseBody2:
-      "La información procesada por la extensión se usa solo para proporcionar o mejorar sus funcionalidades principales.",
+      "La información procesada por la extensión se usa solo para proporcionar o mejorar sus funcionalidades principales. No se usa para publicidad personalizada, evaluación crediticia ni fines ajenos a RecarregaAi!.",
     sectionLimitedUseTitle: "7. Limited Use",
     sectionLocalStorageBody1:
       "Las preferencias y los estados necesarios para el funcionamiento de la extensión se guardan en el almacenamiento local del navegador para mantener la experiencia entre sesiones.",
     sectionLocalStorageBody2:
-      "Al exportar configuraciones, la extensión crea localmente un archivo JSON con el tema, el idioma, el intervalo predeterminado y los sitios de inicio automático. Los temporizadores activos y el historial de acciones no se incluyen. Durante la importación, solo se lee localmente el archivo elegido por el usuario; no se envía a servidores.",
+      "Al exportar configuraciones, la extensión crea localmente un archivo JSON con el tema, el idioma, el intervalo predeterminado, los sitios de inicio automático y metadatos técnicos del archivo, como la versión y la fecha de exportación. Los temporizadores activos y el historial de acciones no se incluyen. Durante la importación, solo se lee localmente el archivo elegido por el usuario; no se envía a servidores. La extensión solicita permiso para los dominios importados antes de activarlos.",
     sectionLocalStorageList1: "Tema elegido.",
     sectionLocalStorageList2: "Idioma elegido para las páginas de la extensión.",
     sectionLocalStorageList3: "Intervalo predeterminado de los timers.",
@@ -377,7 +378,7 @@ const privacyTranslations = extendPageTranslations({
     sectionNotCollectedBody1:
       "La extensión no recopila contraseñas, textos escritos, mensajes, archivos, datos bancarios, datos de formularios, grabaciones de audio o video ni contenido textual de las páginas, y no crea un historial general de navegación ni un perfil del usuario.",
     sectionNotCollectedBody2:
-      "La extensión puede detectar localmente cuando el usuario interactúa con campos editables o usa audio, video y grabación para evitar recargas en momentos sensibles. Esta detección no lee, almacena ni envía el contenido escrito, reproducido o grabado.",
+      "La extensión puede detectar localmente cuando el usuario interactúa con campos editables, usa audio, video o grabación, o visualiza una imagen abierta por separado, en pantalla completa o en un visor. Esta detección evita recargas en momentos sensibles y no lee, almacena ni envía el contenido escrito, reproducido, grabado o visualizado.",
     sectionNotCollectedTitle: "2. Información que la extensión no recopila",
     sectionPermissionsBody:
       "La extensión solicita solo los permisos necesarios para sus funcionalidades principales.",
@@ -385,12 +386,12 @@ const privacyTranslations = extendPageTranslations({
     sectionSharingBody1:
       "La extensión no vende datos del usuario, no comparte datos para publicidad y no utiliza analytics de terceros ni información para rastreo.",
     sectionSharingBody2:
-      "El único envío externo previsto ocurre cuando el usuario envía voluntariamente el formulario de feedback de desinstalación, procesado por Google Apps Script.",
+      "El único envío externo previsto ocurre cuando el usuario envía voluntariamente el formulario de feedback de desinstalación. Es procesado por los servicios Google Apps Script y de email y entregado a Olinbyte Digital. Los datos operativos de la extensión no se comparten con terceros.",
     sectionSharingTitle: "6. Compartir datos",
     sectionTypingBody1:
-      "Cuando un timer está activo, RecarregaAi! verifica localmente si hay foco en campos como <code>input</code>, <code>textarea</code> o áreas editables de la página. También puede identificar si hay audio, video, grabación, un flujo de medios o un contexto de audio en uso. Si hay actividad sensible, el timer de esa pestaña puede pausarse temporalmente y reanudarse cuando la actividad termine.",
+      "Cuando un timer está activo, RecarregaAi! verifica localmente si hay foco en campos como <code>input</code>, <code>textarea</code> o áreas editables de la página. También puede identificar la reproducción de audio o video, una grabación realizada con <code>MediaRecorder</code> o una imagen abierta por separado, en pantalla completa o en un visor o modal visible. Las imágenes comunes que solo forman parte de la página no pausan el timer. Si hay actividad sensible, el timer de esa pestaña puede pausarse temporalmente. Cuando la actividad termina, la extensión espera tres segundos de seguridad y reanuda la cuenta desde el tiempo restante.",
     sectionTypingBody2:
-      "Esta verificación recibe solo el estado de interacción con campos editables o medios activos. No accede al texto escrito, no graba audio ni captura video. El historial local puede registrar únicamente que un temporizador se pausó por escritura o contenido multimedia, sin guardar el contenido de la actividad ni enviar ese estado a servidores.",
+      "Esta verificación recibe solo el estado de interacción con campos editables o medios activos. No accede al texto escrito, no graba audio, no captura video ni analiza, copia o almacena la imagen visualizada. El historial local puede registrar únicamente que un temporizador se pausó por escritura o contenido multimedia, sin guardar el contenido de la actividad ni enviar ese estado a servidores.",
     sectionTypingTitle: "3. Protección de escritura y medios",
     permissionActiveTab:
       "Usada para ejecutar acciones en la pestaña actual cuando el usuario interactúa con la extensión.",
@@ -537,15 +538,15 @@ const getScrollTargetTop = (heading) => {
   return Math.max(0, sectionTop - headerHeight - sectionTopGap);
 };
 
-const getPolicyHeadingTop = (heading) => {
+const getPolicyHeadingViewportTop = (heading) => {
   const section = heading.closest(".policy-section") || heading;
 
-  return section.getBoundingClientRect().top + window.scrollY;
+  return section.getBoundingClientRect().top;
 };
 
 const getActivePolicyHeadingId = () => {
-  const headerHeight = privacyHeader?.getBoundingClientRect().height || 0;
-  const activeLine = window.scrollY + headerHeight + sectionTopGap + 8;
+  const headerBottom = privacyHeader?.getBoundingClientRect().bottom || 0;
+  const activeLine = headerBottom + sectionTopGap + 8;
   const pageBottom = window.scrollY + window.innerHeight;
   const documentHeight = document.documentElement.scrollHeight;
   let activeHeading = policyHeadings[0];
@@ -555,7 +556,7 @@ const getActivePolicyHeadingId = () => {
   }
 
   policyHeadings.forEach((heading) => {
-    if (getPolicyHeadingTop(heading) <= activeLine) {
+    if (getPolicyHeadingViewportTop(heading) <= activeLine) {
       activeHeading = heading;
     }
   });
@@ -564,6 +565,28 @@ const getActivePolicyHeadingId = () => {
 };
 
 let isPolicyNavSyncQueued = false;
+let pendingPolicyNavigationId = null;
+let policyNavigationReleaseTimerId = null;
+
+const finishPolicyNavigation = () => {
+  if (!pendingPolicyNavigationId) {
+    return;
+  }
+
+  pendingPolicyNavigationId = null;
+  window.clearTimeout(policyNavigationReleaseTimerId);
+  policyNavigationReleaseTimerId = null;
+  syncActivePolicyNavLink();
+};
+
+const startPolicyNavigation = (headingId) => {
+  pendingPolicyNavigationId = headingId;
+  window.clearTimeout(policyNavigationReleaseTimerId);
+  policyNavigationReleaseTimerId = window.setTimeout(
+    finishPolicyNavigation,
+    policyNavigationReleaseDelay
+  );
+};
 
 const syncActivePolicyNavLink = () => {
   if (isPolicyNavSyncQueued) {
@@ -574,7 +597,8 @@ const syncActivePolicyNavLink = () => {
 
   window.requestAnimationFrame(() => {
     isPolicyNavSyncQueued = false;
-    const activeHeadingId = getActivePolicyHeadingId();
+    const activeHeadingId = pendingPolicyNavigationId
+      || getActivePolicyHeadingId();
 
     if (activeHeadingId) {
       setActivePolicyNavLink(activeHeadingId);
@@ -738,6 +762,7 @@ policyNavLinks.forEach((link) => {
     }
 
     event.preventDefault();
+    startPolicyNavigation(headingId);
     setActivePolicyNavLink(headingId);
     window.history.pushState(null, "", `#${headingId}`);
     window.scrollTo({
@@ -758,6 +783,9 @@ if (window.location.hash) {
 if (policyHeadings.length > 0) {
   syncActivePolicyNavLink();
   window.addEventListener("scroll", syncActivePolicyNavLink, { passive: true });
+  window.addEventListener("scrollend", finishPolicyNavigation, {
+    passive: true
+  });
   window.addEventListener("resize", syncActivePolicyNavLink);
 }
 

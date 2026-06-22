@@ -1,4 +1,4 @@
-// RecarregaAi! 2.3.1
+// RecarregaAi! 2.3.6
 
 const defaultFooterSelector = ".privacy-footer";
 const defaultToolsSelector = ".floating-tools";

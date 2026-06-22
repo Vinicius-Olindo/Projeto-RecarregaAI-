@@ -1,4 +1,4 @@
-// RecarregaAi! 2.3.1
+// RecarregaAi! 2.3.6
 
 import { appConfig } from "./modules/config.js";
 import {
@@ -65,6 +65,10 @@ const mediaBadgeStates = Object.freeze({
   [mediaKinds.generic]: {
     badgeText: "MID",
     countdownTime: "midia ativa"
+  },
+  [mediaKinds.image]: {
+    badgeText: "IMG",
+    countdownTime: "imagem em visualizacao"
   },
   [mediaKinds.recording]: {
     badgeText: "REC",
@@ -192,6 +196,103 @@ const getActiveMediaKindInFrame = () => {
   return activeMediaElements.length > 0 ? "audio" : null;
 };
 
+const getActiveImageKindInFrame = () => {
+  if (document.visibilityState !== "visible") {
+    return null;
+  }
+
+  const imageViewerSelector = [
+    "dialog[open]",
+    "[aria-modal='true']:not([aria-hidden='true'])",
+    "[class*='lightbox' i]",
+    "[class*='image-viewer' i]",
+    "[class*='photo-viewer' i]",
+    "[data-testid*='image-viewer' i]",
+    "[data-testid*='lightbox' i]"
+  ].join(",");
+  const isElementVisible = (element) => {
+    if (!(element instanceof Element)) {
+      return false;
+    }
+
+    const styles = window.getComputedStyle(element);
+    const bounds = element.getBoundingClientRect();
+
+    return styles.display !== "none"
+      && styles.visibility !== "hidden"
+      && Number(styles.opacity) > 0
+      && bounds.bottom > 0
+      && bounds.right > 0
+      && bounds.top < window.innerHeight
+      && bounds.left < window.innerWidth;
+  };
+  const isLargeVisibleImage = (image) => {
+    if (!(image instanceof HTMLImageElement) || !isElementVisible(image)) {
+      return false;
+    }
+
+    const bounds = image.getBoundingClientRect();
+    const viewportWidth = Math.max(1, window.innerWidth);
+    const viewportHeight = Math.max(1, window.innerHeight);
+    const visibleWidth = Math.max(
+      0,
+      Math.min(bounds.right, viewportWidth) - Math.max(bounds.left, 0)
+    );
+    const visibleHeight = Math.max(
+      0,
+      Math.min(bounds.bottom, viewportHeight) - Math.max(bounds.top, 0)
+    );
+
+    return visibleWidth >= Math.min(220, viewportWidth * 0.35)
+      && visibleHeight >= Math.min(160, viewportHeight * 0.25)
+      && visibleWidth * visibleHeight >= viewportWidth * viewportHeight * 0.08;
+  };
+  const hasStandaloneImage = document.contentType
+    ?.toLowerCase()
+    .startsWith("image/");
+  const fullscreenElement = document.fullscreenElement;
+  const hasFullscreenImage = Boolean(
+    fullscreenElement
+    && (
+      fullscreenElement instanceof HTMLImageElement
+      || fullscreenElement.querySelector("img")
+    )
+  );
+  const hasImageViewer = Array.from(
+    document.querySelectorAll(imageViewerSelector)
+  ).some((viewer) => (
+    isElementVisible(viewer)
+    && Array.from(viewer.querySelectorAll("img")).some(isLargeVisibleImage)
+  ));
+  const hasFixedImageOverlay = Array.from(document.images).some((image) => {
+    if (!isLargeVisibleImage(image)) {
+      return false;
+    }
+
+    let container = image;
+
+    while (container && container !== document.body) {
+      if (window.getComputedStyle(container).position === "fixed") {
+        const bounds = container.getBoundingClientRect();
+
+        return bounds.width * bounds.height
+          >= window.innerWidth * window.innerHeight * 0.35;
+      }
+
+      container = container.parentElement;
+    }
+
+    return false;
+  });
+
+  return hasStandaloneImage
+    || hasFullscreenImage
+    || hasImageViewer
+    || hasFixedImageOverlay
+    ? "image"
+    : null;
+};
+
 const getRecordingMediaKindInFrame = () => (
   window.__recarregaAiMainWorldMediaState?.isRecording ? "recording" : null
 );
@@ -265,6 +366,27 @@ const getTabMediaActivity = async (tabId) => {
     }
   } catch (error) {
     console.warn("Nao foi possivel verificar midia ativa na guia:", error);
+  }
+
+  try {
+    const imageFrameResults = await chrome.scripting.executeScript({
+      target: {
+        tabId,
+        allFrames: true
+      },
+      func: getActiveImageKindInFrame
+    });
+
+    if (imageFrameResults.some((frameResult) => (
+      frameResult.result === mediaKinds.image
+    ))) {
+      return {
+        isMediaActive: true,
+        mediaKind: mediaKinds.image
+      };
+    }
+  } catch (error) {
+    console.warn("Nao foi possivel verificar imagem ativa na guia:", error);
   }
 
   if (tab?.audible) {

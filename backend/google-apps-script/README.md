@@ -1,4 +1,4 @@
-# Backend de feedback - RecarregaAi! 2.3.1
+# Backend de feedback - RecarregaAi! 2.3.6
 
 Este endpoint envia o feedback diretamente para
 `olinbytedigital@gmail.com` usando o Google Apps Script. O navegador publica o

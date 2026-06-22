@@ -1,4 +1,4 @@
-// RecarregaAi! 2.3.1
+// RecarregaAi! 2.3.6
 
 export const enforceTopLevelPublicPage = () => {
   if (window.top === window.self) {

@@ -1,4 +1,4 @@
-// RecarregaAi! 2.3.1
+// RecarregaAi! 2.3.6
 
 import { initFloatingTools } from "./modules/floating-tools.js";
 import { extendPageTranslations } from "./modules/extended-translations.js";
@@ -27,11 +27,13 @@ const optionsPreviewStorageKey = "recarregaAiOptionsPreviewSettings";
 const optionsPageLanguageStorageKey = "recarregaAiPageLanguage";
 const settingsExportType = "recarregaai-settings";
 const settingsExportVersion = 1;
+const historyPageSize = 5;
 
 const optionsElements = {
   addSiteButton: document.querySelector("#add-site-button"),
   clearHistoryButton: document.querySelector("#clear-history-button"),
   closeOptionsButton: document.querySelector("#close-options-button"),
+  collapseHistoryButton: document.querySelector("#collapse-history-button"),
   defaultIntervalInput: document.querySelector("#default-interval-input"),
   extensionVersion: document.querySelector("#extension-version"),
   exportSettingsButton: document.querySelector("#export-settings-button"),
@@ -41,8 +43,11 @@ const optionsElements = {
   historyEmptyState: document.querySelector("#history-empty-state"),
   historyFilterButtons: document.querySelectorAll("[data-history-filter]"),
   historyList: document.querySelector("#history-list"),
+  historyPagination: document.querySelector("#history-pagination"),
+  historyVisibleCount: document.querySelector("#history-visible-count"),
   optionsStatus: document.querySelector("#options-status"),
   saveSettingsButton: document.querySelector("#save-settings-button"),
+  showMoreHistoryButton: document.querySelector("#show-more-history-button"),
   siteFormAlert: document.querySelector("#site-form-alert"),
   siteFormAlertText: document.querySelector("#site-form-alert-text"),
   siteIntervalInput: document.querySelector("#site-interval-input"),
@@ -94,7 +99,7 @@ const optionsTranslations = extendPageTranslations({
     footerFeedback: "Feedback",
     footerDeveloper: "Desenvolvido por:",
     footerHome: "Início",
-    footerLegal: "© RecarregaAi! 2.3.1. Todos os direitos reservados.",
+    footerLegal: "© RecarregaAi! 2.3.6. Todos os direitos reservados.",
     footerPrivacy: "Privacidade",
     formInvalidInterval: "Informe um intervalo padrão de pelo menos 1 minuto.",
     formInvalidOrigin: "Use um endereço http ou https.",
@@ -136,8 +141,11 @@ const optionsTranslations = extendPageTranslations({
     historyFilterRefreshes: "Atualizações",
     historyFilterTimers: "Timers",
     historyInterval: "A cada {interval}",
+    historyCollapse: "Mostrar menos",
     historyLimitNote:
       "São mantidas somente as 100 ações mais recentes, salvas localmente.",
+    historyShowMore: "Mostrar mais",
+    historyVisibleCount: "Mostrando {visible} de {total}",
     historyManualCleanup: "Limpeza manual",
     historyNavLabel: "Histórico",
     historyPauseManual: "Pausado pelo usuário",
@@ -253,7 +261,7 @@ const optionsTranslations = extendPageTranslations({
     footerFeedback: "Feedback",
     footerDeveloper: "Developed by:",
     footerHome: "Home",
-    footerLegal: "© RecarregaAi! 2.3.1. All rights reserved.",
+    footerLegal: "© RecarregaAi! 2.3.6. All rights reserved.",
     footerPrivacy: "Privacy",
     formInvalidInterval: "Enter a default interval of at least 1 minute.",
     formInvalidOrigin: "Use an http or https address.",
@@ -294,8 +302,11 @@ const optionsTranslations = extendPageTranslations({
     historyFilterRefreshes: "Refreshes",
     historyFilterTimers: "Timers",
     historyInterval: "Every {interval}",
+    historyCollapse: "Show less",
     historyLimitNote:
       "Only the 100 most recent actions are kept and stored locally.",
+    historyShowMore: "Show more",
+    historyVisibleCount: "Showing {visible} of {total}",
     historyManualCleanup: "Manual cleanup",
     historyNavLabel: "History",
     historyPauseManual: "Paused by the user",
@@ -411,7 +422,7 @@ const optionsTranslations = extendPageTranslations({
     footerFeedback: "Feedback",
     footerDeveloper: "Desarrollado por:",
     footerHome: "Inicio",
-    footerLegal: "© RecarregaAi! 2.3.1. Todos los derechos reservados.",
+    footerLegal: "© RecarregaAi! 2.3.6. Todos los derechos reservados.",
     footerPrivacy: "Privacidad",
     formInvalidInterval: "Ingresa un intervalo predeterminado de al menos 1 minuto.",
     formInvalidOrigin: "Usa una dirección http o https.",
@@ -452,8 +463,11 @@ const optionsTranslations = extendPageTranslations({
     historyFilterRefreshes: "Actualizaciones",
     historyFilterTimers: "Temporizadores",
     historyInterval: "Cada {interval}",
+    historyCollapse: "Mostrar menos",
     historyLimitNote:
       "Solo se conservan las 100 acciones más recientes, guardadas localmente.",
+    historyShowMore: "Mostrar más",
+    historyVisibleCount: "Mostrando {visible} de {total}",
     historyManualCleanup: "Limpieza manual",
     historyNavLabel: "Historial",
     historyPauseManual: "Pausado por el usuario",
@@ -555,8 +569,11 @@ const localizedHistoryTranslations = {
     historyFilterRefreshes: "Actualisations",
     historyFilterTimers: "Minuteurs",
     historyInterval: "Toutes les {interval}",
+    historyCollapse: "Afficher moins",
     historyLimitNote:
       "Seules les 100 actions les plus récentes sont conservées localement.",
+    historyShowMore: "Afficher plus",
+    historyVisibleCount: "Affichage de {visible} sur {total}",
     historyManualCleanup: "Nettoyage manuel",
     historyNavLabel: "Historique",
     historyPauseManual: "Mis en pause par l'utilisateur",
@@ -595,8 +612,11 @@ const localizedHistoryTranslations = {
     historyFilterRefreshes: "Aktualisierungen",
     historyFilterTimers: "Timer",
     historyInterval: "Alle {interval}",
+    historyCollapse: "Weniger anzeigen",
     historyLimitNote:
       "Nur die 100 neuesten Aktionen werden lokal gespeichert.",
+    historyShowMore: "Mehr anzeigen",
+    historyVisibleCount: "{visible} von {total} werden angezeigt",
     historyManualCleanup: "Manuelle Bereinigung",
     historyNavLabel: "Verlauf",
     historyPauseManual: "Vom Benutzer pausiert",
@@ -635,8 +655,11 @@ const localizedHistoryTranslations = {
     historyFilterRefreshes: "Aggiornamenti",
     historyFilterTimers: "Timer",
     historyInterval: "Ogni {interval}",
+    historyCollapse: "Mostra meno",
     historyLimitNote:
       "Solo le 100 azioni più recenti vengono conservate localmente.",
+    historyShowMore: "Mostra altro",
+    historyVisibleCount: "Visualizzazione di {visible} su {total}",
     historyManualCleanup: "Pulizia manuale",
     historyNavLabel: "Cronologia",
     historyPauseManual: "Messo in pausa dall'utente",
@@ -675,8 +698,11 @@ const localizedHistoryTranslations = {
     historyFilterRefreshes: "Penyegaran",
     historyFilterTimers: "Pengatur waktu",
     historyInterval: "Setiap {interval}",
+    historyCollapse: "Tampilkan lebih sedikit",
     historyLimitNote:
       "Hanya 100 tindakan terbaru yang disimpan secara lokal.",
+    historyShowMore: "Tampilkan lebih banyak",
+    historyVisibleCount: "Menampilkan {visible} dari {total}",
     historyManualCleanup: "Pembersihan manual",
     historyNavLabel: "Riwayat",
     historyPauseManual: "Dijeda oleh pengguna",
@@ -715,8 +741,11 @@ const localizedHistoryTranslations = {
     historyFilterRefreshes: "Yenilemeler",
     historyFilterTimers: "Zamanlayıcılar",
     historyInterval: "Her {interval}",
+    historyCollapse: "Daha az göster",
     historyLimitNote:
       "Yalnızca en son 100 işlem yerel olarak saklanır.",
+    historyShowMore: "Daha fazla göster",
+    historyVisibleCount: "{total} kaydın {visible} tanesi gösteriliyor",
     historyManualCleanup: "Elle temizleme",
     historyNavLabel: "Geçmiş",
     historyPauseManual: "Kullanıcı tarafından duraklatıldı",
@@ -744,6 +773,7 @@ let currentSettings = { ...defaultAppSettings };
 let currentActionHistory = [];
 let activeOptionsLanguage = defaultLanguage;
 let activeHistoryFilter = "all";
+let visibleHistoryLimit = historyPageSize;
 let historyClearResetTimerId = null;
 let isHistoryClearPending = false;
 let optionsLanguageDialog = null;
@@ -914,14 +944,31 @@ const updateHistoryCount = () => {
   optionsElements.clearHistoryButton.disabled = count === 0;
 };
 
+const updateHistoryPagination = (totalCount, visibleCount) => {
+  const hasPagination = totalCount > historyPageSize;
+
+  optionsElements.historyPagination.hidden = !hasPagination;
+  optionsElements.historyVisibleCount.textContent = replaceOptionsToken(
+    "historyVisibleCount",
+    {
+      total: String(totalCount),
+      visible: String(visibleCount)
+    }
+  );
+  optionsElements.showMoreHistoryButton.hidden = visibleCount >= totalCount;
+  optionsElements.collapseHistoryButton.hidden =
+    visibleCount <= historyPageSize;
+};
+
 const renderActionHistory = () => {
   const filteredHistory = getFilteredActionHistory();
+  const visibleHistory = filteredHistory.slice(0, visibleHistoryLimit);
 
   optionsElements.historyList.replaceChildren();
   optionsElements.historyList.hidden = filteredHistory.length === 0;
   optionsElements.historyEmptyState.hidden = filteredHistory.length > 0;
 
-  filteredHistory.forEach((entry) => {
+  visibleHistory.forEach((entry) => {
     const item = document.createElement("li");
     const icon = document.createElement("span");
     const content = document.createElement("div");
@@ -957,6 +1004,7 @@ const renderActionHistory = () => {
   });
 
   updateHistoryCount();
+  updateHistoryPagination(filteredHistory.length, visibleHistory.length);
 };
 
 const loadActionHistory = async () => {
@@ -965,6 +1013,7 @@ const loadActionHistory = async () => {
   });
 
   currentActionHistory = Array.isArray(response?.entries) ? response.entries : [];
+  visibleHistoryLimit = historyPageSize;
   renderActionHistory();
 };
 
@@ -997,6 +1046,7 @@ const clearStoredActionHistory = async () => {
     type: runtimeMessageTypes.clearActionHistory
   });
   currentActionHistory = [];
+  visibleHistoryLimit = historyPageSize;
   resetHistoryClearConfirmation();
   renderActionHistory();
   updateOptionsStatus(getOptionsCopy("historyCleared"), "success");
@@ -1693,6 +1743,8 @@ const applyOptionsLanguage = (language) => {
   ]);
   setText(".history-empty-state strong", "historyEmptyTitle");
   setText(".history-empty-state div span", "historyEmptyDescription");
+  setText("#show-more-history-button", "historyShowMore");
+  setText("#collapse-history-button", "historyCollapse");
   setText(".history-note", "historyLimitNote");
   setText("#permissions-title", "permissionsTitle");
   setTextAt(".summary-card strong", 0, "defaultTimeLabel");
@@ -1820,6 +1872,7 @@ optionsElements.siteOriginInput.addEventListener("input", () => {
 optionsElements.historyFilterButtons.forEach((button) => {
   button.addEventListener("click", () => {
     activeHistoryFilter = button.dataset.historyFilter;
+    visibleHistoryLimit = historyPageSize;
 
     optionsElements.historyFilterButtons.forEach((filterButton) => {
       const isActive = filterButton === button;
@@ -1830,6 +1883,16 @@ optionsElements.historyFilterButtons.forEach((button) => {
 
     renderActionHistory();
   });
+});
+
+optionsElements.showMoreHistoryButton.addEventListener("click", () => {
+  visibleHistoryLimit += historyPageSize;
+  renderActionHistory();
+});
+
+optionsElements.collapseHistoryButton.addEventListener("click", () => {
+  visibleHistoryLimit = historyPageSize;
+  renderActionHistory();
 });
 
 optionsElements.clearHistoryButton.addEventListener("click", () => {

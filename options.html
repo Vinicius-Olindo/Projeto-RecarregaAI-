@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- RecarregaAi! 2.3.1 -->
+<!-- RecarregaAi! 2.3.6 -->
 <html lang="pt-BR" data-theme="light">
 
 <head>
@@ -19,7 +19,7 @@
       <img class="settings-brand__icon" src="assets/icons/icon128.png" alt="" aria-hidden="true" />
       <span>
         <strong>RecarregaAi!</strong>
-        <small id="extension-version">2.3.1</small>
+        <small id="extension-version">2.3.6</small>
       </span>
     </a>
 
@@ -409,6 +409,20 @@
 
           <ol id="history-list" class="history-list" aria-label="Últimas ações da extensão"></ol>
 
+          <div id="history-pagination" class="history-pagination" hidden>
+            <span id="history-visible-count" class="history-pagination__summary" aria-live="polite">
+              Mostrando 0 de 0
+            </span>
+            <div class="history-pagination__actions">
+              <button id="show-more-history-button" class="button button--ghost history-pagination__more" type="button">
+                Mostrar mais
+              </button>
+              <button id="collapse-history-button" class="button button--ghost history-pagination__collapse" type="button" hidden>
+                Mostrar menos
+              </button>
+            </div>
+          </div>
+
           <p class="history-note">
             São mantidas somente as 100 ações mais recentes, salvas localmente.
           </p>
@@ -529,7 +543,7 @@
       </nav>
 
       <p class="privacy-footer__legal">
-        © RecarregaAi! 2.3.1. Todos os direitos reservados.
+        © RecarregaAi! 2.3.6. Todos os direitos reservados.
       </p>
 
       <p class="privacy-footer__developer">

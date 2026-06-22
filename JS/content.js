@@ -1,4 +1,4 @@
-// RecarregaAi! 2.3.1
+// RecarregaAi! 2.3.6
 
 (() => {
   const watcherFlag = "__recarregaAiPageSafetyWatcherLoaded";
@@ -21,6 +21,15 @@
     "suspend",
     "waiting"
   ];
+  const imageViewerSelector = [
+    "dialog[open]",
+    "[aria-modal='true']:not([aria-hidden='true'])",
+    "[class*='lightbox' i]",
+    "[class*='image-viewer' i]",
+    "[class*='photo-viewer' i]",
+    "[data-testid*='image-viewer' i]",
+    "[data-testid*='lightbox' i]"
+  ].join(",");
   const editableInputTypes = new Set([
     "email",
     "number",
@@ -162,8 +171,114 @@
     return activeMediaElements.length > 0 ? "audio" : null;
   };
 
+  const isElementVisible = (element) => {
+    if (!(element instanceof Element)) {
+      return false;
+    }
+
+    const styles = window.getComputedStyle(element);
+    const bounds = element.getBoundingClientRect();
+
+    return styles.display !== "none"
+      && styles.visibility !== "hidden"
+      && Number(styles.opacity) > 0
+      && bounds.bottom > 0
+      && bounds.right > 0
+      && bounds.top < window.innerHeight
+      && bounds.left < window.innerWidth;
+  };
+
+  const isLargeVisibleImage = (image) => {
+    if (!(image instanceof HTMLImageElement) || !isElementVisible(image)) {
+      return false;
+    }
+
+    const bounds = image.getBoundingClientRect();
+    const viewportWidth = Math.max(1, window.innerWidth);
+    const viewportHeight = Math.max(1, window.innerHeight);
+    const visibleWidth = Math.max(
+      0,
+      Math.min(bounds.right, viewportWidth) - Math.max(bounds.left, 0)
+    );
+    const visibleHeight = Math.max(
+      0,
+      Math.min(bounds.bottom, viewportHeight) - Math.max(bounds.top, 0)
+    );
+    const minimumWidth = Math.min(220, viewportWidth * 0.35);
+    const minimumHeight = Math.min(160, viewportHeight * 0.25);
+
+    return visibleWidth >= minimumWidth
+      && visibleHeight >= minimumHeight
+      && visibleWidth * visibleHeight >= viewportWidth * viewportHeight * 0.08;
+  };
+
+  const hasStandaloneImage = () => (
+    document.contentType?.toLowerCase().startsWith("image/")
+  );
+
+  const hasFullscreenImage = () => {
+    const fullscreenElement = document.fullscreenElement;
+
+    if (!fullscreenElement) {
+      return false;
+    }
+
+    if (fullscreenElement instanceof HTMLImageElement) {
+      return true;
+    }
+
+    return Boolean(fullscreenElement.querySelector("img"));
+  };
+
+  const hasImageViewer = () => (
+    Array.from(document.querySelectorAll(imageViewerSelector)).some(
+      (viewer) => (
+        isElementVisible(viewer)
+        && Array.from(viewer.querySelectorAll("img")).some(isLargeVisibleImage)
+      )
+    )
+  );
+
+  const hasFixedImageOverlay = () => (
+    Array.from(document.images).some((image) => {
+      if (!isLargeVisibleImage(image)) {
+        return false;
+      }
+
+      let container = image;
+
+      while (container && container !== document.body) {
+        if (window.getComputedStyle(container).position === "fixed") {
+          const bounds = container.getBoundingClientRect();
+
+          return bounds.width * bounds.height
+            >= window.innerWidth * window.innerHeight * 0.35;
+        }
+
+        container = container.parentElement;
+      }
+
+      return false;
+    })
+  );
+
+  const getActiveImageViewerKind = () => {
+    if (document.visibilityState !== "visible") {
+      return null;
+    }
+
+    return hasStandaloneImage()
+      || hasFullscreenImage()
+      || hasImageViewer()
+      || hasFixedImageOverlay()
+      ? "image"
+      : null;
+  };
+
   const getCurrentMediaKind = () => (
-    pageMediaKind || getActiveMediaElementKind()
+    pageMediaKind
+    || getActiveMediaElementKind()
+    || getActiveImageViewerKind()
   );
 
   const sendMediaState = (nextMediaKind, { force = false } = {}) => {
@@ -245,6 +360,15 @@
     });
 
     observer.observe(document.documentElement, {
+      attributeFilter: [
+        "aria-hidden",
+        "aria-modal",
+        "class",
+        "hidden",
+        "open",
+        "style"
+      ],
+      attributes: true,
       childList: true,
       subtree: true
     });
@@ -254,8 +378,11 @@
   document.addEventListener("keydown", handleEditableActivity, true);
   document.addEventListener("input", handleEditableActivity, true);
   document.addEventListener("compositionstart", handleEditableActivity, true);
+  document.addEventListener("click", scheduleMediaSync, true);
   document.addEventListener("focusout", handleFocusOut, true);
+  document.addEventListener("fullscreenchange", scheduleMediaSync, true);
   document.addEventListener("visibilitychange", scheduleMediaSync, true);
+  window.addEventListener("resize", scheduleMediaSync, { passive: true });
   window.addEventListener("message", handlePageMediaGuardMessage);
 
   observeMediaElements();

@@ -1,6 +1,6 @@
 # RecarregaAi!
 
-**Versão atual: 2.2.8**
+**Versão atual: 2.2.9**
 
 Extensão para Google Chrome que limpa dados antigos do site aberto, recarrega a
 página sem depender do cache anterior e permite automatizar esse processo com

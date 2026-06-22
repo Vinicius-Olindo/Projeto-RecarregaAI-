@@ -1,4 +1,4 @@
-// RecarregaAi! 2.2.8
+// RecarregaAi! 2.2.9
 
 import { appConfig } from "./modules/config.js";
 import {

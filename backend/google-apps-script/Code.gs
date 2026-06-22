@@ -1,4 +1,4 @@
-// RecarregaAi! 2.2.8
+// RecarregaAi! 2.2.9
 
 const FEEDBACK_RECIPIENT = "olinbytedigital@gmail.com";
 const FEEDBACK_PAGE_ORIGIN = "https://vinicius-olindo.github.io";

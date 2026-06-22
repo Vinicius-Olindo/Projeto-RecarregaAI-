@@ -13,6 +13,7 @@ import {
   defaultAppSettings,
   getPermissionPatternForOrigin,
   getUrlOrigin,
+  normalizeOperatingHours,
   runtimeMessageTypes,
   storageKeys
 } from "./modules/shared.js";
@@ -26,7 +27,7 @@ import {
 const optionsPreviewStorageKey = "recarregaAiOptionsPreviewSettings";
 const optionsPageLanguageStorageKey = "recarregaAiPageLanguage";
 const settingsExportType = "recarregaai-settings";
-const settingsExportVersion = 1;
+const settingsExportVersion = 2;
 const historyPageSize = 5;
 
 const optionsElements = {
@@ -46,6 +47,12 @@ const optionsElements = {
   historyPagination: document.querySelector("#history-pagination"),
   historyVisibleCount: document.querySelector("#history-visible-count"),
   optionsStatus: document.querySelector("#options-status"),
+  operatingHoursEnabled: document.querySelector("#operating-hours-enabled"),
+  operatingHoursFields: document.querySelector("#operating-hours-fields"),
+  operatingStartTime: document.querySelector("#operating-start-time"),
+  operatingEndTime: document.querySelector("#operating-end-time"),
+  operatingWeekdays: document.querySelectorAll("[name='operating-weekday']"),
+  preserveScrollInput: document.querySelector("#preserve-scroll-input"),
   saveSettingsButton: document.querySelector("#save-settings-button"),
   showMoreHistoryButton: document.querySelector("#show-more-history-button"),
   siteFormAlert: document.querySelector("#site-form-alert"),
@@ -547,6 +554,109 @@ const optionsTranslations = extendPageTranslations({
   }
 }, "options");
 
+const settingsFeatureTranslations = {
+  "pt-BR": {
+    historyPauseGlobal: "Pausado pela pausa geral",
+    historyPauseSchedule: "Pausado fora do horário de funcionamento",
+    operatingDays: "Dias ativos",
+    operatingDescription: "Limita o auto-início aos dias e horários escolhidos.",
+    operatingEnd: "Fim",
+    operatingStart: "Início",
+    operatingTitle: "Horários de funcionamento",
+    preserveScrollDescription: "Volta ao mesmo ponto após uma atualização automática.",
+    preserveScrollTitle: "Preservar posição da página",
+    weekdayShorts: ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"]
+  },
+  en: {
+    historyPauseGlobal: "Paused by the global pause",
+    historyPauseSchedule: "Paused outside operating hours",
+    operatingDays: "Active days",
+    operatingDescription: "Limits automatic start to the selected days and times.",
+    operatingEnd: "End",
+    operatingStart: "Start",
+    operatingTitle: "Operating hours",
+    preserveScrollDescription: "Returns to the same point after an automatic refresh.",
+    preserveScrollTitle: "Preserve page position",
+    weekdayShorts: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+  },
+  es: {
+    historyPauseGlobal: "Pausado por la pausa general",
+    historyPauseSchedule: "Pausado fuera del horario de funcionamiento",
+    operatingDays: "Días activos",
+    operatingDescription: "Limita el inicio automático a los días y horarios elegidos.",
+    operatingEnd: "Fin",
+    operatingStart: "Inicio",
+    operatingTitle: "Horario de funcionamiento",
+    preserveScrollDescription: "Vuelve al mismo punto después de una actualización automática.",
+    preserveScrollTitle: "Conservar la posición de la página",
+    weekdayShorts: ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"]
+  },
+  fr: {
+    historyPauseGlobal: "Mis en pause par la pause générale",
+    historyPauseSchedule: "Mis en pause hors des heures de fonctionnement",
+    operatingDays: "Jours actifs",
+    operatingDescription: "Limite le démarrage automatique aux jours et horaires choisis.",
+    operatingEnd: "Fin",
+    operatingStart: "Début",
+    operatingTitle: "Heures de fonctionnement",
+    preserveScrollDescription: "Revient au même endroit après une actualisation automatique.",
+    preserveScrollTitle: "Conserver la position de la page",
+    weekdayShorts: ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"]
+  },
+  de: {
+    historyPauseGlobal: "Durch die globale Pause angehalten",
+    historyPauseSchedule: "Außerhalb der Betriebszeiten angehalten",
+    operatingDays: "Aktive Tage",
+    operatingDescription: "Begrenzt den automatischen Start auf ausgewählte Tage und Zeiten.",
+    operatingEnd: "Ende",
+    operatingStart: "Start",
+    operatingTitle: "Betriebszeiten",
+    preserveScrollDescription: "Kehrt nach einer automatischen Aktualisierung zur gleichen Stelle zurück.",
+    preserveScrollTitle: "Seitenposition beibehalten",
+    weekdayShorts: ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
+  },
+  it: {
+    historyPauseGlobal: "Messo in pausa dalla pausa generale",
+    historyPauseSchedule: "Messo in pausa fuori dall'orario di funzionamento",
+    operatingDays: "Giorni attivi",
+    operatingDescription: "Limita l'avvio automatico ai giorni e agli orari scelti.",
+    operatingEnd: "Fine",
+    operatingStart: "Inizio",
+    operatingTitle: "Orari di funzionamento",
+    preserveScrollDescription: "Torna allo stesso punto dopo un aggiornamento automatico.",
+    preserveScrollTitle: "Mantieni la posizione della pagina",
+    weekdayShorts: ["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"]
+  },
+  id: {
+    historyPauseGlobal: "Dijeda oleh jeda global",
+    historyPauseSchedule: "Dijeda di luar jam operasional",
+    operatingDays: "Hari aktif",
+    operatingDescription: "Membatasi mulai otomatis pada hari dan waktu yang dipilih.",
+    operatingEnd: "Selesai",
+    operatingStart: "Mulai",
+    operatingTitle: "Jam operasional",
+    preserveScrollDescription: "Kembali ke posisi yang sama setelah penyegaran otomatis.",
+    preserveScrollTitle: "Pertahankan posisi halaman",
+    weekdayShorts: ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"]
+  },
+  tr: {
+    historyPauseGlobal: "Genel duraklatma nedeniyle duraklatıldı",
+    historyPauseSchedule: "Çalışma saatleri dışında duraklatıldı",
+    operatingDays: "Etkin günler",
+    operatingDescription: "Otomatik başlatmayı seçilen gün ve saatlerle sınırlar.",
+    operatingEnd: "Bitiş",
+    operatingStart: "Başlangıç",
+    operatingTitle: "Çalışma saatleri",
+    preserveScrollDescription: "Otomatik yenilemeden sonra aynı konuma döner.",
+    preserveScrollTitle: "Sayfa konumunu koru",
+    weekdayShorts: ["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"]
+  }
+};
+
+Object.entries(settingsFeatureTranslations).forEach(([language, translations]) => {
+  Object.assign(optionsTranslations[language], translations);
+});
+
 const localizedHistoryTranslations = {
   fr: {
     backupExportDescription: "Téléchargez une copie de vos préférences.",
@@ -846,9 +956,11 @@ const historyStatusKeys = Object.freeze({
 });
 
 const historyPauseKeys = Object.freeze({
+  global: "historyPauseGlobal",
   manual: "historyPauseManual",
   media: "historyPauseMedia",
   navigation: "historyPauseNavigation",
+  schedule: "historyPauseSchedule",
   typing: "historyPauseTyping"
 });
 
@@ -1179,7 +1291,9 @@ const getStoredOptionsSettings = async () => {
     ...storedSettings,
     autoStartSites: Array.isArray(storedSettings.autoStartSites)
       ? storedSettings.autoStartSites
-      : []
+      : [],
+    operatingHours: normalizeOperatingHours(storedSettings.operatingHours),
+    preserveScrollPosition: Boolean(storedSettings.preserveScrollPosition)
   };
 };
 
@@ -1267,7 +1381,9 @@ const normalizeOptionsSettings = (settings) => {
 
   return {
     autoStartSites: [...siteMap.values()],
-    defaultIntervalInMinutes
+    defaultIntervalInMinutes,
+    operatingHours: normalizeOperatingHours(settings.operatingHours),
+    preserveScrollPosition: Boolean(settings.preserveScrollPosition)
   };
 };
 
@@ -1471,6 +1587,7 @@ const importOptionsSettingsFromFile = async (file) => {
 
   optionsElements.defaultIntervalInput.value =
     currentSettings.defaultIntervalInMinutes;
+  syncPreferenceControls();
   renderSites();
   updateOptionsStatus(getOptionsCopy("formImported"), "success");
 };
@@ -1557,9 +1674,51 @@ const renderSites = () => {
   updateSettingsSummary();
 };
 
+const syncPreferenceControls = () => {
+  const operatingHours = normalizeOperatingHours(currentSettings.operatingHours);
+  const isEnabled = operatingHours.enabled;
+
+  currentSettings.operatingHours = operatingHours;
+  optionsElements.preserveScrollInput.checked = Boolean(
+    currentSettings.preserveScrollPosition
+  );
+  optionsElements.operatingHoursEnabled.checked = isEnabled;
+  optionsElements.operatingStartTime.value = operatingHours.startTime;
+  optionsElements.operatingEndTime.value = operatingHours.endTime;
+  optionsElements.operatingHoursFields.dataset.enabled = String(isEnabled);
+
+  optionsElements.operatingWeekdays.forEach((weekdayInput) => {
+    weekdayInput.checked = operatingHours.weekdays.includes(
+      Number(weekdayInput.value)
+    );
+    weekdayInput.disabled = !isEnabled;
+  });
+
+  optionsElements.operatingStartTime.disabled = !isEnabled;
+  optionsElements.operatingEndTime.disabled = !isEnabled;
+};
+
+const savePreferenceSettings = async () => {
+  currentSettings.preserveScrollPosition =
+    optionsElements.preserveScrollInput.checked;
+  currentSettings.operatingHours = normalizeOperatingHours({
+    enabled: optionsElements.operatingHoursEnabled.checked,
+    endTime: optionsElements.operatingEndTime.value,
+    startTime: optionsElements.operatingStartTime.value,
+    weekdays: [...optionsElements.operatingWeekdays]
+      .filter((weekdayInput) => weekdayInput.checked)
+      .map((weekdayInput) => Number(weekdayInput.value))
+  });
+
+  await saveOptionsSettings();
+  syncPreferenceControls();
+  updateOptionsStatus(getOptionsCopy("formSettingsSaved"), "success");
+};
+
 const loadOptionsSettings = async () => {
   currentSettings = await getStoredOptionsSettings();
   optionsElements.defaultIntervalInput.value = currentSettings.defaultIntervalInMinutes;
+  syncPreferenceControls();
   updateSettingsSummary();
   renderSites();
 };
@@ -1711,6 +1870,22 @@ const applyOptionsLanguage = (language) => {
   setText(".panel--general .panel__description", "timeDescription");
   setText(".settings-row .field__label", "defaultIntervalInputLabel");
   setText("#save-settings-button", "saveDefaultInterval");
+  setText("#preserve-scroll-title", "preserveScrollTitle");
+  setText("#preserve-scroll-description", "preserveScrollDescription");
+  setText("#operating-hours-title", "operatingTitle");
+  setText("#operating-hours-description", "operatingDescription");
+  setText("#operating-days-label", "operatingDays");
+  setText("#operating-start-label", "operatingStart");
+  setText("#operating-end-label", "operatingEnd");
+
+  const weekdayShorts = getOptionsCopy("weekdayShorts");
+
+  if (Array.isArray(weekdayShorts)) {
+    document.querySelectorAll(".weekday-picker label span")
+      .forEach((weekdayLabel, index) => {
+        weekdayLabel.textContent = weekdayShorts[index] || weekdayLabel.textContent;
+      });
+  }
   setText("#sites-title", "sitesTitle");
   setText("#site-form-title", "siteFormTitle");
   setText("#site-form-description", "siteFormDescription");
@@ -1813,6 +1988,35 @@ optionsElements.saveSettingsButton.addEventListener("click", () => {
       "error"
     );
   });
+});
+
+const handlePreferenceChange = () => {
+  savePreferenceSettings().catch((error) => {
+    updateOptionsStatus(
+      error.message || getOptionsCopy("formSettingsError"),
+      "error"
+    );
+  });
+};
+
+optionsElements.preserveScrollInput.addEventListener(
+  "change",
+  handlePreferenceChange
+);
+optionsElements.operatingHoursEnabled.addEventListener(
+  "change",
+  handlePreferenceChange
+);
+optionsElements.operatingStartTime.addEventListener(
+  "change",
+  handlePreferenceChange
+);
+optionsElements.operatingEndTime.addEventListener(
+  "change",
+  handlePreferenceChange
+);
+optionsElements.operatingWeekdays.forEach((weekdayInput) => {
+  weekdayInput.addEventListener("change", handlePreferenceChange);
 });
 
 optionsElements.addSiteButton.addEventListener("click", () => {

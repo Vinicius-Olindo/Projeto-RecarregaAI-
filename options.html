@@ -168,15 +168,28 @@
             </p>
           </div>
 
-          <div class="settings-row">
-            <label class="field" for="default-interval-input">
-              <span class="field__label">Intervalo em minutos</span>
-              <input id="default-interval-input" class="field__input" type="number" min="1" step="1" value="3" />
-            </label>
+          <div class="general-controls">
+            <div class="settings-row">
+              <label class="field" for="default-interval-input">
+                <span class="field__label">Intervalo em minutos</span>
+                <input id="default-interval-input" class="field__input" type="number" min="1" step="1" value="3" />
+              </label>
 
-            <button id="save-settings-button" class="button button--primary" type="button">
-              Salvar tempo padrão
-            </button>
+              <button id="save-settings-button" class="button button--primary" type="button">
+                Salvar tempo padrão
+              </button>
+            </div>
+
+            <label class="preference-toggle" for="preserve-scroll-input">
+              <input id="preserve-scroll-input" type="checkbox" />
+              <span class="preference-toggle__control" aria-hidden="true"></span>
+              <span class="preference-toggle__copy">
+                <strong id="preserve-scroll-title">Preservar posição da página</strong>
+                <small id="preserve-scroll-description">
+                  Volta ao mesmo ponto após uma atualização automática.
+                </small>
+              </span>
+            </label>
           </div>
         </section>
 
@@ -191,6 +204,45 @@
               atualização separada para ela.
             </p>
           </div>
+
+          <section class="operating-hours" aria-labelledby="operating-hours-title">
+            <div class="operating-hours__heading">
+              <label class="preference-toggle" for="operating-hours-enabled">
+                <input id="operating-hours-enabled" type="checkbox" />
+                <span class="preference-toggle__control" aria-hidden="true"></span>
+                <span class="preference-toggle__copy">
+                  <strong id="operating-hours-title">Horários de funcionamento</strong>
+                  <small id="operating-hours-description">
+                    Limita o auto-início aos dias e horários escolhidos.
+                  </small>
+                </span>
+              </label>
+            </div>
+
+            <div id="operating-hours-fields" class="operating-hours__fields">
+              <fieldset class="weekday-picker">
+                <legend id="operating-days-label">Dias ativos</legend>
+                <label><input type="checkbox" name="operating-weekday" value="1" /><span>Seg</span></label>
+                <label><input type="checkbox" name="operating-weekday" value="2" /><span>Ter</span></label>
+                <label><input type="checkbox" name="operating-weekday" value="3" /><span>Qua</span></label>
+                <label><input type="checkbox" name="operating-weekday" value="4" /><span>Qui</span></label>
+                <label><input type="checkbox" name="operating-weekday" value="5" /><span>Sex</span></label>
+                <label><input type="checkbox" name="operating-weekday" value="6" /><span>Sáb</span></label>
+                <label><input type="checkbox" name="operating-weekday" value="0" /><span>Dom</span></label>
+              </fieldset>
+
+              <div class="operating-hours__times">
+                <label class="field" for="operating-start-time">
+                  <span id="operating-start-label" class="field__label">Início</span>
+                  <input id="operating-start-time" class="field__input" type="time" value="08:00" />
+                </label>
+                <label class="field" for="operating-end-time">
+                  <span id="operating-end-label" class="field__label">Fim</span>
+                  <input id="operating-end-time" class="field__input" type="time" value="18:00" />
+                </label>
+              </div>
+            </div>
+          </section>
 
           <div class="site-form">
             <div class="site-form__header">

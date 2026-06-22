@@ -993,10 +993,180 @@ a {
   gap: 14px;
 }
 
+.general-controls {
+  display: grid;
+  gap: 14px;
+}
+
 .settings-row {
   grid-template-columns: minmax(220px, 1fr) auto;
   align-items: end;
   max-width: 620px;
+}
+
+.preference-toggle {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  min-width: 0;
+  padding: 14px 16px;
+  color: var(--color-text);
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.preference-toggle input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.preference-toggle__control {
+  position: relative;
+  width: 42px;
+  height: 24px;
+  background: var(--color-border-strong);
+  border-radius: 999px;
+  transition: background 160ms ease;
+}
+
+.preference-toggle__control::after {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  content: "";
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(12, 32, 63, 0.2);
+  transition: transform 160ms ease;
+}
+
+.preference-toggle input:checked + .preference-toggle__control {
+  background: var(--color-primary);
+}
+
+.preference-toggle input:checked + .preference-toggle__control::after {
+  transform: translateX(18px);
+}
+
+.preference-toggle input:focus-visible + .preference-toggle__control {
+  outline: 3px solid color-mix(in srgb, var(--color-primary) 28%, transparent);
+  outline-offset: 3px;
+}
+
+.preference-toggle__copy {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.preference-toggle__copy strong {
+  font-size: 0.88rem;
+  line-height: 1.25;
+}
+
+.preference-toggle__copy small {
+  color: var(--color-muted);
+  font-size: 0.76rem;
+  line-height: 1.4;
+}
+
+.operating-hours {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  background: var(--color-surface-soft);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 18%, var(--color-border));
+  border-radius: 8px;
+}
+
+.operating-hours .preference-toggle {
+  padding: 0;
+  background: transparent;
+  border: 0;
+}
+
+.operating-hours__fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: end;
+  padding-top: 14px;
+  border-top: 1px solid var(--color-border);
+  transition: opacity 160ms ease;
+}
+
+.operating-hours__fields[data-enabled="false"] {
+  opacity: 0.52;
+}
+
+.weekday-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+.weekday-picker legend {
+  width: 100%;
+  margin-bottom: 3px;
+  color: var(--color-muted);
+  font-size: 0.76rem;
+  font-weight: 850;
+}
+
+.weekday-picker label {
+  position: relative;
+  cursor: pointer;
+}
+
+.weekday-picker input {
+  position: absolute;
+  opacity: 0;
+}
+
+.weekday-picker span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 42px;
+  min-height: 36px;
+  padding: 7px 9px;
+  color: var(--color-muted);
+  font-size: 0.75rem;
+  font-weight: 850;
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: 7px;
+}
+
+.weekday-picker input:checked + span {
+  color: var(--color-primary-hover);
+  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface-raised));
+  border-color: color-mix(in srgb, var(--color-primary) 46%, var(--color-border));
+}
+
+.weekday-picker input:focus-visible + span {
+  outline: 3px solid color-mix(in srgb, var(--color-primary) 28%, transparent);
+  outline-offset: 2px;
+}
+
+.weekday-picker input:disabled + span {
+  cursor: default;
+}
+
+.operating-hours__times {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(112px, 1fr));
+  gap: 10px;
 }
 
 .site-form {
@@ -1625,7 +1795,7 @@ a {
     align-items: end;
   }
 
-  .panel--general .settings-row {
+  .panel--general .general-controls {
     justify-self: end;
     width: min(660px, 100%);
     max-width: none;
@@ -1876,6 +2046,11 @@ a {
     grid-template-columns: 1fr;
   }
 
+  .operating-hours__fields {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
   .history-heading {
     align-items: stretch;
     flex-direction: column;
@@ -1932,6 +2107,14 @@ a {
 
   .summary-card {
     min-height: 0;
+  }
+
+  .operating-hours__times {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .weekday-picker span {
+    min-width: 38px;
   }
 
   .site-list__item .button {

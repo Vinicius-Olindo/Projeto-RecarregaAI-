@@ -15,18 +15,21 @@ import {
   getBadgeText,
   getNextRunDate,
   getNextRunDateFromSeconds,
+  getNextOperatingHoursBoundary,
   getPermissionPatternForOrigin,
   getRemainingSeconds,
   getTabIdFromTimerAlarmName,
   getTimerAlarmName,
   getUrlOrigin,
+  isWithinOperatingHours,
   mediaKinds,
   mediaResumeSafetySeconds,
   normalizeOrigins,
   normalizeMediaKind,
   oneSecondInMilliseconds,
   pauseReasons,
-  runtimeMessageTypes
+  runtimeMessageTypes,
+  storageKeys
 } from "./modules/shared.js";
 import {
   appendActionHistory,
@@ -37,11 +40,14 @@ import {
   getAllTimerSettings,
   getAllTimerSettingsFromCollection,
   getAppSettings,
+  getGlobalPause,
   getLastTimerRun,
   getStoredTimerCollection,
   getTimerSettingsByTabId,
   getTimerSettingsFromCollection,
   removeTimerSettingsByTabId,
+  clearGlobalPause,
+  saveGlobalPause,
   saveLastTimerRun,
   saveTimerCollection,
   updateTimerSettingsByTabId,
@@ -52,6 +58,7 @@ import { collectLoadedOrigins } from "./modules/tabs.js";
 let badgeCountdownTimerId = null;
 let badgeCountdownRestartQueue = Promise.resolve();
 const autoStartTimerTabIds = new Set();
+const pendingScrollPositions = new Map();
 const scheduledRefreshTabIds = new Set();
 const automaticPauseReasons = new Set([
   pauseReasons.media,
@@ -88,9 +95,11 @@ const extensionPageMessageTypes = new Set([
   runtimeMessageTypes.getActionHistory,
   runtimeMessageTypes.getTimerState,
   runtimeMessageTypes.openTimerTab,
+  runtimeMessageTypes.pauseAllTimers,
   runtimeMessageTypes.pauseTimer,
   runtimeMessageTypes.recordManualCleanup,
   runtimeMessageTypes.resumeTimer,
+  runtimeMessageTypes.resumeAllTimers,
   runtimeMessageTypes.startTimer,
   runtimeMessageTypes.stopTimer
 ]);
@@ -491,7 +500,9 @@ const updateTimerBadge = async (timerSettings) => {
 
   const badgeTarget = getBadgeTarget(timerSettings);
   const isPaused = Boolean(timerSettings.paused);
+  const isPausedGlobally = timerSettings.pauseReason === pauseReasons.global;
   const isPausedByMedia = timerSettings.pauseReason === pauseReasons.media;
+  const isPausedBySchedule = timerSettings.pauseReason === pauseReasons.schedule;
   const isPausedByTyping = timerSettings.pauseReason === pauseReasons.typing;
   const remainingSeconds = getRemainingSeconds(timerSettings.nextRunAt);
   let badgeColor = getBadgeColor(timerSettings.nextRunAt);
@@ -502,6 +513,18 @@ const updateTimerBadge = async (timerSettings) => {
     badgeColor = "#667085";
     badgeText = "II";
     countdownTime = "pausado";
+
+    if (isPausedGlobally) {
+      badgeColor = "#7c3aed";
+      badgeText = "ALL";
+      countdownTime = "pausa geral";
+    }
+
+    if (isPausedBySchedule) {
+      badgeColor = "#475467";
+      badgeText = "H";
+      countdownTime = "fora do horario";
+    }
 
     if (isPausedByTyping) {
       badgeColor = "#ef7a1f";
@@ -722,7 +745,7 @@ const startTimer = async (payload) => {
     }
   );
 
-  return timerSettings;
+  return applyTimerConstraints(timerSettings);
 };
 
 const pauseTimer = async (tabId) => {
@@ -848,6 +871,77 @@ const pauseTimerForMedia = async (timerSettings, mediaKind) => (
   pauseTimerForAutomaticReason(timerSettings, pauseReasons.media, mediaKind)
 );
 
+const getActiveGlobalPause = async () => {
+  const globalPause = await getGlobalPause();
+
+  if (!globalPause) {
+    return null;
+  }
+
+  if (new Date(globalPause.endsAt).getTime() <= Date.now()) {
+    await clearGlobalPause();
+    await clearChromeAlarm(alarmNames.globalPause);
+    return null;
+  }
+
+  return globalPause;
+};
+
+const pauseTimerForSystemReason = async (timerSettings, pauseReason) => {
+  if (!timerSettings?.enabled || timerSettings.paused) {
+    return timerSettings;
+  }
+
+  const pausedTimerSettings = {
+    ...timerSettings,
+    paused: true,
+    pausedAt: new Date().toISOString(),
+    pauseDetail: null,
+    pauseReason,
+    remainingSecondsWhenPaused: Math.max(
+      1,
+      getRemainingSeconds(timerSettings.nextRunAt)
+    ),
+    resumeScheduledAt: null
+  };
+
+  await upsertTimerSettings(pausedTimerSettings);
+  await clearTimerAlarm(timerSettings.tabId);
+  await updateTimerBadge(pausedTimerSettings);
+  await recordTimerHistoryEntry(
+    pausedTimerSettings,
+    actionHistoryTypes.timerPaused,
+    {
+      detail: pauseReason,
+      status: actionHistoryStatuses.warning
+    }
+  );
+
+  return pausedTimerSettings;
+};
+
+const applyTimerConstraints = async (timerSettings) => {
+  if (!timerSettings?.enabled) {
+    return timerSettings;
+  }
+
+  if (await getActiveGlobalPause()) {
+    return pauseTimerForSystemReason(timerSettings, pauseReasons.global);
+  }
+
+  if (timerSettings.source !== "auto") {
+    return timerSettings;
+  }
+
+  const appSettings = await getAppSettings();
+
+  if (!isWithinOperatingHours(appSettings.operatingHours)) {
+    return pauseTimerForSystemReason(timerSettings, pauseReasons.schedule);
+  }
+
+  return timerSettings;
+};
+
 const scheduleTimerResumeAfterMedia = async (timerSettings) => {
   if (
     !timerSettings?.enabled
@@ -965,6 +1059,145 @@ const resumeTimer = async (tabId, { expectedPauseReason = null } = {}) => {
   );
 
   return resumedTimerSettings;
+};
+
+const resumeSystemPausedTimer = async (timerSettings, pauseReason) => {
+  let resumedTimerSettings = await resumeTimer(timerSettings.tabId, {
+    expectedPauseReason: pauseReason
+  });
+
+  resumedTimerSettings = await applyTimerConstraints(resumedTimerSettings);
+
+  if (resumedTimerSettings.paused) {
+    return resumedTimerSettings;
+  }
+
+  if (await isTabEditingText(resumedTimerSettings.tabId)) {
+    return pauseTimerForTyping(resumedTimerSettings);
+  }
+
+  const mediaActivity = await getTabMediaActivity(resumedTimerSettings.tabId);
+
+  if (mediaActivity.isMediaActive) {
+    return pauseTimerForMedia(
+      resumedTimerSettings,
+      mediaActivity.mediaKind
+    );
+  }
+
+  return resumedTimerSettings;
+};
+
+const createGlobalPauseAlarm = async (globalPause) => {
+  await clearChromeAlarm(alarmNames.globalPause);
+  await createChromeAlarm(alarmNames.globalPause, {
+    when: new Date(globalPause.endsAt).getTime()
+  });
+};
+
+const pauseAllTimers = async (durationInMinutes) => {
+  const normalizedDuration = Math.floor(Number(durationInMinutes));
+
+  if (
+    !Number.isFinite(normalizedDuration)
+    || normalizedDuration < 1
+    || normalizedDuration > 24 * 60
+  ) {
+    throw new Error("Duracao invalida para pausar os timers.");
+  }
+
+  const globalPause = {
+    endsAt: new Date(
+      Date.now() + normalizedDuration * 60 * 1000
+    ).toISOString(),
+    startedAt: new Date().toISOString()
+  };
+
+  await saveGlobalPause(globalPause);
+  await createGlobalPauseAlarm(globalPause);
+
+  const timerSettingsList = await getAllTimerSettings();
+
+  await Promise.all(timerSettingsList.map((timerSettings) => (
+    pauseTimerForSystemReason(timerSettings, pauseReasons.global)
+  )));
+  await startBadgeCountdown();
+
+  return globalPause;
+};
+
+const resumeAllTimers = async () => {
+  await clearGlobalPause();
+  await clearChromeAlarm(alarmNames.globalPause);
+
+  const timerSettingsList = await getAllTimerSettings();
+  const globallyPausedTimers = timerSettingsList.filter((timerSettings) => (
+    timerSettings.pauseReason === pauseReasons.global
+  ));
+
+  await Promise.all(globallyPausedTimers.map((timerSettings) => (
+    resumeSystemPausedTimer(timerSettings, pauseReasons.global)
+  )));
+  await startBadgeCountdown();
+
+  return getAllTimerSettings();
+};
+
+const scheduleOperatingHoursBoundary = async (operatingHours) => {
+  await clearChromeAlarm(alarmNames.operatingHoursBoundary);
+
+  const nextBoundary = getNextOperatingHoursBoundary(operatingHours);
+
+  if (!nextBoundary) {
+    return null;
+  }
+
+  return createChromeAlarm(alarmNames.operatingHoursBoundary, {
+    when: nextBoundary.getTime()
+  });
+};
+
+const syncOperatingHoursState = async () => {
+  const appSettings = await getAppSettings();
+  const operatingHours = appSettings.operatingHours;
+  const isOperating = isWithinOperatingHours(operatingHours);
+  const timerSettingsList = await getAllTimerSettings();
+  const automaticTimers = timerSettingsList.filter((timerSettings) => (
+    timerSettings.source === "auto"
+  ));
+
+  for (const timerSettings of automaticTimers) {
+    if (!isOperating) {
+      await pauseTimerForSystemReason(timerSettings, pauseReasons.schedule);
+      continue;
+    }
+
+    if (timerSettings.pauseReason === pauseReasons.schedule) {
+      await resumeSystemPausedTimer(timerSettings, pauseReasons.schedule);
+    }
+  }
+
+  await scheduleOperatingHoursBoundary(operatingHours);
+  await startBadgeCountdown();
+};
+
+const restoreGlobalPause = async () => {
+  const globalPause = await getGlobalPause();
+
+  if (
+    globalPause
+    && new Date(globalPause.endsAt).getTime() > Date.now()
+  ) {
+    await createGlobalPauseAlarm(globalPause);
+    const timerSettingsList = await getAllTimerSettings();
+
+    await Promise.all(timerSettingsList.map((timerSettings) => (
+      pauseTimerForSystemReason(timerSettings, pauseReasons.global)
+    )));
+    return;
+  }
+
+  await resumeAllTimers();
 };
 
 const stopTimer = async (tabId) => {
@@ -1170,7 +1403,70 @@ const saveTimerRunResult = async (timerSettings, result) => {
   return updatedTimerSettings;
 };
 
-const clearCacheAndReloadTab = async (timerSettings) => {
+const captureTabScrollPosition = async (tabId) => {
+  try {
+    const [frameResult] = await chrome.scripting.executeScript({
+      target: {
+        tabId
+      },
+      func: () => ({
+        x: window.scrollX,
+        y: window.scrollY
+      })
+    });
+
+    const x = Number(frameResult?.result?.x);
+    const y = Number(frameResult?.result?.y);
+
+    if (!Number.isFinite(x) || !Number.isFinite(y)) {
+      return null;
+    }
+
+    return {
+      x: Math.max(0, x),
+      y: Math.max(0, y)
+    };
+  } catch (error) {
+    console.warn("Nao foi possivel guardar a posicao da pagina:", error);
+    return null;
+  }
+};
+
+const restorePendingScrollPosition = async (tabId) => {
+  const scrollPosition = pendingScrollPositions.get(tabId);
+
+  if (!scrollPosition) {
+    return;
+  }
+
+  pendingScrollPositions.delete(tabId);
+
+  for (const delay of [0, 250, 750]) {
+    if (delay > 0) {
+      await new Promise((resolve) => setTimeout(resolve, delay));
+    }
+
+    try {
+      await chrome.scripting.executeScript({
+        target: {
+          tabId
+        },
+        args: [scrollPosition],
+        func: (position) => {
+          window.scrollTo(position.x, position.y);
+        }
+      });
+    } catch (error) {
+      console.warn("Nao foi possivel restaurar a posicao da pagina:", error);
+      return;
+    }
+  }
+};
+
+const clearCacheAndReloadTab = async (
+  timerSettings,
+  preserveScrollPosition = false
+) => {
   const tab = await chrome.tabs.get(timerSettings.tabId);
   const tabOrigin = getUrlOrigin(tab.url);
 
@@ -1190,8 +1486,22 @@ const clearCacheAndReloadTab = async (timerSettings) => {
     throw new Error("Nenhuma origem valida para limpeza de cache.");
   }
 
+  if (preserveScrollPosition) {
+    const scrollPosition = await captureTabScrollPosition(timerSettings.tabId);
+
+    if (scrollPosition) {
+      pendingScrollPositions.set(timerSettings.tabId, scrollPosition);
+    }
+  }
+
   await clearCacheForOrigins(origins);
-  await reloadTabIgnoringCache(timerSettings.tabId);
+
+  try {
+    await reloadTabIgnoringCache(timerSettings.tabId);
+  } catch (error) {
+    pendingScrollPositions.delete(timerSettings.tabId);
+    throw error;
+  }
 
   return origins;
 };
@@ -1232,7 +1542,11 @@ const runScheduledRefresh = async (tabId) => {
     }
 
     try {
-      const origins = await clearCacheAndReloadTab(timerSettings);
+      const appSettings = await getAppSettings();
+      const origins = await clearCacheAndReloadTab(
+        timerSettings,
+        appSettings.preserveScrollPosition
+      );
 
       await saveTimerRunResult(timerSettings, {
         error: null,
@@ -1392,6 +1706,7 @@ const getTimerStateResponse = async (activeTabId) => {
     activeTimerCount: activeTimers.length,
     activeTimers,
     appSettings: await getAppSettings(),
+    globalPause: await getActiveGlobalPause(),
     lastTimerRun: await getLastTimerRun(),
     ok: true,
     timerSettings
@@ -1521,6 +1836,10 @@ const runtimeMessageHandlers = {
 
     return createTimerSettingsResponse(timerSettings);
   },
+  [runtimeMessageTypes.pauseAllTimers]: async (message) => ({
+    globalPause: await pauseAllTimers(message.payload?.durationInMinutes),
+    ok: true
+  }),
   [runtimeMessageTypes.recordManualCleanup]: async (message) => {
     const isError = message.payload?.status === actionHistoryStatuses.error;
     const historyEntry = await recordHistoryEntry({
@@ -1547,6 +1866,11 @@ const runtimeMessageHandlers = {
 
     return createTimerSettingsResponse(timerSettings);
   },
+  [runtimeMessageTypes.resumeAllTimers]: async () => ({
+    activeTimers: await resumeAllTimers(),
+    globalPause: null,
+    ok: true
+  }),
   [runtimeMessageTypes.startTimer]: async (message) => {
     const timerSettings = await startTimer(
       await validateTimerStartPayload(message.payload)
@@ -1608,6 +1932,8 @@ const bootstrapRecarregaAi = async ({
 
   if (restoreAlarms) {
     await restoreTimerAlarms();
+    await restoreGlobalPause();
+    await syncOperatingHoursState();
   }
 
   if (openWelcome) {
@@ -1653,6 +1979,20 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     return;
   }
 
+  if (alarm.name === alarmNames.globalPause) {
+    resumeAllTimers().catch((error) => {
+      console.error("Erro ao retomar todos os timers do RecarregaAi:", error);
+    });
+    return;
+  }
+
+  if (alarm.name === alarmNames.operatingHoursBoundary) {
+    syncOperatingHoursState().catch((error) => {
+      console.error("Erro ao aplicar horario de funcionamento:", error);
+    });
+    return;
+  }
+
   const tabId = getTabIdFromTimerAlarmName(alarm.name);
 
   if (typeof tabId === "number") {
@@ -1663,6 +2003,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 });
 
 chrome.tabs.onRemoved.addListener((tabId) => {
+  pendingScrollPositions.delete(tabId);
   stopTimer(tabId).catch((error) => {
     console.error("Erro ao remover timer da guia fechada:", error);
   });
@@ -1673,8 +2014,22 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     return;
   }
 
+  restorePendingScrollPosition(tabId).catch((error) => {
+    console.error("Erro ao restaurar a posicao da pagina:", error);
+  });
+
   handleCompletedTabUpdate(tabId, tab).catch((error) => {
     console.error("Erro ao preparar guia atualizada no RecarregaAi:", error);
+  });
+});
+
+chrome.storage.onChanged.addListener((changes, areaName) => {
+  if (areaName !== "local" || !changes[storageKeys.appSettings]) {
+    return;
+  }
+
+  syncOperatingHoursState().catch((error) => {
+    console.error("Erro ao atualizar horario de funcionamento:", error);
   });
 });
 

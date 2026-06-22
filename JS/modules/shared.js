@@ -6,6 +6,7 @@ export const mediaResumeSafetySeconds = 3;
 export const storageKeys = Object.freeze({
   actionHistory: "recarregaAiActionHistory",
   appSettings: "recarregaAiSettings",
+  globalPause: "recarregaAiGlobalPause",
   lastTimerRun: "recarregaAiLastTimerRun",
   theme: "recarregaAiTheme",
   timerSettingsPrefix: "recarregaAiTimer:",
@@ -30,7 +31,9 @@ export const actionHistoryStatuses = Object.freeze({
 
 export const alarmNames = Object.freeze({
   badgeCountdown: "recarregaAiBadgeCountdown",
+  globalPause: "recarregaAiGlobalPause",
   legacyTimer: "recarregaAiAutomaticReload",
+  operatingHoursBoundary: "recarregaAiOperatingHoursBoundary",
   timerPrefix: "recarregaAiAutomaticReload:"
 });
 
@@ -39,7 +42,9 @@ export const runtimeMessageTypes = Object.freeze({
   getActionHistory: "RECARREGA_AI_GET_ACTION_HISTORY",
   getTimerState: "RECARREGA_AI_GET_TIMER_STATE",
   openTimerTab: "RECARREGA_AI_OPEN_TIMER_TAB",
+  pauseAllTimers: "RECARREGA_AI_PAUSE_ALL_TIMERS",
   pauseTimer: "RECARREGA_AI_PAUSE_TIMER",
+  resumeAllTimers: "RECARREGA_AI_RESUME_ALL_TIMERS",
   resumeTimer: "RECARREGA_AI_RESUME_TIMER",
   mediaState: "RECARREGA_AI_MEDIA_STATE",
   recordManualCleanup: "RECARREGA_AI_RECORD_MANUAL_CLEANUP",
@@ -49,9 +54,11 @@ export const runtimeMessageTypes = Object.freeze({
 });
 
 export const pauseReasons = Object.freeze({
+  global: "global",
   manual: "manual",
   media: "media",
   navigation: "navigation",
+  schedule: "schedule",
   typing: "typing"
 });
 
@@ -74,10 +81,117 @@ export const themeModes = Object.freeze({
   light: "light"
 });
 
+export const defaultOperatingHours = Object.freeze({
+  enabled: false,
+  endTime: "18:00",
+  startTime: "08:00",
+  weekdays: Object.freeze([1, 2, 3, 4, 5])
+});
+
 export const defaultAppSettings = Object.freeze({
   autoStartSites: [],
-  defaultIntervalInMinutes: 3
+  defaultIntervalInMinutes: 3,
+  operatingHours: defaultOperatingHours,
+  preserveScrollPosition: false
 });
+
+const normalizeClockTime = (time, fallback) => (
+  typeof time === "string" && /^([01]\d|2[0-3]):[0-5]\d$/.test(time)
+    ? time
+    : fallback
+);
+
+export const normalizeOperatingHours = (operatingHours) => {
+  const weekdays = Array.isArray(operatingHours?.weekdays)
+    ? [...new Set(
+      operatingHours.weekdays
+        .map(Number)
+        .filter((weekday) => Number.isInteger(weekday) && weekday >= 0 && weekday <= 6)
+    )].sort((firstWeekday, secondWeekday) => firstWeekday - secondWeekday)
+    : [...defaultOperatingHours.weekdays];
+
+  return {
+    enabled: Boolean(operatingHours?.enabled),
+    endTime: normalizeClockTime(
+      operatingHours?.endTime,
+      defaultOperatingHours.endTime
+    ),
+    startTime: normalizeClockTime(
+      operatingHours?.startTime,
+      defaultOperatingHours.startTime
+    ),
+    weekdays
+  };
+};
+
+const getClockMinutes = (time) => {
+  const [hours, minutes] = time.split(":").map(Number);
+
+  return hours * 60 + minutes;
+};
+
+export const isWithinOperatingHours = (operatingHours, date = new Date()) => {
+  const schedule = normalizeOperatingHours(operatingHours);
+
+  if (!schedule.enabled) {
+    return true;
+  }
+
+  if (schedule.weekdays.length === 0) {
+    return false;
+  }
+
+  const startMinutes = getClockMinutes(schedule.startTime);
+  const endMinutes = getClockMinutes(schedule.endTime);
+  const currentMinutes = date.getHours() * 60 + date.getMinutes();
+  const currentWeekday = date.getDay();
+
+  if (startMinutes === endMinutes) {
+    return schedule.weekdays.includes(currentWeekday);
+  }
+
+  if (startMinutes < endMinutes) {
+    return schedule.weekdays.includes(currentWeekday)
+      && currentMinutes >= startMinutes
+      && currentMinutes < endMinutes;
+  }
+
+  if (currentMinutes >= startMinutes) {
+    return schedule.weekdays.includes(currentWeekday);
+  }
+
+  const previousWeekday = (currentWeekday + 6) % 7;
+
+  return currentMinutes < endMinutes
+    && schedule.weekdays.includes(previousWeekday);
+};
+
+export const getNextOperatingHoursBoundary = (
+  operatingHours,
+  date = new Date()
+) => {
+  const schedule = normalizeOperatingHours(operatingHours);
+
+  if (!schedule.enabled || schedule.weekdays.length === 0) {
+    return null;
+  }
+
+  const currentState = isWithinOperatingHours(schedule, date);
+  const candidate = new Date(date);
+
+  candidate.setSeconds(0, 0);
+  candidate.setMinutes(candidate.getMinutes() + 1);
+
+  for (let minute = 0; minute <= 8 * 24 * 60; minute += 1) {
+    if (isWithinOperatingHours(schedule, candidate) !== currentState) {
+      return candidate;
+    }
+
+    candidate.setMinutes(candidate.getMinutes() + 1);
+  }
+
+  return null;
+};
 
 export const cacheDataTypes = Object.freeze({
   cache: true,

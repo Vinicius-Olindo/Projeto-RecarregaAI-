@@ -3,6 +3,7 @@
 import {
   createEmptyTimerCollection,
   defaultAppSettings,
+  normalizeOperatingHours,
   normalizeTimerCollection,
   normalizeTimerSettings,
   storageKeys
@@ -183,6 +184,35 @@ export const getAppSettings = async () => {
     ...storedSettings,
     autoStartSites: Array.isArray(storedSettings.autoStartSites)
       ? storedSettings.autoStartSites
-      : []
+      : [],
+    operatingHours: normalizeOperatingHours(storedSettings.operatingHours),
+    preserveScrollPosition: Boolean(storedSettings.preserveScrollPosition)
   };
+};
+
+export const getGlobalPause = async () => {
+  const storedData = await chrome.storage.local.get(storageKeys.globalPause);
+  const globalPause = storedData[storageKeys.globalPause];
+  const endsAt = new Date(globalPause?.endsAt).getTime();
+
+  if (!Number.isFinite(endsAt)) {
+    return null;
+  }
+
+  return {
+    endsAt: new Date(endsAt).toISOString(),
+    startedAt: globalPause.startedAt || null
+  };
+};
+
+export const saveGlobalPause = async (globalPause) => {
+  await chrome.storage.local.set({
+    [storageKeys.globalPause]: globalPause
+  });
+
+  return globalPause;
+};
+
+export const clearGlobalPause = async () => {
+  await chrome.storage.local.remove(storageKeys.globalPause);
 };

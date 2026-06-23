@@ -1,4 +1,4 @@
-// RecarregaAi! 2.3.6
+// RecarregaAi! 2.3.7
 
 const browserGlobals = {
   chrome: "readonly",
@@ -35,7 +35,8 @@ export default [
   },
   {
     files: [
-      "JS/**/*.js"
+      "extension/js/**/*.js",
+      "site/js/**/*.js"
     ],
     languageOptions: {
       ecmaVersion: "latest",

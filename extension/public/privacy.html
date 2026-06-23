@@ -1,0 +1,568 @@
+<!doctype html>
+<!-- RecarregaAi! 2.3.7 -->
+<html lang="pt-BR" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="no-referrer" />
+    <meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; base-uri 'none'; object-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; frame-src 'none'; upgrade-insecure-requests" />
+    <title>Política de Privacidade do RecarregaAi!</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/icons/icon16.png" />
+    <link rel="stylesheet" href="../css/privacy.css" />
+    <link rel="stylesheet" href="../css/shared-footer.css" />
+    <link rel="stylesheet" href="../css/shared-floating-tools.css" />
+    <link rel="stylesheet" href="../css/shared-language-dialog.css" />
+  </head>
+  <body>
+    <header class="privacy-header">
+      <a class="brand" href="https://vinicius-olindo.github.io/RecarregaAI-/" aria-label="RecarregaAi!">
+        <img
+          class="brand__icon"
+          src="../assets/icons/icon128.png"
+          alt=""
+          aria-hidden="true"
+        />
+        <span>
+          <strong>RecarregaAi!</strong>
+          <small>2.3.7</small>
+        </span>
+      </a>
+
+      <nav class="header-nav" aria-label="Navegação da política">
+        <a href="#policy-content">Política</a>
+        <a href="#permissions-title">Permissões</a>
+        <a href="#contact-title">Contato</a>
+      </nav>
+
+      <a class="header-link" href="https://vinicius-olindo.github.io/RecarregaAI-/">Voltar ao início</a>
+    </header>
+
+    <main class="privacy">
+      <section class="hero" aria-labelledby="privacy-title">
+        <div class="hero__content">
+          <p class="eyebrow">Política de Privacidade</p>
+          <h1 id="privacy-title">Transparência para usar sem surpresa.</h1>
+          <p class="policy-meta">Última atualização: 22/06/2026</p>
+          <p>
+            O RecarregaAi! é uma extensão para navegador criada para limpar
+            dados temporários do site atual, recarregar abas, executar timers
+            automáticos e proteger atividades de digitação e mídia contra
+            recarregamentos inesperados.
+          </p>
+        </div>
+
+        <aside class="trust-panel" aria-label="Resumo rápido">
+          <div>
+            <span>Dados vendidos</span>
+            <strong>Não</strong>
+          </div>
+          <div>
+            <span>Processamento</span>
+            <strong>Local</strong>
+          </div>
+          <div>
+            <span>Feedback externo</span>
+            <strong>Opcional</strong>
+          </div>
+        </aside>
+      </section>
+
+      <section class="summary-grid" aria-label="Resumo de privacidade">
+        <article>
+          <span class="summary-grid__icon">01</span>
+          <h2>Processamento local</h2>
+          <p>
+            Origens necessárias à limpeza, timers, tema, idioma e preferências
+            ficam no navegador do usuário para executar as funções principais.
+          </p>
+        </article>
+
+        <article>
+          <span class="summary-grid__icon">02</span>
+          <h2>Conteúdo não coletado</h2>
+          <p>
+            Senhas, textos digitados, mensagens, arquivos e dados de formulário
+            não são lidos, salvos ou enviados pela extensão.
+          </p>
+        </article>
+
+        <article>
+          <span class="summary-grid__icon">03</span>
+          <h2>Feedback opcional</h2>
+          <p>
+            O único envio externo previsto acontece se o usuário decidir enviar
+            o formulário de feedback de desinstalação.
+          </p>
+        </article>
+      </section>
+
+      <div id="policy-content" class="policy-layout">
+        <nav class="policy-nav" aria-label="Seções da política">
+          <p>Conteúdo</p>
+          <a class="is-active" href="#data-title" aria-current="true">
+            Informações processadas
+          </a>
+          <a href="#not-collected-title">O que não é coletado</a>
+          <a href="#typing-title">Proteção de digitação e mídia</a>
+          <a href="#local-storage-title">Armazenamento local</a>
+          <a href="#feedback-title">Feedback</a>
+          <a href="#sharing-title">Compartilhamento</a>
+          <a href="#limited-use-title">Limited Use</a>
+          <a href="#permissions-title">Permissões</a>
+          <a href="#control-title">Controle do usuário</a>
+          <a href="#contact-title">Contato</a>
+        </nav>
+
+        <article class="policy-document">
+          <section class="policy-section" aria-labelledby="data-title">
+            <h2 id="data-title">1. Informações processadas pela extensão</h2>
+            <p>
+              Para funcionar corretamente, a extensão processa localmente o
+              endereço e a origem da página atual e de alguns recursos carregados
+              por ela. Esses dados são usados para identificar o site, limpar
+              cache, CacheStorage e service workers relacionados e recarregar a
+              guia.
+            </p>
+            <p>
+              A extensão também pode salvar localmente o tema, o idioma, o
+              intervalo padrão, os sites configurados para auto-início e, para
+              as guias com timers ativos, endereço, título, estado, próxima
+              execução e último resultado do timer. Também mantém um histórico
+              local e limitado das ações realizadas pela extensão.
+            </p>
+            <p>
+              Essas informações ficam no navegador por meio de
+              <code>chrome.storage.local</code> e, para a preferência de idioma
+              das páginas públicas, do armazenamento local do próprio site. A
+              extensão não envia esses dados operacionais para servidores
+              externos.
+            </p>
+          </section>
+
+          <section class="policy-section" aria-labelledby="not-collected-title">
+            <h2 id="not-collected-title">
+              2. Informações que a extensão não coleta
+            </h2>
+            <p>
+              A extensão não coleta senhas, textos digitados, mensagens,
+              arquivos, dados bancários, dados de formulários, gravações de
+              áudio ou vídeo, conteúdo textual das páginas nem cria um histórico
+              geral de navegação ou um perfil de uso do usuário.
+            </p>
+            <p>
+              A extensão pode detectar localmente quando o usuário está
+              interagindo com campos editáveis, usando áudio, vídeo ou gravação
+              ou visualizando uma imagem aberta sozinha, em tela cheia ou em um
+              visualizador. Essa detecção evita recarregamentos em momentos
+              sensíveis e não lê, armazena ou envia o conteúdo digitado,
+              reproduzido, gravado ou visualizado.
+            </p>
+          </section>
+
+          <section class="policy-section" aria-labelledby="typing-title">
+            <h2 id="typing-title">3. Proteção de digitação e mídia</h2>
+            <p>
+              Quando um timer está ativo, o RecarregaAi! verifica localmente se
+              há foco em campos como <code>input</code>, <code>textarea</code>
+              ou áreas editáveis da página. Ele também pode identificar se há
+              reprodução de áudio ou vídeo, uma gravação feita por
+              <code>MediaRecorder</code> ou uma imagem aberta sozinha, em tela
+              cheia ou em um visualizador/modal visível. Imagens comuns que
+              apenas fazem parte da página não pausam o timer. Se houver
+              atividade sensível, o timer daquela guia pode ser pausado
+              temporariamente. Quando a atividade termina, a extensão aguarda
+              três segundos de segurança e retoma a contagem a partir do tempo
+              restante.
+            </p>
+            <p>
+              Essa verificação recebe apenas o estado de interação com campos
+              editáveis ou mídia ativa. Ela não acessa o texto digitado, não
+              grava áudio, não captura vídeo e não analisa, copia ou armazena a
+              imagem visualizada. O histórico local pode registrar apenas que o
+              timer foi pausado por digitação ou mídia, sem guardar o conteúdo
+              da atividade e sem enviar esse estado para servidores.
+            </p>
+          </section>
+
+          <section class="policy-section" aria-labelledby="local-storage-title">
+            <h2 id="local-storage-title">4. Armazenamento local</h2>
+            <p>
+              As preferências e os estados necessários ao funcionamento da
+              extensão são salvos no armazenamento local do navegador para
+              manter a experiência entre sessões.
+            </p>
+            <ul class="policy-list">
+              <li>Tema escolhido.</li>
+              <li>Idioma escolhido para as páginas da extensão.</li>
+              <li>Intervalo padrão dos timers.</li>
+              <li>Sites e intervalos configurados para auto-início.</li>
+              <li>Estado dos timers ativos e dados da guia associada.</li>
+              <li>Último resultado de execução do timer.</li>
+              <li>
+                Histórico das 100 ações mais recentes, com tipo, horário,
+                domínio, intervalo e resultado.
+              </li>
+            </ul>
+            <p>
+              Ao exportar configurações, a extensão cria localmente um arquivo
+              JSON com tema, idioma, intervalo padrão, sites de auto-início e
+              metadados técnicos do arquivo, como versão e data de exportação.
+              Timers ativos e o histórico de ações não entram no arquivo. Na
+              importação, apenas o arquivo escolhido pelo usuário é lido
+              localmente; ele não é enviado a servidores. A extensão solicita
+              permissão para os domínios importados antes de ativá-los.
+            </p>
+          </section>
+
+          <section class="policy-section" aria-labelledby="feedback-title">
+            <h2 id="feedback-title">5. Feedback de desinstalação</h2>
+            <p>
+              Após a desinstalação, a página de feedback pode ser aberta
+              automaticamente, mas nenhuma resposta é enviada sem uma ação do
+              usuário. O envio é opcional.
+            </p>
+            <p>
+              Caso enviado, o formulário pode incluir motivo da desinstalação,
+              comentário, e-mail opcional, idioma, navegador, versão da
+              extensão, data do envio, origem da página de feedback e um
+              identificador técnico aleatório da submissão. A origem e o
+              identificador são usados somente para confirmar o resultado e
+              evitar envios duplicados.
+            </p>
+            <p>
+              O feedback é processado pelo Google Apps Script e entregue por
+              e-mail à Olinbyte Digital em olinbytedigital@gmail.com. O
+              identificador técnico pode permanecer no cache temporário do
+              serviço por até seis horas para impedir duplicidades. As
+              informações são usadas apenas para responder ao contato, entender
+              problemas, corrigir falhas e melhorar a extensão.
+            </p>
+          </section>
+
+          <section class="policy-section" aria-labelledby="sharing-title">
+            <h2 id="sharing-title">6. Compartilhamento de dados</h2>
+            <p>
+              A extensão não vende dados do usuário, não compartilha dados para
+              publicidade e não utiliza analytics de terceiros nem informações
+              para rastreamento.
+            </p>
+            <p>
+              O único envio externo previsto ocorre quando o usuário envia
+              voluntariamente o formulário de feedback de desinstalação. Ele é
+              processado pelos serviços Google Apps Script e e-mail e entregue
+              à Olinbyte Digital. Os dados operacionais da extensão não são
+              compartilhados com terceiros.
+            </p>
+          </section>
+
+          <section class="policy-section" aria-labelledby="limited-use-title">
+            <h2 id="limited-use-title">7. Limited Use</h2>
+            <p>
+              O uso das informações pela extensão segue a Política de Dados do
+              Usuário da Chrome Web Store, incluindo os requisitos de Limited
+              Use.
+            </p>
+            <p>
+              As informações processadas pela extensão são usadas apenas para
+              fornecer ou melhorar suas funcionalidades principais. Elas não
+              são usadas para publicidade personalizada, avaliação de crédito
+              ou finalidades sem relação com o RecarregaAi!.
+            </p>
+          </section>
+
+          <section class="policy-section" aria-labelledby="permissions-title">
+            <h2 id="permissions-title">8. Permissões utilizadas</h2>
+            <p>
+              A extensão solicita somente as permissões necessárias para suas
+              funcionalidades principais.
+            </p>
+            <dl class="permission-list">
+              <div>
+                <dt>browsingData</dt>
+                <dd>
+                  Usada para limpar cache, CacheStorage e service workers das
+                  origens relacionadas à página atual ou autorizada.
+                </dd>
+              </div>
+              <div>
+                <dt>storage</dt>
+                <dd>
+                  Usada para salvar preferências, timers e resultados localmente.
+                </dd>
+              </div>
+              <div>
+                <dt>activeTab</dt>
+                <dd>
+                  Usada para executar ações na guia atual quando o usuário
+                  interage com a extensão.
+                </dd>
+              </div>
+              <div>
+                <dt>scripting</dt>
+                <dd>
+                  Usada para executar na página as verificações locais de
+                  digitação e mídia e identificar origens necessárias à limpeza.
+                </dd>
+              </div>
+              <div>
+                <dt>alarms</dt>
+                <dd>
+                  Usada para programar e controlar os timers automáticos no
+                  navegador.
+                </dd>
+              </div>
+              <div>
+                <dt>optional_host_permissions</dt>
+                <dd>
+                  Usada para solicitar permissão por domínio quando o usuário
+                  inicia um timer, adiciona ou importa um site automático.
+                </dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="policy-section" aria-labelledby="control-title">
+            <h2 id="control-title">9. Controle do usuário</h2>
+            <p>
+              O usuário pode alterar tema, idioma, timers, sites automáticos e
+              permissões, além de limpar o histórico local, a qualquer momento
+              nas páginas da extensão ou nas configurações do navegador.
+            </p>
+            <p>
+              A exportação e a importação de configurações só acontecem por ação
+              do usuário. O arquivo JSON exportado pode ser examinado e excluído
+              pelo próprio usuário, e o arquivo importado é escolhido manualmente.
+            </p>
+            <p>
+              O usuário pode revogar permissões concedidas a sites ou remover a
+              extensão. Ao removê-la, o Chrome exclui os dados associados ao
+              armazenamento local da extensão. A preferência de idioma salva
+              pelas páginas públicas pode ser removida nas configurações de
+              dados do site do navegador.
+            </p>
+            <p>
+              Arquivos exportados permanecem no local escolhido pelo usuário e
+              devem ser excluídos manualmente. Para solicitar remoção ou
+              esclarecimento sobre um feedback enviado, use o e-mail
+              olinbytedigital@gmail.com.
+            </p>
+          </section>
+
+          <section class="policy-section" aria-labelledby="contact-title">
+            <h2 id="contact-title">10. Contato</h2>
+            <p>
+              Para dúvidas sobre privacidade, solicitações sobre feedback
+              enviado ou esclarecimentos sobre dados processados pela extensão,
+              use o e-mail olinbytedigital@gmail.com.
+            </p>
+          </section>
+        </article>
+      </div>
+    </main>
+
+    <footer class="privacy-footer">
+      <div class="privacy-footer__inner">
+        <a class="privacy-footer__brand" href="https://vinicius-olindo.github.io/RecarregaAI-/" aria-label="RecarregaAi!">
+          <img
+            class="privacy-footer__logo"
+            src="../assets/icons/icon128.png"
+            alt=""
+            aria-hidden="true"
+          />
+        </a>
+
+        <nav class="privacy-footer__nav" aria-label="Links finais">
+          <a href="https://vinicius-olindo.github.io/RecarregaAI-/">Início</a>
+          <a href="privacy.html">Privacidade</a>
+          <a href="uninstall.html">Feedback</a>
+        </nav>
+
+        <nav class="privacy-footer__social" aria-label="Canais de contato">
+          <a class="privacy-footer__icon-link" href="mailto:olinbytedigital@gmail.com" aria-label="E-mail"
+            title="E-mail">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 6h16v12H4z" />
+              <path d="m4 7 8 6 8-6" />
+            </svg>
+          </a>
+          <a
+            class="privacy-footer__icon-link"
+            href="https://www.instagram.com/olinbytedigital/"
+            rel="noopener"
+            target="_blank"
+            aria-label="Instagram"
+            title="Instagram"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="4" y="4" width="16" height="16" rx="5" />
+              <circle cx="12" cy="12" r="3.5" />
+              <path d="M17.5 6.5h.01" />
+            </svg>
+          </a>
+          <a
+            class="privacy-footer__icon-link"
+            href="uninstall.html"
+            aria-label="Feedback"
+            title="Feedback"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 5h14v10H8l-3 3z" />
+              <path d="M9 9h6" />
+              <path d="M9 12h4" />
+            </svg>
+          </a>
+        </nav>
+
+        <p class="privacy-footer__legal">
+          © RecarregaAi! 2.3.7. Política atualizada em 22/06/2026.
+        </p>
+
+        <p class="privacy-footer__developer">
+          <span class="privacy-footer__developer-label">Desenvolvido por:</span>
+          <a
+            class="privacy-footer__developer-link"
+            href="https://www.instagram.com/olinbytedigital/"
+            rel="noopener"
+            target="_blank"
+          >
+            Olinbyte Digital
+          </a>
+        </p>
+      </div>
+    </footer>
+
+    <div class="floating-tools" aria-label="Ações rápidas">
+      <button
+        id="theme-toggle-button"
+        class="floating-action"
+        type="button"
+        aria-label="Tema escuro"
+        aria-pressed="false"
+        title="Tema escuro"
+      >
+        <span class="floating-action__theme-icon" aria-hidden="true"></span>
+        <span id="theme-toggle-label" class="floating-action__label">
+          Tema escuro
+        </span>
+      </button>
+
+      <button
+        id="open-language-button"
+        class="floating-action"
+        type="button"
+        aria-label="Idioma"
+        aria-haspopup="dialog"
+        aria-controls="language-dialog"
+      >
+        <svg class="floating-action__icon" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M3 12h18" />
+          <path d="M12 3c2.3 2.5 3.5 5.5 3.5 9s-1.2 6.5-3.5 9" />
+          <path d="M12 3c-2.3 2.5-3.5 5.5-3.5 9s1.2 6.5 3.5 9" />
+        </svg>
+        <span class="floating-action__label">Idioma</span>
+      </button>
+
+      <button
+        id="back-to-top-button"
+        class="floating-action"
+        type="button"
+        aria-label="Voltar ao início"
+      >
+        <svg class="floating-action__icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 4h14" />
+          <path d="m6 15 6-6 6 6" />
+          <path d="M12 9v11" />
+        </svg>
+        <span class="floating-action__label">Voltar ao início</span>
+      </button>
+    </div>
+
+    <div
+      id="language-dialog"
+      class="language-dialog"
+      hidden
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="language-dialog-title"
+    >
+      <button
+        class="language-dialog__backdrop"
+        type="button"
+        aria-label="Fechar"
+        data-close-language
+      ></button>
+
+      <section class="language-dialog__panel">
+        <button
+          id="close-language-button"
+          class="language-dialog__close"
+          type="button"
+          aria-label="Fechar"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+
+        <h2 id="language-dialog-title" class="language-dialog__title">
+          Idioma
+        </h2>
+        <p class="language-dialog__description">
+          Escolha o idioma preferido para navegar pelo RecarregaAi!.
+        </p>
+
+        <div class="language-grid" aria-label="Idiomas disponíveis">
+          <button class="language-card" type="button" data-language-option="pt-BR">
+            <span class="language-card__badge">BR</span>
+            <span class="language-card__name">Português (BR)</span>
+            <span class="language-card__code">PT-BR</span>
+          </button>
+
+          <button class="language-card" type="button" data-language-option="en">
+            <span class="language-card__badge">US</span>
+            <span class="language-card__name">English</span>
+            <span class="language-card__code">EN</span>
+          </button>
+
+          <button class="language-card" type="button" data-language-option="es">
+            <span class="language-card__badge">ES</span>
+            <span class="language-card__name">Español</span>
+            <span class="language-card__code">ES</span>
+          </button>
+
+          <button class="language-card" type="button" data-language-option="fr">
+            <span class="language-card__badge">FR</span>
+            <span class="language-card__name">Français</span>
+            <span class="language-card__code">FR</span>
+          </button>
+
+          <button class="language-card" type="button" data-language-option="de">
+            <span class="language-card__badge">DE</span>
+            <span class="language-card__name">Deutsch</span>
+            <span class="language-card__code">DE</span>
+          </button>
+
+          <button class="language-card" type="button" data-language-option="it">
+            <span class="language-card__badge">IT</span>
+            <span class="language-card__name">Italiano</span>
+            <span class="language-card__code">IT</span>
+          </button>
+
+          <button class="language-card" type="button" data-language-option="id">
+            <span class="language-card__badge">ID</span>
+            <span class="language-card__name">Bahasa Indonesia</span>
+            <span class="language-card__code">ID</span>
+          </button>
+
+          <button class="language-card" type="button" data-language-option="tr">
+            <span class="language-card__badge">TR</span>
+            <span class="language-card__name">Türkçe</span>
+            <span class="language-card__code">TR</span>
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <script type="module" src="../js/privacy.js"></script>
+  </body>
+</html>

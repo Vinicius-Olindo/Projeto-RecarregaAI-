@@ -1,4 +1,4 @@
-// RecarregaAi! 2.3.6
+// RecarregaAi! 2.3.7
 
 import {
   existsSync,
@@ -14,23 +14,29 @@ import { fileURLToPath } from "node:url";
 import { deflateRawSync } from "node:zlib";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
+const extensionRoot = join(root, "extension");
 const distPath = join(root, "dist");
 const zipPath = join(distPath, "recarregaai.zip");
 const includePaths = [
   "assets",
-  "CSS",
-  "JS",
+  "css",
+  "js",
   "manifest.json",
+  "onboarding.html",
   "options.html",
-  "privacy.html",
-  "popup.html",
-  "uninstall.html",
-  "welcome.html"
+  "popup.html"
 ];
+const publicOnlyFiles = new Set([
+  "css/privacy.css",
+  "css/uninstall.css",
+  "js/modules/public-page-security.js",
+  "js/privacy.js",
+  "js/uninstall.js"
+]);
 
 const validateFeedbackBackend = () => {
   const configSource = readFileSync(
-    join(root, "JS", "modules", "config.js"),
+    join(extensionRoot, "js", "modules", "config.js"),
     "utf8"
   );
   const configuredUrl = configSource.match(
@@ -88,14 +94,19 @@ const getDosDateTime = (date) => {
   };
 };
 
-const shouldIgnoreFile = (pathValue) => pathValue.endsWith(".gitkeep");
+const shouldIgnoreFile = (pathValue) => {
+  const normalizedPath = pathValue.replaceAll("\\", "/");
+
+  return normalizedPath.endsWith(".gitkeep")
+    || publicOnlyFiles.has(normalizedPath);
+};
 
 const collectFiles = (pathValue) => {
   if (shouldIgnoreFile(pathValue)) {
     return [];
   }
 
-  const absolutePath = join(root, pathValue);
+  const absolutePath = join(extensionRoot, pathValue);
   const stats = statSync(absolutePath);
 
   if (stats.isFile()) {
@@ -211,7 +222,7 @@ let currentOffset = 0;
 files.forEach((absolutePath) => {
   const fileBuffer = readFileSync(absolutePath);
   const compressedBuffer = deflateRawSync(fileBuffer);
-  const relativePath = relative(root, absolutePath).replaceAll("\\", "/");
+  const relativePath = relative(extensionRoot, absolutePath).replaceAll("\\", "/");
   const stats = statSync(absolutePath);
   const crc = getCrc32(fileBuffer);
   const method = 8;

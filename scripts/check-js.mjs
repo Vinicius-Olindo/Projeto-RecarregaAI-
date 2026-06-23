@@ -1,4 +1,4 @@
-// RecarregaAi! 2.3.6
+// RecarregaAi! 2.3.7
 
 import { spawnSync } from "node:child_process";
 import { readdirSync } from "node:fs";
@@ -22,7 +22,8 @@ const collectFiles = (directoryPath, extension) => (
 
 const filesToCheck = [
   "eslint.config.mjs",
-  ...collectFiles("JS", ".js"),
+  ...collectFiles("extension/js", ".js"),
+  ...collectFiles("site/js", ".js"),
   ...collectFiles("scripts", ".mjs")
 ].sort();
 

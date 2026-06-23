@@ -1,4 +1,4 @@
-# RecarregaAi! 2.3.6
+# RecarregaAi! 2.3.7
 
 # Script legado para Windows. O empacotamento principal usa Node:
 # npm run zip
@@ -6,18 +6,24 @@
 $ErrorActionPreference = "Stop"
 
 $root = Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "..")
+$extensionRoot = Join-Path $root "extension"
 $dist = Join-Path $root "dist"
 $zipPath = Join-Path $dist "recarregaai.zip"
 $includePaths = @(
     "assets",
-    "CSS",
-    "JS",
+    "css",
+    "js",
     "manifest.json",
+    "onboarding.html",
     "options.html",
-    "privacy.html",
-    "popup.html",
-    "uninstall.html",
-    "welcome.html"
+    "popup.html"
+)
+$publicOnlyFiles = @(
+    "css/privacy.css",
+    "css/uninstall.css",
+    "js/modules/public-page-security.js",
+    "js/privacy.js",
+    "js/uninstall.js"
 )
 
 New-Item -ItemType Directory -Force -Path $dist | Out-Null
@@ -41,7 +47,7 @@ $archive = New-Object System.IO.Compression.ZipArchive(
 
 try {
     foreach ($includePath in $includePaths) {
-        $absolutePath = Join-Path $root $includePath
+        $absolutePath = Join-Path $extensionRoot $includePath
         $item = Get-Item -LiteralPath $absolutePath
 
         if (-not $item.PSIsContainer) {
@@ -56,9 +62,15 @@ try {
         }
 
         Get-ChildItem -LiteralPath $item.FullName -Recurse -File |
-            Where-Object { $_.Name -ne ".gitkeep" } |
+            Where-Object {
+                $relativePath = $_.FullName.Substring($extensionRoot.Length)
+                $relativePath = $relativePath.TrimStart([char[]]@("\", "/"))
+                $relativePath = $relativePath.Replace("\", "/")
+
+                $_.Name -ne ".gitkeep" -and $relativePath -notin $publicOnlyFiles
+            } |
             ForEach-Object {
-                $relativePath = $_.FullName.Substring($root.Path.Length)
+                $relativePath = $_.FullName.Substring($extensionRoot.Length)
                 $relativePath = $relativePath.TrimStart([char[]]@("\", "/"))
                 $relativePath = $relativePath.Replace("\", "/")
 

@@ -1,320 +1,163 @@
 # RecarregaAi!
 
-**Versão atual: 2.3.6**
+**Versão atual: 2.3.7**
 
-Extensão para Google Chrome que limpa dados antigos do site aberto, recarrega a
-página sem depender do cache anterior e permite automatizar esse processo com
-um timer independente para cada guia.
+O RecarregaAi! é uma extensão para Google Chrome que limpa o cache do endereço aberto e recarrega páginas automaticamente em intervalos definidos pelo usuário.
 
-O projeto usa Manifest V3, solicita acesso aos sites somente quando necessário
-e mantém configurações, timers e histórico de ações no próprio navegador.
+O repositório reúne dois produtos independentes:
+
+- `extension/`: extensão instalada no Chrome;
+- `site/`: site público de apresentação do RecarregaAi!.
 
 ## Funcionalidades
 
-- Limpeza manual de cache com recarregamento imediato da página atual.
-- Timers prontos de 3, 5 e 10 minutos.
+- Limpeza de cache com recarga imediata.
+- Timers independentes por guia.
+- Intervalos prontos de 3, 5 e 10 minutos.
 - Intervalo personalizado em minutos.
-- Vários timers funcionando ao mesmo tempo, um para cada guia.
-- Contagem regressiva no ícone da extensão.
-- Pausa e retomada manual diretamente pelo popup.
-- Pausa automática durante digitação, reprodução de áudio ou vídeo e gravações.
-- Proteção contra recarregamento após a guia sair do domínio original.
-- Sites automáticos que iniciam um timer quando são abertos.
-- Histórico local das 100 ações mais recentes, com filtros e limpeza manual.
-- Importação e exportação das preferências em arquivo JSON.
-- Tema claro e escuro.
-- Interface em português, inglês, espanhol, francês, alemão, italiano,
-  indonésio e turco.
-- Página de boas-vindas, política de privacidade e formulário de feedback de
-  desinstalação.
+- Contagem regressiva no popup e no ícone da extensão.
+- Pausa automática durante digitação e reprodução de mídia.
+- Pausa, retomada e remoção do timer pelo popup.
+- Início automático em sites cadastrados.
+- Histórico local de ações.
+- Importação e exportação de configurações.
+- Temas claro e escuro.
+- Interface em português, inglês e espanhol.
 
-## Como funciona
+## Extensão
 
-### Limpeza manual
+Os arquivos que o Chrome utiliza ficam exclusivamente em `extension/`.
 
-Ao selecionar `Limpar e recarregar`, a extensão:
+### Instalação para desenvolvimento
 
-1. Identifica a guia atual e as origens HTTP ou HTTPS carregadas por ela.
-2. Remove cache do navegador, CacheStorage e service workers dessas origens.
-3. Recarrega a guia ignorando o cache anterior.
-4. Registra localmente o resultado da ação.
+1. Abra `chrome://extensions/` no Chrome.
+2. Ative o **Modo do desenvolvedor**.
+3. Clique em **Carregar sem compactação**.
+4. Selecione a pasta `extension/` deste projeto.
 
-Cookies, sessões, senhas salvas e histórico de navegação não são removidos.
+Na primeira instalação, o Chrome abre `onboarding.html`. Essa tela apresenta os passos essenciais para fixar o ícone, escolher uma guia e iniciar o primeiro timer. Ela não funciona como site de divulgação.
 
-Páginas internas do Chrome, a Chrome Web Store e outros endereços protegidos
-pelo navegador não permitem esse tipo de operação.
+### Permissões
 
-### Timer por guia
+O manifesto solicita somente as permissões necessárias ao funcionamento principal:
 
-Cada guia pode manter seu próprio intervalo. Drive, sistemas internos, painéis
-e outras páginas podem ser atualizados ao mesmo tempo, sem que um timer
-substitua o outro.
+- `activeTab`: acesso temporário à guia escolhida pelo usuário;
+- `alarms`: restauração e execução dos timers;
+- `browsingData`: limpeza do cache do endereço aberto;
+- `scripting`: detecção de digitação e mídia na guia controlada;
+- `storage`: preferências, timers e histórico local.
 
-Para iniciar:
+Os acessos a endereços HTTP e HTTPS são opcionais. Eles são solicitados apenas quando o usuário cadastra um site automático ou decide tornar um timer persistente naquele domínio.
 
-1. Abra a página desejada.
-2. Abra o popup do RecarregaAi!.
-3. Escolha um intervalo pronto ou informe um tempo personalizado.
-4. Selecione `Ativar atualização`.
+## Site público
 
-O popup permite pausar, retomar, remover e abrir cada guia controlada. O badge
-do ícone exibe uma contagem como `3:00`, `2:59` e `2:58`.
+O conteúdo de apresentação fica em `site/` e pode ser ligado ao site da Olinbyte Digital. Ele não é incluído no pacote enviado à Chrome Web Store.
 
-No Manifest V3, o service worker pode ser suspenso pelo Chrome. Por isso, a
-contagem no ícone deve ser entendida como um indicador aproximado quando o
-popup está fechado. O vencimento do timer é controlado por `chrome.alarms` e o
-popup aberto atualiza a interface com maior frequência.
+O site publicado oferece:
 
-### Pausas de segurança
+- apresentação da extensão;
+- funcionalidades e casos de uso;
+- perguntas frequentes;
+- links de contato e da Olinbyte Digital;
+- página pública de privacidade;
+- página pública de feedback de desinstalação.
 
-O timer da guia é pausado automaticamente quando a extensão detecta:
+As páginas `privacy.html` e `uninstall.html` pertencem funcionalmente à extensão e, por isso, são mantidas em `extension/public/`. Durante a montagem do site, elas são copiadas para a raiz pública, preservando estes endereços:
 
-- digitação em campos de texto, áreas de texto ou editores da página;
-- reprodução de áudio ou vídeo;
-- gravação ativa com `MediaRecorder`;
-- navegação para fora do domínio em que o timer foi iniciado.
+- `https://vinicius-olindo.github.io/RecarregaAI-/privacy.html`
+- `https://vinicius-olindo.github.io/RecarregaAI-/uninstall.html`
 
-A contagem continua quando a atividade termina. Campos de senha não são
-monitorados pela proteção de digitação.
+### Gerar o site
 
-### Sites automáticos
-
-Na página de configurações, o usuário pode cadastrar sites que devem iniciar
-um timer quando forem abertos. Cada endereço pode usar o intervalo padrão ou um
-tempo próprio.
-
-A extensão solicita permissão apenas para o domínio cadastrado. Endereços
-duplicados são recusados e podem ser removidos a qualquer momento.
-
-## Configurações
-
-A página `options.html` reúne:
-
-- intervalo padrão;
-- cadastro e remoção de sites automáticos;
-- importação e exportação de configurações;
-- histórico local com filtros por tipo de ação;
-- explicação das permissões utilizadas;
-- seleção de idioma e tema.
-
-O arquivo exportado inclui intervalo padrão, sites automáticos, tema e idioma.
-Timers ativos e histórico não entram no backup porque pertencem à instalação
-atual do navegador.
-
-## Instalação para desenvolvimento
-
-### Carregar a pasta no Chrome
-
-1. Clone ou baixe este repositório.
-2. Abra `chrome://extensions/`.
-3. Ative o `Modo do desenvolvedor`.
-4. Selecione `Carregar sem compactação`.
-5. Escolha a pasta raiz do projeto.
-
-Ao instalar pela primeira vez, o Chrome abre `welcome.html` automaticamente.
-
-### Preparar o ambiente de qualidade
-
-O Node.js é necessário apenas para validação e empacotamento. Use uma versão
-compatível com o ESLint 9.
-
-```powershell
-npm ci --ignore-scripts
-npm run check
+```bash
+npm run build:site
 ```
 
-Depois de alterar a extensão, abra `chrome://extensions/` e selecione
-`Recarregar` no card do RecarregaAi!.
+O resultado é criado em `dist/site/`. O processo reúne o site de apresentação e somente os recursos necessários às páginas públicas da extensão.
 
-## Permissões
-
-O manifesto não possui `host_permissions` obrigatórias. Os acessos a sites
-ficam em `optional_host_permissions` e são solicitados por domínio durante uma
-ação iniciada pelo usuário.
-
-| Permissão | Finalidade |
-| --- | --- |
-| `activeTab` | Autorizar a ação na guia escolhida após a interação do usuário. |
-| `alarms` | Agendar os próximos recarregamentos mesmo quando o service worker é suspenso. |
-| `browsingData` | Remover cache, CacheStorage e service workers das origens identificadas. |
-| `scripting` | Coletar origens e ativar as proteções de digitação e mídia na página controlada. |
-| `storage` | Salvar preferências, timers e histórico local no navegador. |
-| `http://*/*` e `https://*/*` | Permissões opcionais solicitadas somente para os sites autorizados pelo usuário. |
-
-## Privacidade
-
-- O RecarregaAi! não vende dados.
-- O conteúdo das páginas e os textos digitados não são armazenados.
-- Configurações, timers e histórico permanecem no armazenamento local do
-  Chrome.
-- O histórico guarda somente tipo de ação, horário, domínio, intervalo,
-  resultado e um detalhe técnico limitado.
-- O histórico mantém no máximo 100 entradas e pode ser apagado pelo usuário.
-- O feedback de desinstalação é opcional e usa um endpoint próprio implantado
-  no Google Apps Script.
-- Comentário e e-mail no formulário também são opcionais.
-
-A política completa está em `privacy.html` e pode ser publicada pelo GitHub
-Pages junto com as demais páginas públicas.
-
-## Feedback de desinstalação
-
-O Chrome abre o endereço abaixo depois que a extensão é removida:
-
-```text
-https://vinicius-olindo.github.io/RecarregaAI-/uninstall.html
-```
-
-Esse endereço deve permanecer fixo e publicado em:
-
-```text
-Settings > Pages > Deploy from a branch > main > /root
-```
-
-O formulário envia os dados para o endpoint configurado em
-`JS/modules/config.js`. Esse endpoint é publicado no Google Apps Script da
-Olinbyte Digital e usa `MailApp.sendEmail` para entregar a mensagem diretamente
-em `olinbytedigital@gmail.com`.
-
-O envio acontece em um iframe invisível, sem abrir páginas externas. A interface
-só mostra sucesso depois de receber a confirmação assinada pelo identificador
-único daquela submissão. O backend limita campos, impede duplicidade, aplica
-limite por minuto e escapa o conteúdo usado no e-mail.
-
-As instruções de implantação estão em
-`backend/google-apps-script/README.md`. O empacotamento é bloqueado enquanto
-`feedbackBackendUrl` não contiver uma URL pública válida terminada em `/exec`.
-
-## Estrutura do projeto
+## Estrutura
 
 ```text
 RecarregaAI-/
+|-- extension/
+|   |-- manifest.json
+|   |-- popup.html
+|   |-- options.html
+|   |-- onboarding.html
+|   |-- public/
+|   |   |-- privacy.html
+|   |   `-- uninstall.html
+|   |-- css/
+|   |-- js/
+|   |   `-- modules/
+|   `-- assets/
+|       `-- icons/
+|-- site/
+|   |-- index.html
+|   |-- css/
+|   |-- js/
+|   |   `-- modules/
+|   `-- assets/
+|       `-- icons/
+|-- backend/
+|   `-- google-apps-script/
+|-- scripts/
 |-- .github/
 |   `-- workflows/
-|       `-- validate.yml
-|-- index.html
-|-- manifest.json
-|-- popup.html
-|-- options.html
-|-- welcome.html
-|-- privacy.html
-|-- uninstall.html
-|-- CSS/
-|   |-- popup.css
-|   |-- options.css
-|   |-- welcome.css
-|   |-- privacy.css
-|   |-- uninstall.css
-|   `-- shared-*.css
-|-- JS/
-|   |-- background.js
-|   |-- content.js
-|   |-- page-media-guard.js
-|   |-- popup.js
-|   |-- options.js
-|   |-- welcome.js
-|   |-- privacy.js
-|   |-- uninstall.js
-|   `-- modules/
-|       |-- cache.js
-|       |-- config.js
-|       |-- extended-translations.js
-|       |-- floating-tools.js
-|       |-- history.js
-|       |-- language-dialog.js
-|       |-- public-page-security.js
-|       |-- shared.js
-|       |-- storage.js
-|       |-- tabs.js
-|       `-- theme.js
-|-- assets/
-|   |-- icons/
-|   `-- images/
-|-- scripts/
-|   |-- check-js.mjs
-|   |-- check-manifest.mjs
-|   |-- package-extension.mjs
-|   `-- package-extension.ps1
-|-- eslint.config.mjs
 |-- package.json
-`-- package-lock.json
+`-- README.md
 ```
 
-Os arquivos HTML permanecem na raiz. Estilos ficam em `CSS/`, scripts em `JS/`
-e comportamentos compartilhados em `JS/modules/`.
+## Feedback de desinstalação
 
-No GitHub Pages, `index.html` direciona a raiz do projeto para `welcome.html`.
-O arquivo `.nojekyll` mantém a publicação como um site estático, sem transformar
-o README em página inicial.
+O Chrome abre a URL pública configurada em `extension/js/modules/config.js` após a remoção da extensão. O formulário envia o feedback ao endpoint do Google Apps Script, que deve encaminhar a mensagem para `olinbytedigital@gmail.com`.
+
+O código do serviço está em `backend/google-apps-script/`. O endpoint publicado precisa permanecer configurado em `feedbackBackendUrl` antes do empacotamento.
 
 ## Qualidade
 
-Instale as dependências antes de usar os comandos deste projeto:
+Instale as dependências sem executar scripts de terceiros:
 
-```powershell
+```bash
 npm ci --ignore-scripts
 ```
 
-| Comando | Resultado |
-| --- | --- |
-| `npm run check` | Valida a sintaxe JavaScript, o manifesto e o ESLint. |
-| `npm run check:js` | Verifica os arquivos JavaScript do pacote. |
-| `npm run check:manifest` | Valida estrutura, arquivos e permissões do manifesto. |
-| `npm run lint` | Executa o ESLint sem aceitar avisos. |
-| `npm audit` | Verifica vulnerabilidades conhecidas nas dependências. |
+Execute todas as validações:
 
-## Integração contínua
+```bash
+npm run check
+```
 
-O workflow `.github/workflows/validate.yml` é executado em pushes e pull
-requests para `main`, além de permitir execução manual pelo GitHub Actions.
-
-A rotina instala as dependências com `npm ci`, valida o projeto, bloqueia
-vulnerabilidades de severidade alta ou crítica, gera `dist/recarregaai.zip` e
-disponibiliza o pacote como artefato por 14 dias. O workflow possui apenas
-permissão de leitura e não publica, não cria commits e não altera o repositório.
+O comando verifica sintaxe, manifesto, arquivos referenciados, permissões aprovadas, sincronização de versão e regras do ESLint.
 
 ## Empacotamento
 
-O pacote oficial é gerado com Node.js:
+Para gerar o arquivo enviado à Chrome Web Store:
 
-```powershell
+```bash
 npm run zip
 ```
 
-O comando executa todas as validações e cria:
+O pacote é criado em `dist/recarregaai.zip`, com `manifest.json` na raiz e sem arquivos do site, backend, documentação ou desenvolvimento.
 
-```text
-dist/recarregaai.zip
-```
+## GitHub Actions
 
-No Windows, o empacotador legado também está disponível:
+O projeto possui duas rotinas automáticas:
 
-```powershell
-npm run zip:ps
-```
+- `validate.yml`: valida e empacota a extensão;
+- `pages.yml`: valida, monta e publica o site no GitHub Pages.
 
-Os dois processos incluem somente os arquivos necessários para a extensão e
-ignoram marcadores como `.gitkeep`. A pasta `dist/`, documentação, dependências
-de desenvolvimento e scripts de build não entram no ZIP.
+Para usar a publicação automática, configure o GitHub Pages do repositório com a origem **GitHub Actions**. O workflow publica o conteúdo gerado em `dist/site/`.
 
-O arquivo `dist/recarregaai.zip` é o artefato destinado ao envio para a Chrome
-Web Store.
+## Configuração da loja
 
-Depois que o painel da Chrome Web Store gerar a URL específica da extensão,
-preencha `chromeWebStoreUrl` em `JS/modules/config.js`. Enquanto esse campo
-estiver vazio, os botões `Adicionar ao Chrome` permanecem ocultos para não
-direcionar o usuário a uma página genérica.
+Quando a extensão estiver publicada, informe a URL da Chrome Web Store em `chromeWebStoreUrl` nos arquivos de configuração do site e da extensão. Enquanto o campo estiver vazio, os botões de instalação do site permanecem ocultos.
 
 ## Versionamento
 
-- A versão usa apenas números, sem o prefixo `V`.
-- Cada card ou alteração concluída gera uma nova versão.
-- A versão deve permanecer sincronizada em todos os arquivos do projeto.
-- Quando a última casa chegar a `9`, a casa anterior é incrementada.
-- Exemplo: depois de `2.2.9`, use `2.3.0`.
+Toda alteração entregue incrementa a versão do projeto e mantém os arquivos sincronizados no formato numérico `x.y.z`. Ao chegar a uma versão como `2.3.9`, a próxima será `2.4.0`.
 
 ## Contato
 
-- Empresa: Olinbyte Digital
 - E-mail: [olinbytedigital@gmail.com](mailto:olinbytedigital@gmail.com)
-- Instagram: [@olinbytedigital](https://www.instagram.com/olinbytedigital/)
+- Instagram: [Olinbyte Digital](https://www.instagram.com/olinbytedigital/)

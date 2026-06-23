@@ -1,9 +1,10 @@
-// RecarregaAi! 2.3.6
+// RecarregaAi! 2.3.7
 
 import {
   existsSync,
   readFileSync
 } from "node:fs";
+import { join } from "node:path";
 
 const fail = (message) => {
   throw new Error(`Manifesto inválido: ${message}`);
@@ -50,10 +51,14 @@ const assertExactValues = (values, expectedValues, fieldName) => {
 const assertLocalFile = (filePath, fieldName) => {
   assert(typeof filePath === "string" && filePath.length > 0, `${fieldName} ausente.`);
   assert(!/^[a-z]+:/iu.test(filePath), `${fieldName} deve apontar para um arquivo local.`);
-  assert(existsSync(filePath), `${fieldName} aponta para um arquivo inexistente: ${filePath}.`);
+  assert(
+    existsSync(join(extensionRoot, filePath)),
+    `${fieldName} aponta para um arquivo inexistente: ${filePath}.`
+  );
 };
 
-const manifest = readJsonFile("manifest.json");
+const extensionRoot = "extension";
+const manifest = readJsonFile(join(extensionRoot, "manifest.json"));
 const packageJson = readJsonFile("package.json");
 const expectedIconSizes = ["16", "32", "48", "128"];
 const expectedPermissions = [

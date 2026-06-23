@@ -1,0 +1,443 @@
+<!doctype html>
+<!-- RecarregaAi! 2.3.7 -->
+<html id="page-root" lang="pt-BR" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="no-referrer" />
+    <meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; base-uri 'none'; object-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; form-action https://script.google.com; frame-src https://script.google.com https://script.googleusercontent.com; upgrade-insecure-requests" />
+    <title>Feedback do RecarregaAi!</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/icons/icon16.png" />
+    <link rel="stylesheet" href="../css/uninstall.css" />
+    <link rel="stylesheet" href="../css/shared-footer.css" />
+    <link rel="stylesheet" href="../css/shared-floating-tools.css" />
+  </head>
+  <body>
+    <header id="top" class="site-header">
+      <div class="brand">
+        <img
+          class="brand__icon"
+          src="../assets/icons/icon128.png"
+          alt=""
+          aria-hidden="true"
+        />
+
+        <div>
+          <p class="brand__name">RecarregaAi!</p>
+          <p id="extension-version" class="brand__version">2.3.7</p>
+        </div>
+      </div>
+
+      <a
+        class="chrome-install-button"
+        data-chrome-web-store-link
+        hidden
+        rel="noopener"
+        target="_blank"
+        aria-label="Adicionar ao Chrome"
+        data-i18n-aria-label="installButton"
+      >
+        <span class="chrome-install-button__icon" aria-hidden="true"></span>
+        <span data-i18n="installButton">Adicionar ao Chrome</span>
+      </a>
+    </header>
+
+    <main class="uninstall" aria-labelledby="uninstall-title">
+      <section class="intro">
+        <h1 id="uninstall-title" class="intro__title" data-i18n="pageTitle">
+          Lamentamos sua partida.
+        </h1>
+
+        <p data-i18n="introFirst">
+          Antes de desinstalar de vez, conte rapidamente o que nao funcionou
+          bem. Sua opiniao ajuda a melhorar o RecarregaAi! para outros usuarios.
+        </p>
+
+        <p data-i18n="introSecond">
+          Selecione um motivo ou deixe uma mensagem opcional descrevendo sua
+          experiencia.
+        </p>
+      </section>
+
+      <form
+        id="feedback-form"
+        class="feedback-form"
+        method="POST"
+      >
+        <input id="feedback-version-input" type="hidden" name="Versao" />
+        <input id="feedback-date-input" type="hidden" name="Data" />
+        <input id="feedback-browser-input" type="hidden" name="Navegador" />
+        <input id="feedback-language-input" type="hidden" name="Idioma" />
+        <input
+          id="feedback-reason-input"
+          type="hidden"
+          name="Motivo"
+          value="Nao informou motivo"
+        />
+
+        <p
+          id="feedback-status"
+          class="feedback-status"
+          role="status"
+          aria-live="polite"
+        ></p>
+
+        <fieldset class="reason-list">
+          <legend class="sr-only">Motivo da desinstalacao</legend>
+
+          <label class="reason-option">
+            <input
+              type="radio"
+              name="reason"
+              data-reason-id="workflow"
+            />
+            <span class="reason-option__control" aria-hidden="true"></span>
+            <span data-reason-text="workflow">
+              Nao e mais necessario para meu fluxo de trabalho
+            </span>
+          </label>
+
+          <label class="reason-option">
+            <input
+              type="radio"
+              name="reason"
+              data-reason-id="cache"
+            />
+            <span class="reason-option__control" aria-hidden="true"></span>
+            <span data-reason-text="cache">Nao limpou o cache como eu esperava</span>
+          </label>
+
+          <label class="reason-option">
+            <input
+              type="radio"
+              name="reason"
+              data-reason-id="reload"
+            />
+            <span class="reason-option__control" aria-hidden="true"></span>
+            <span data-reason-text="reload">Recarregou a pagina na hora errada</span>
+          </label>
+
+          <label class="reason-option">
+            <input
+              type="radio"
+              name="reason"
+              data-reason-id="usability"
+            />
+            <span class="reason-option__control" aria-hidden="true"></span>
+            <span data-reason-text="usability">Ficou confuso de usar</span>
+          </label>
+
+          <label class="reason-option">
+            <input
+              type="radio"
+              name="reason"
+              data-reason-id="feature"
+            />
+            <span class="reason-option__control" aria-hidden="true"></span>
+            <span data-reason-text="feature">Faltou alguma funcao importante</span>
+          </label>
+
+          <label class="reason-option">
+            <input
+              type="radio"
+              name="reason"
+              data-reason-id="other"
+            />
+            <span class="reason-option__control" aria-hidden="true"></span>
+            <span data-reason-text="other">Outro motivo</span>
+          </label>
+        </fieldset>
+
+        <p id="selected-reason-feedback" class="selected-reason">
+          <span data-i18n="noReason">Nenhum motivo selecionado.</span>
+        </p>
+
+        <details class="details">
+          <summary data-i18n="optionalCommentSummary">
+            Adicionar comentario opcional
+          </summary>
+
+          <div class="details__content">
+            <label class="field" for="feedback-message">
+              <span data-i18n="commentLabel">Comentario</span>
+              <textarea
+                id="feedback-message"
+                name="Comentario"
+                rows="4"
+                maxlength="1200"
+                placeholder="Conte em poucas palavras o que poderíamos melhorar."
+                data-i18n-placeholder="commentPlaceholder"
+              ></textarea>
+            </label>
+
+            <label class="field" for="contact-email">
+              <span data-i18n="emailLabel">Email para contato</span>
+              <input
+                id="contact-email"
+                type="email"
+                name="email"
+                maxlength="254"
+                placeholder="voce@email.com"
+              />
+            </label>
+          </div>
+        </details>
+
+        <div class="actions">
+          <button
+            id="send-feedback-button"
+            class="button button--primary"
+            type="submit"
+            disabled
+          >
+            <span data-i18n="sendButton">Enviar feedback</span>
+          </button>
+        </div>
+      </form>
+
+      <iframe
+        id="feedback-delivery-frame"
+        name="recarregaai-feedback-delivery"
+        title="Processamento do feedback"
+        hidden
+      ></iframe>
+    </main>
+
+    <footer class="privacy-footer">
+      <div class="privacy-footer__inner">
+        <a class="privacy-footer__brand" href="https://vinicius-olindo.github.io/RecarregaAI-/" aria-label="RecarregaAi!">
+          <img
+            class="privacy-footer__logo"
+            src="../assets/icons/icon128.png"
+            alt=""
+            aria-hidden="true"
+          />
+        </a>
+
+        <nav class="privacy-footer__nav" aria-label="Links finais">
+          <a href="https://vinicius-olindo.github.io/RecarregaAI-/" data-i18n="footerHome">Início</a>
+          <a href="privacy.html" data-i18n="footerPrivacy">Privacidade</a>
+          <a href="uninstall.html" data-i18n="footerFeedback">Feedback</a>
+        </nav>
+
+        <nav class="privacy-footer__social" aria-label="Canais de contato">
+          <a class="privacy-footer__icon-link" href="mailto:olinbytedigital@gmail.com" aria-label="E-mail"
+            title="E-mail">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 6h16v12H4z" />
+              <path d="m4 7 8 6 8-6" />
+            </svg>
+          </a>
+          <a
+            class="privacy-footer__icon-link"
+            href="https://www.instagram.com/olinbytedigital/"
+            rel="noopener"
+            target="_blank"
+            aria-label="Instagram"
+            title="Instagram"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="4" y="4" width="16" height="16" rx="5" />
+              <circle cx="12" cy="12" r="3.5" />
+              <path d="M17.5 6.5h.01" />
+            </svg>
+          </a>
+          <a
+            class="privacy-footer__icon-link"
+            href="uninstall.html"
+            aria-label="Feedback"
+            title="Feedback"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 5h14v10H8l-3 3z" />
+              <path d="M9 9h6" />
+              <path d="M9 12h4" />
+            </svg>
+          </a>
+        </nav>
+
+        <p class="privacy-footer__legal" data-i18n="footerLegal">
+          © RecarregaAi! 2.3.7. Todos os direitos reservados.
+        </p>
+
+        <p class="privacy-footer__developer">
+          <span class="privacy-footer__developer-label" data-i18n="footerDeveloper">
+            Desenvolvido por:
+          </span>
+          <a
+            class="privacy-footer__developer-link"
+            href="https://www.instagram.com/olinbytedigital/"
+            rel="noopener"
+            target="_blank"
+          >
+            Olinbyte Digital
+          </a>
+        </p>
+      </div>
+    </footer>
+
+    <div class="floating-tools" aria-label="Acoes rapidas">
+      <button
+        id="theme-toggle-button"
+        class="floating-action"
+        type="button"
+        aria-label="Tema escuro"
+        aria-pressed="false"
+        title="Tema escuro"
+      >
+        <span class="floating-action__theme-icon" aria-hidden="true"></span>
+        <span id="theme-toggle-label" class="floating-action__label" data-theme-toggle-label>
+          Tema escuro
+        </span>
+      </button>
+
+      <button
+        id="open-language-button"
+        class="floating-action"
+        type="button"
+        aria-label="Idioma"
+        aria-haspopup="dialog"
+        aria-controls="language-dialog"
+        data-i18n-aria-label="languageLabel"
+      >
+        <svg
+          aria-hidden="true"
+          class="floating-action__icon"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z"
+          />
+          <path d="M3.6 9h16.8M3.6 15h16.8" />
+          <path
+            d="M12 3a13.6 13.6 0 0 1 0 18M12 3a13.6 13.6 0 0 0 0 18"
+          />
+        </svg>
+        <span class="floating-action__label" data-i18n="languageLabel">
+          Idioma
+        </span>
+      </button>
+
+      <button
+        id="back-to-top-button"
+        class="floating-action back-to-top"
+        type="button"
+        aria-label="Voltar ao inicio"
+        data-i18n-aria-label="backToTop"
+      >
+        <svg
+          aria-hidden="true"
+          class="floating-action__icon"
+          viewBox="0 0 24 24"
+        >
+          <path d="m6 15 6-6 6 6" />
+          <path d="M12 9v12" />
+          <path d="M5 3h14" />
+        </svg>
+        <span class="floating-action__label" data-i18n="backToTop">
+          Voltar ao inicio
+        </span>
+      </button>
+    </div>
+
+    <div
+      id="language-dialog"
+      class="language-dialog"
+      role="dialog"
+      aria-labelledby="language-dialog-title"
+      aria-modal="true"
+      hidden
+    >
+      <div class="language-dialog__backdrop" data-close-language></div>
+
+      <section class="language-dialog__panel">
+        <button
+          id="close-language-button"
+          class="language-dialog__close"
+          type="button"
+          aria-label="Fechar"
+          data-i18n-aria-label="closeDialog"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+
+        <h2
+          id="language-dialog-title"
+          class="language-dialog__title"
+          data-i18n="languageDialogTitle"
+        >
+          Idioma
+        </h2>
+
+        <p class="language-dialog__description" data-i18n="languageDialogText">
+          Altere o idioma da pagina para o seu idioma preferido.
+        </p>
+
+        <div class="language-grid" aria-label="Idiomas disponiveis">
+          <button
+            class="language-card"
+            type="button"
+            data-language-option="pt-BR"
+          >
+            <span class="language-card__badge">BR</span>
+            <span class="language-card__name">Portugues (BR)</span>
+            <span class="language-card__code">PT-BR</span>
+          </button>
+
+          <button
+            class="language-card"
+            type="button"
+            data-language-option="en"
+          >
+            <span class="language-card__badge">US</span>
+            <span class="language-card__name">English</span>
+            <span class="language-card__code">EN</span>
+          </button>
+
+          <button
+            class="language-card"
+            type="button"
+            data-language-option="es"
+          >
+            <span class="language-card__badge">ES</span>
+            <span class="language-card__name">Espanol</span>
+            <span class="language-card__code">ES</span>
+          </button>
+
+          <button class="language-card" type="button" data-language-option="fr">
+            <span class="language-card__badge">FR</span>
+            <span class="language-card__name">Français</span>
+            <span class="language-card__code">FR</span>
+          </button>
+
+          <button class="language-card" type="button" data-language-option="de">
+            <span class="language-card__badge">DE</span>
+            <span class="language-card__name">Deutsch</span>
+            <span class="language-card__code">DE</span>
+          </button>
+
+          <button class="language-card" type="button" data-language-option="it">
+            <span class="language-card__badge">IT</span>
+            <span class="language-card__name">Italiano</span>
+            <span class="language-card__code">IT</span>
+          </button>
+
+          <button class="language-card" type="button" data-language-option="id">
+            <span class="language-card__badge">ID</span>
+            <span class="language-card__name">Bahasa Indonesia</span>
+            <span class="language-card__code">ID</span>
+          </button>
+
+          <button class="language-card" type="button" data-language-option="tr">
+            <span class="language-card__badge">TR</span>
+            <span class="language-card__name">Türkçe</span>
+            <span class="language-card__code">TR</span>
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <script type="module" src="../js/uninstall.js"></script>
+  </body>
+</html>

@@ -1,4 +1,4 @@
-// RecarregaAi! 2.3.7
+// RecarregaAi! 2.3.8
 
 import { initFloatingTools } from "./modules/floating-tools.js";
 import { extendPageTranslations } from "./modules/extended-translations.js";
@@ -35,7 +35,7 @@ const privacyTranslations = extendPageTranslations({
     footerFeedback: "Feedback",
     footerDeveloper: "Desenvolvido por:",
     footerHome: "Início",
-    footerLegal: "© RecarregaAi! 2.3.7. Política atualizada em 22/06/2026.",
+    footerLegal: "© RecarregaAi! 2.3.8. Política atualizada em 28/06/2026.",
     footerPrivacy: "Privacidade",
     headerContact: "Contato",
     headerNavLabel: "Navegação da política",
@@ -45,7 +45,7 @@ const privacyTranslations = extendPageTranslations({
     heroEyebrow: "Política de Privacidade",
     heroIntro:
       "O RecarregaAi! é uma extensão para navegador criada para limpar dados temporários do site atual, recarregar abas, executar timers automáticos e proteger atividades de digitação e mídia contra recarregamentos inesperados.",
-    heroMeta: "Última atualização: 22/06/2026",
+    heroMeta: "Última atualização: 28/06/2026",
     heroTitle: "Transparência para usar sem surpresa.",
     languageDialogDescription:
       "Escolha o idioma preferido para navegar pelo RecarregaAi!.",
@@ -89,9 +89,9 @@ const privacyTranslations = extendPageTranslations({
     sectionFeedbackBody1:
       "Após a desinstalação, a página de feedback pode ser aberta automaticamente, mas nenhuma resposta é enviada sem uma ação do usuário. O envio é opcional.",
     sectionFeedbackBody2:
-      "Caso enviado, o formulário pode incluir motivo da desinstalação, comentário, e-mail opcional, idioma, navegador, versão da extensão, data do envio, origem da página de feedback e um identificador técnico aleatório da submissão. A origem e o identificador são usados somente para confirmar o resultado e evitar envios duplicados.",
+      "Caso enviado, o formulário pode incluir motivo da desinstalação, comentário, e-mail opcional, idioma, navegador, versão da extensão, datas de abertura e envio, origem da página de feedback e um identificador técnico aleatório da submissão. A origem, as datas e o identificador são usados somente para validar o envio, confirmar o resultado e evitar duplicidades.",
     sectionFeedbackBody3:
-      "O feedback é processado pelo Google Apps Script e entregue por e-mail à Olinbyte Digital em olinbytedigital@gmail.com. O identificador técnico pode permanecer no cache temporário do serviço por até seis horas para impedir duplicidades. As informações são usadas apenas para responder ao contato, entender problemas, corrigir falhas e melhorar a extensão.",
+      "O feedback é processado pelo Google Apps Script e entregue por e-mail à Olinbyte Digital em olinbytedigital@gmail.com. O identificador e uma impressão criptográfica derivada do conteúdo podem permanecer no cache temporário por até seis horas. Um contador agregado guarda somente a data e a quantidade diária de tentativas. Essas informações servem para conter abuso; o conteúdo é usado apenas para responder ao contato, entender problemas, corrigir falhas e melhorar a extensão.",
     sectionFeedbackTitle: "5. Feedback de desinstalação",
     sectionLimitedUseBody1:
       "O uso das informações pela extensão segue a Política de Dados do Usuário da Chrome Web Store, incluindo os requisitos de Limited Use.",
@@ -167,7 +167,7 @@ const privacyTranslations = extendPageTranslations({
     footerFeedback: "Feedback",
     footerDeveloper: "Developed by:",
     footerHome: "Home",
-    footerLegal: "© RecarregaAi! 2.3.7. Policy updated on 06/22/2026.",
+    footerLegal: "© RecarregaAi! 2.3.8. Policy updated on 06/28/2026.",
     footerPrivacy: "Privacy",
     headerContact: "Contact",
     headerNavLabel: "Policy navigation",
@@ -177,7 +177,7 @@ const privacyTranslations = extendPageTranslations({
     heroEyebrow: "Privacy Policy",
     heroIntro:
       "RecarregaAi! is a browser extension created to clear temporary data from the current site, reload tabs, run automatic timers and protect typing and media activity from unexpected reloads.",
-    heroMeta: "Last updated: 06/22/2026",
+    heroMeta: "Last updated: 06/28/2026",
     heroTitle: "Transparency so you can use it without surprises.",
     languageDialogDescription:
       "Choose your preferred language to browse RecarregaAi!.",
@@ -221,9 +221,9 @@ const privacyTranslations = extendPageTranslations({
     sectionFeedbackBody1:
       "After uninstalling the extension, the feedback page may open automatically, but no response is sent without a user action. Submission is optional.",
     sectionFeedbackBody2:
-      "If submitted, the form may include uninstall reason, comment, optional email, language, browser, extension version, submission date, feedback page origin and a random technical submission identifier. The origin and identifier are used only to confirm the result and prevent duplicate submissions.",
+      "If submitted, the form may include uninstall reason, comment, optional email, language, browser, extension version, page opening and submission dates, feedback page origin and a random technical submission identifier. The origin, dates and identifier are used only to validate the submission, confirm the result and prevent duplicates.",
     sectionFeedbackBody3:
-      "Feedback is processed by Google Apps Script and delivered by email to Olinbyte Digital at olinbytedigital@gmail.com. The technical identifier may remain in the service's temporary cache for up to six hours to prevent duplicates. The information is used only to respond to the contact, understand problems, fix issues and improve the extension.",
+      "Feedback is processed by Google Apps Script and delivered by email to Olinbyte Digital at olinbytedigital@gmail.com. The identifier and a cryptographic fingerprint derived from the content may remain in temporary cache for up to six hours. An aggregate counter stores only the date and daily number of attempts. This information is used to contain abuse; the content is used only to respond to the contact, understand problems, fix issues and improve the extension.",
     sectionFeedbackTitle: "5. Uninstall feedback",
     sectionLimitedUseBody1:
       "The extension's use of information follows the Chrome Web Store User Data Policy, including Limited Use requirements.",
@@ -299,7 +299,7 @@ const privacyTranslations = extendPageTranslations({
     footerFeedback: "Feedback",
     footerDeveloper: "Desarrollado por:",
     footerHome: "Inicio",
-    footerLegal: "© RecarregaAi! 2.3.7. Política actualizada el 22/06/2026.",
+    footerLegal: "© RecarregaAi! 2.3.8. Política actualizada el 28/06/2026.",
     footerPrivacy: "Privacidad",
     headerContact: "Contacto",
     headerNavLabel: "Navegación de la política",
@@ -309,7 +309,7 @@ const privacyTranslations = extendPageTranslations({
     heroEyebrow: "Política de Privacidad",
     heroIntro:
       "RecarregaAi! es una extensión para navegador creada para limpiar datos temporales del sitio actual, recargar pestañas, ejecutar timers automáticos y proteger la escritura y el uso de medios contra recargas inesperadas.",
-    heroMeta: "Última actualización: 22/06/2026",
+    heroMeta: "Última actualización: 28/06/2026",
     heroTitle: "Transparencia para usarla sin sorpresas.",
     languageDialogDescription:
       "Elige el idioma preferido para navegar por RecarregaAi!.",
@@ -353,9 +353,9 @@ const privacyTranslations = extendPageTranslations({
     sectionFeedbackBody1:
       "Después de desinstalar la extensión, la página de feedback puede abrirse automáticamente, pero no se envía ninguna respuesta sin una acción del usuario. El envío es opcional.",
     sectionFeedbackBody2:
-      "Si se envía, el formulario puede incluir motivo de desinstalación, comentario, email opcional, idioma, navegador, versión de la extensión, fecha de envío, origen de la página de feedback y un identificador técnico aleatorio del envío. El origen y el identificador se usan solo para confirmar el resultado y evitar envíos duplicados.",
+      "Si se envía, el formulario puede incluir motivo de desinstalación, comentario, email opcional, idioma, navegador, versión de la extensión, fechas de apertura y envío, origen de la página de feedback y un identificador técnico aleatorio. El origen, las fechas y el identificador se usan solo para validar el envío, confirmar el resultado y evitar duplicados.",
     sectionFeedbackBody3:
-      "El feedback es procesado por Google Apps Script y entregado por email a Olinbyte Digital en olinbytedigital@gmail.com. El identificador técnico puede permanecer en la caché temporal del servicio hasta seis horas para evitar duplicados. La información se usa solo para responder al contacto, entender problemas, corregir fallas y mejorar la extensión.",
+      "El feedback es procesado por Google Apps Script y entregado por email a Olinbyte Digital en olinbytedigital@gmail.com. El identificador y una huella criptográfica derivada del contenido pueden permanecer en la caché temporal hasta seis horas. Un contador agregado guarda solo la fecha y la cantidad diaria de intentos. Esta información se usa para contener abusos; el contenido se usa solo para responder al contacto, entender problemas, corregir fallas y mejorar la extensión.",
     sectionFeedbackTitle: "5. Feedback de desinstalación",
     sectionLimitedUseBody1:
       "El uso de la información por parte de la extensión sigue la Política de Datos del Usuario de Chrome Web Store, incluidos los requisitos de Limited Use.",

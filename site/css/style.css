@@ -1,4 +1,4 @@
-/* RecarregaAi! 2.3.7 */
+/* RecarregaAi! 2.3.8 */
 
 :root {
   --color-background: #07111f;
@@ -507,7 +507,11 @@ button {
     border-color 160ms ease,
     color 160ms ease,
     transform 160ms ease,
-    box-shadow 160ms ease;
+  box-shadow 160ms ease;
+}
+
+[data-chrome-web-store-link][hidden] {
+  display: none !important;
 }
 
 .button:hover,

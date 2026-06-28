@@ -1,10 +1,15 @@
-// RecarregaAi! 2.3.7
+// RecarregaAi! 2.3.8
 
 const FEEDBACK_RECIPIENT = "olinbytedigital@gmail.com";
 const FEEDBACK_PAGE_ORIGIN = "https://recarregaai.pages.dev";
 const FEEDBACK_RESPONSE_SOURCE = "recarregaai-feedback";
 const EXTENSION_ORIGIN_PATTERN = /^chrome-extension:\/\/[a-p]{32}$/;
-const MAX_SUBMISSIONS_PER_MINUTE = 20;
+const DAILY_COUNTER_PROPERTY = "recarregaAiFeedbackDailyCounter";
+const MAX_IDENTICAL_SUBMISSIONS_PER_WINDOW = 3;
+const MAX_SUBMISSIONS_PER_DAY = 40;
+const MAX_SUBMISSIONS_PER_MINUTE = 5;
+const MAXIMUM_FORM_AGE_IN_MILLISECONDS = 24 * 60 * 60 * 1000;
+const MINIMUM_FORM_AGE_IN_MILLISECONDS = 3 * 1000;
 
 function doPost(event) {
   const parameters = event && event.parameter ? event.parameter : {};
@@ -23,7 +28,7 @@ function doPost(event) {
       );
     }
 
-    const submissionState = reserveSubmission_(submissionId);
+    const submissionState = reserveSubmission_(parameters, submissionId);
 
     if (submissionState === "duplicate") {
       return createResponse_(
@@ -80,9 +85,20 @@ function validateSubmission_(parameters, submissionId) {
   if (contactEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail)) {
     throw new Error("E-mail de contato invalido.");
   }
+
+  const startedAt = new Date(cleanText_(parameters.startedAt, 60)).getTime();
+  const formAge = Date.now() - startedAt;
+
+  if (
+    !Number.isFinite(startedAt)
+    || formAge < MINIMUM_FORM_AGE_IN_MILLISECONDS
+    || formAge > MAXIMUM_FORM_AGE_IN_MILLISECONDS
+  ) {
+    throw new Error("Tempo de preenchimento invalido.");
+  }
 }
 
-function reserveSubmission_(submissionId) {
+function reserveSubmission_(parameters, submissionId) {
   const cache = CacheService.getScriptCache();
   const sentKey = `sent:${submissionId}`;
   const pendingKey = `pending:${submissionId}`;
@@ -106,6 +122,8 @@ function reserveSubmission_(submissionId) {
       throw new Error("Limite temporario de feedbacks atingido.");
     }
 
+    reserveDailySubmission_();
+    reserveContentFingerprint_(cache, parameters);
     cache.put(minuteKey, String(currentCount + 1), 120);
     cache.put(pendingKey, "1", 60);
 
@@ -113,6 +131,55 @@ function reserveSubmission_(submissionId) {
   } finally {
     lock.releaseLock();
   }
+}
+
+function reserveDailySubmission_() {
+  const properties = PropertiesService.getScriptProperties();
+  const today = Utilities.formatDate(new Date(), "GMT", "yyyyMMdd");
+  let dailyCounter = {};
+
+  try {
+    dailyCounter = JSON.parse(
+      properties.getProperty(DAILY_COUNTER_PROPERTY) || "{}"
+    );
+  } catch (error) {
+    console.warn("Contador diario invalido; reiniciando:", error);
+  }
+
+  const currentCount = dailyCounter.date === today
+    ? Number(dailyCounter.count) || 0
+    : 0;
+
+  if (currentCount >= MAX_SUBMISSIONS_PER_DAY) {
+    throw new Error("Limite diario de feedbacks atingido.");
+  }
+
+  properties.setProperty(DAILY_COUNTER_PROPERTY, JSON.stringify({
+    count: currentCount + 1,
+    date: today
+  }));
+}
+
+function reserveContentFingerprint_(cache, parameters) {
+  const comparableContent = [
+    cleanText_(parameters.motivo, 200).toLowerCase(),
+    cleanText_(parameters.comentario, 1200).toLowerCase(),
+    cleanText_(parameters.email, 254).toLowerCase(),
+    cleanText_(parameters.navegador, 500)
+  ].join("|");
+  const digest = Utilities.computeDigest(
+    Utilities.DigestAlgorithm.SHA_256,
+    comparableContent
+  );
+  const fingerprint = Utilities.base64EncodeWebSafe(digest).slice(0, 32);
+  const fingerprintKey = `content:${fingerprint}`;
+  const currentCount = Number(cache.get(fingerprintKey) || 0);
+
+  if (currentCount >= MAX_IDENTICAL_SUBMISSIONS_PER_WINDOW) {
+    throw new Error("Feedback repetido em excesso.");
+  }
+
+  cache.put(fingerprintKey, String(currentCount + 1), 21600);
 }
 
 function confirmSubmission_(submissionId) {

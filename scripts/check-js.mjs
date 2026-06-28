@@ -1,7 +1,10 @@
-// RecarregaAi! 2.3.7
+// RecarregaAi! 2.3.8
 
 import { spawnSync } from "node:child_process";
-import { readdirSync } from "node:fs";
+import {
+  readFileSync,
+  readdirSync
+} from "node:fs";
 import { join } from "node:path";
 
 const collectFiles = (directoryPath, extension) => (
@@ -24,7 +27,8 @@ const filesToCheck = [
   "eslint.config.mjs",
   ...collectFiles("extension/js", ".js"),
   ...collectFiles("site/js", ".js"),
-  ...collectFiles("scripts", ".mjs")
+  ...collectFiles("scripts", ".mjs"),
+  ...collectFiles("tests", ".mjs")
 ].sort();
 
 for (const filePath of filesToCheck) {
@@ -35,4 +39,17 @@ for (const filePath of filesToCheck) {
   if (result.status !== 0) {
     process.exit(result.status || 1);
   }
+}
+
+const appsScriptCheck = spawnSync("node", ["--check", "-"], {
+  input: readFileSync("backend/google-apps-script/Code.gs"),
+  stdio: [
+    "pipe",
+    "inherit",
+    "inherit"
+  ]
+});
+
+if (appsScriptCheck.status !== 0) {
+  process.exit(appsScriptCheck.status || 1);
 }

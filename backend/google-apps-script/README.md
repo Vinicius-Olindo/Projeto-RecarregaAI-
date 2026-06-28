@@ -1,4 +1,4 @@
-# Backend de feedback - RecarregaAi! 2.3.7
+# Backend de feedback - RecarregaAi! 2.3.8
 
 Este endpoint envia o feedback diretamente para
 `olinbytedigital@gmail.com` usando o Google Apps Script. O navegador publica o
@@ -24,10 +24,16 @@ trocar a URL pública configurada no projeto.
 ## Proteções
 
 - validação e limite de tamanho dos campos;
+- validação do tempo de permanência na página;
 - campo honeypot;
-- limite global por minuto;
+- limite global por minuto e por dia;
+- contenção de conteúdo idêntico repetido;
 - bloqueio de envios duplicados;
 - escape do HTML do e-mail;
-- resposta assinada com o identificador unico da submissao;
-- confirmação enviada apenas para a origem oficial do GitHub Pages ou para
+- resposta correlacionada ao identificador único da submissão;
+- confirmação enviada apenas para a origem oficial do Cloudflare Pages ou para
   uma origem válida da extensão (`chrome-extension://`).
+
+Os limites protegem a cota do Gmail e reduzem abuso automatizado. Para um
+volume público elevado ou ataques direcionados, o próximo passo recomendado
+é usar um endpoint próprio com Cloudflare Turnstile.

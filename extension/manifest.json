@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "RecarregaAi!",
-  "version": "2.3.7",
-  "version_name": "2.3.7",
+  "version": "2.3.8",
+  "version_name": "2.3.8",
   "description": "Limpe o cache e recarregue páginas automaticamente.",
   "action": {
     "default_icon": {

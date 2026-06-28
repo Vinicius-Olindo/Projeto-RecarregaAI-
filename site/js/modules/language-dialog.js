@@ -1,4 +1,4 @@
-// RecarregaAi! 2.3.7
+// RecarregaAi! 2.3.8
 
 export const defaultLanguage = "pt-BR";
 export const supportedLanguages = [

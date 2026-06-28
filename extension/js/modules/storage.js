@@ -1,4 +1,4 @@
-// RecarregaAi! 2.3.7
+// RecarregaAi! 2.3.8
 
 import {
   createEmptyTimerCollection,
@@ -16,6 +16,37 @@ const getTimerStorageKey = (tabId) => (
 const isTimerStorageKey = (storageKey) => (
   storageKey.startsWith(storageKeys.timerSettingsPrefix)
 );
+
+const browserSessionStorageKey = "recarregaAiBrowserSessionId";
+
+const createBrowserSessionId = () => (
+  typeof crypto?.randomUUID === "function"
+    ? crypto.randomUUID()
+    : `${Date.now()}-${Math.random().toString(36).slice(2)}`
+);
+
+export const getBrowserSessionId = async () => {
+  if (!chrome.storage.session) {
+    return null;
+  }
+
+  const storedData = await chrome.storage.session.get(
+    browserSessionStorageKey
+  );
+  const storedSessionId = storedData[browserSessionStorageKey];
+
+  if (typeof storedSessionId === "string" && storedSessionId) {
+    return storedSessionId;
+  }
+
+  const browserSessionId = createBrowserSessionId();
+
+  await chrome.storage.session.set({
+    [browserSessionStorageKey]: browserSessionId
+  });
+
+  return browserSessionId;
+};
 
 const getTimerCollectionFromStoredData = (storedData) => {
   const timerCollection = normalizeTimerCollection(

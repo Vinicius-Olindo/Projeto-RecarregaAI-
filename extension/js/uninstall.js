@@ -1,4 +1,4 @@
-// RecarregaAi! 2.3.7
+// RecarregaAi! 2.3.8
 
 import { appConfig } from "./modules/config.js";
 import {
@@ -15,7 +15,7 @@ import { enforceTopLevelPublicPage } from "./modules/public-page-security.js";
 enforceTopLevelPublicPage();
 
 const feedbackBackendUrl = appConfig.feedbackBackendUrl;
-const defaultVersionLabel = "2.3.7";
+const defaultVersionLabel = "2.3.8";
 const defaultLanguage = "pt-BR";
 const defaultReason = "Não informou motivo";
 const feedbackCooldownInMilliseconds = 60 * 1000;
@@ -30,6 +30,7 @@ const feedbackResponseHostnames = new Set([
 ]);
 const feedbackResponseHostnamePattern =
   /^[a-z0-9-]+-script\.googleusercontent\.com$/;
+const feedbackPageLoadedAt = new Date().toISOString();
 const languageStorageKey = "recarregaAiPageLanguage";
 const legacyLanguageStorageKey = "recarregaAiUninstallLanguage";
 
@@ -44,7 +45,7 @@ const translations = extendPageTranslations({
     footerDeveloper: "Desenvolvido por:",
     footerFeedback: "Feedback",
     footerHome: "Início",
-    footerLegal: "© RecarregaAi! 2.3.7. Todos os direitos reservados.",
+    footerLegal: "© RecarregaAi! 2.3.8. Todos os direitos reservados.",
     footerPrivacy: "Privacidade",
     feedbackNotConfigured:
       "O serviço de feedback ainda não foi configurado.",
@@ -73,7 +74,7 @@ const translations = extendPageTranslations({
     reasonRequired: "Selecione um motivo antes de enviar.",
     selectedPrefix: "Selecionado: ",
     sendButton: "Enviar feedback",
-    versionLabel: "2.3.7"
+    versionLabel: "2.3.8"
   },
   en: {
     backToTop: "Back to start",
@@ -85,7 +86,7 @@ const translations = extendPageTranslations({
     footerDeveloper: "Developed by:",
     footerFeedback: "Feedback",
     footerHome: "Home",
-    footerLegal: "© RecarregaAi! 2.3.7. All rights reserved.",
+    footerLegal: "© RecarregaAi! 2.3.8. All rights reserved.",
     footerPrivacy: "Privacy",
     feedbackNotConfigured:
       "The feedback service has not been configured yet.",
@@ -113,7 +114,7 @@ const translations = extendPageTranslations({
     reasonRequired: "Select a reason before sending.",
     selectedPrefix: "Selected: ",
     sendButton: "Send feedback",
-    versionLabel: "2.3.7"
+    versionLabel: "2.3.8"
   },
   es: {
     backToTop: "Volver al inicio",
@@ -125,7 +126,7 @@ const translations = extendPageTranslations({
     footerDeveloper: "Desarrollado por:",
     footerFeedback: "Feedback",
     footerHome: "Inicio",
-    footerLegal: "© RecarregaAi! 2.3.7. Todos los derechos reservados.",
+    footerLegal: "© RecarregaAi! 2.3.8. Todos los derechos reservados.",
     footerPrivacy: "Privacidad",
     feedbackNotConfigured:
       "El servicio de feedback todavía no está configurado.",
@@ -153,7 +154,7 @@ const translations = extendPageTranslations({
     reasonRequired: "Selecciona un motivo antes de enviar.",
     selectedPrefix: "Seleccionado: ",
     sendButton: "Enviar feedback",
-    versionLabel: "2.3.7"
+    versionLabel: "2.3.8"
   }
 }, "uninstall");
 
@@ -458,6 +459,7 @@ const buildFeedbackPayload = () => {
     motivo: getSelectedReason(),
     navegador: navigator.userAgent,
     responseOrigin: window.location.origin,
+    startedAt: feedbackPageLoadedAt,
     submissionId: crypto.randomUUID(),
     versao: getVersionLabel(),
     website: ""

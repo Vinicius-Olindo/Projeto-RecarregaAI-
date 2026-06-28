@@ -1,4 +1,4 @@
-// RecarregaAi! 2.3.7
+// RecarregaAi! 2.3.8
 
 import { appConfig } from "./modules/config.js";
 import {
@@ -40,6 +40,7 @@ import {
   getAllTimerSettings,
   getAllTimerSettingsFromCollection,
   getAppSettings,
+  getBrowserSessionId,
   getGlobalPause,
   getLastTimerRun,
   getStoredTimerCollection,
@@ -49,14 +50,15 @@ import {
   clearGlobalPause,
   saveGlobalPause,
   saveLastTimerRun,
-  saveTimerCollection,
   updateTimerSettingsByTabId,
   upsertTimerSettings
 } from "./modules/storage.js";
 import { collectLoadedOrigins } from "./modules/tabs.js";
+import { createTimerRestorationPlan } from "./modules/timer-restoration.js";
 
 let badgeCountdownTimerId = null;
 let badgeCountdownRestartQueue = Promise.resolve();
+let timerMaintenanceQueue = Promise.resolve();
 const autoStartTimerTabIds = new Set();
 const pendingScrollPositions = new Map();
 const scheduledRefreshTabIds = new Set();
@@ -104,6 +106,16 @@ const extensionPageMessageTypes = new Set([
   runtimeMessageTypes.stopTimer
 ]);
 const extensionBaseUrl = chrome.runtime.getURL("");
+
+const queueTimerMaintenance = (maintenanceTask) => {
+  const queuedTask = timerMaintenanceQueue
+    .catch(() => undefined)
+    .then(maintenanceTask);
+
+  timerMaintenanceQueue = queuedTask;
+
+  return queuedTask;
+};
 
 const recordHistoryEntry = async (entry) => {
   try {
@@ -712,6 +724,7 @@ const startTimer = async (payload) => {
   }
 
   const timerSettings = {
+    browserSessionId: await getBrowserSessionId(),
     enabled: true,
     intervalInMinutes,
     lastRunAt: null,
@@ -1583,33 +1596,120 @@ const restoreTimerAlarms = async () => {
     return;
   }
 
-  await saveTimerCollection(timerCollection);
+  const [browserSessionId, openTabs] = await Promise.all([
+    getBrowserSessionId(),
+    chrome.tabs.query({})
+  ]);
+  const restorationPlan = createTimerRestorationPlan({
+    browserSessionId,
+    openTabs,
+    timerSettingsList
+  });
 
-  for (const timerSettings of timerSettingsList) {
-    await injectTypingProtection(timerSettings.tabId);
+  for (const timerSettings of restorationPlan.stale) {
+    await removeTimerSettingsByTabId(timerSettings.tabId);
+    await clearTimerAlarm(timerSettings.tabId);
+    await clearTimerBadge(timerSettings);
+  }
 
-    if (timerSettings.paused) {
-      await updateTimerBadge(timerSettings);
-      continue;
-    }
-
-    const remainingSeconds = getRemainingSeconds(timerSettings.nextRunAt);
-    const nextRunAt = remainingSeconds > 0
-      ? timerSettings.nextRunAt
-      : getNextRunDate(timerSettings.intervalInMinutes);
+  for (const { tab, timerSettings } of restorationPlan.navigationPaused) {
     const restoredTimerSettings = {
       ...timerSettings,
-      nextRunAt
+      browserSessionId,
+      tabId: tab.id,
+      tabTitle: tab.title || timerSettings.tabTitle,
+      tabUrl: tab.url || timerSettings.tabUrl,
+      windowId: tab.windowId
+    };
+
+    await pauseTimerForNavigation(restoredTimerSettings, tab);
+  }
+
+  for (const {
+    isRebound,
+    tab,
+    timerSettings
+  } of restorationPlan.active) {
+    if (isRebound && tab.id !== timerSettings.tabId) {
+      await removeTimerSettingsByTabId(timerSettings.tabId);
+      await clearTimerAlarm(timerSettings.tabId);
+      await clearTimerBadge(timerSettings);
+    }
+
+    const restoredTimerSettings = {
+      ...timerSettings,
+      browserSessionId,
+      tabId: tab.id,
+      tabTitle: tab.title || timerSettings.tabTitle,
+      tabUrl: tab.url || timerSettings.tabUrl,
+      windowId: tab.windowId
     };
 
     await upsertTimerSettings(restoredTimerSettings);
+    await injectTypingProtection(restoredTimerSettings.tabId);
+
+    if (restoredTimerSettings.paused) {
+      await clearTimerAlarm(restoredTimerSettings.tabId);
+      await updateTimerBadge(restoredTimerSettings);
+      continue;
+    }
+
+    const remainingSeconds = getRemainingSeconds(
+      restoredTimerSettings.nextRunAt
+    );
+
+    if (remainingSeconds === 0) {
+      await runScheduledRefresh(restoredTimerSettings.tabId);
+      continue;
+    }
+
     await createTimerAlarm(
       restoredTimerSettings,
-      Math.max(1, getRemainingSeconds(nextRunAt)) / 60
+      remainingSeconds / 60
     );
   }
 
   await startBadgeCountdown();
+};
+
+const ensureRuntimeTimerAlarms = async () => {
+  const timerSettingsList = await getAllTimerSettings();
+  const browserSessionId = await getBrowserSessionId();
+  const requiresSessionRestoration = browserSessionId
+    && timerSettingsList.some((timerSettings) => (
+      timerSettings.browserSessionId !== browserSessionId
+    ));
+
+  if (requiresSessionRestoration) {
+    await restoreTimerAlarms();
+    return;
+  }
+
+  for (const timerSettings of timerSettingsList) {
+    if (!timerSettings.enabled || timerSettings.paused) {
+      continue;
+    }
+
+    const alarmName = getTimerAlarmName(timerSettings.tabId);
+    const alarm = await chrome.alarms.get(alarmName);
+
+    if (alarm) {
+      continue;
+    }
+
+    const remainingSeconds = getRemainingSeconds(timerSettings.nextRunAt);
+
+    if (remainingSeconds === 0) {
+      await runScheduledRefresh(timerSettings.tabId);
+      continue;
+    }
+
+    await createTimerAlarm(timerSettings, remainingSeconds / 60);
+  }
+
+  if (timerSettingsList.length > 0) {
+    await startBadgeCountdown();
+  }
 };
 
 const resumeTimerAfterTyping = async (tabId) => {
@@ -1931,7 +2031,7 @@ const bootstrapRecarregaAi = async ({
   }
 
   if (restoreAlarms) {
-    await restoreTimerAlarms();
+    await queueTimerMaintenance(restoreTimerAlarms);
     await restoreGlobalPause();
     await syncOperatingHoursState();
   }
@@ -1996,7 +2096,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
   const tabId = getTabIdFromTimerAlarmName(alarm.name);
 
   if (typeof tabId === "number") {
-    runScheduledRefresh(tabId).catch((error) => {
+    queueTimerMaintenance(() => runScheduledRefresh(tabId)).catch((error) => {
       console.error("Erro ao executar reload agendado do RecarregaAi:", error);
     });
   }
@@ -2033,6 +2133,10 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
   });
 });
 
-bootstrapRecarregaAi().catch((error) => {
-  console.error("Erro ao carregar service worker do RecarregaAi:", error);
+configureUninstallFeedbackPage().catch((error) => {
+  console.error("Erro ao configurar feedback do RecarregaAi:", error);
+});
+
+queueTimerMaintenance(ensureRuntimeTimerAlarms).catch((error) => {
+  console.error("Erro ao recuperar alarmes do RecarregaAi:", error);
 });

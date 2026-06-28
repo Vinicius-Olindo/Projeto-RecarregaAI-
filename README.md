@@ -1,6 +1,6 @@
 # RecarregaAi!
 
-**Versão atual: 2.3.7**
+**Versão atual: 2.3.8**
 
 O RecarregaAi! é uma extensão para Google Chrome que limpa o cache do endereço aberto e recarrega páginas automaticamente em intervalos definidos pelo usuário.
 
@@ -140,18 +140,53 @@ npm run zip
 
 O pacote é criado em `dist/recarregaai.zip`, com `manifest.json` na raiz e sem arquivos do site, backend, documentação ou desenvolvimento.
 
-## GitHub Actions
+## Validação automática
 
-O projeto possui duas rotinas automáticas:
+O workflow `.github/workflows/validate.yml` valida o projeto, audita as
+dependências, gera o site e empacota a extensão em cada alteração da branch
+principal e em pull requests.
 
-- `validate.yml`: valida e empacota a extensão;
-- `pages.yml`: valida, monta e publica o site no GitHub Pages.
+## Publicação no Cloudflare Pages
 
-Para usar a publicação automática, configure o GitHub Pages do repositório com a origem **GitHub Actions**. O workflow publica o conteúdo gerado em `dist/site/`.
+O site público é publicado pelo Cloudflare Pages a partir deste repositório:
+
+- comando de build: `npm run build:site`;
+- diretório de saída: `dist/site`;
+- endereço principal: [recarregaai.pages.dev](https://recarregaai.pages.dev/).
+
+O arquivo `site/_headers` define as políticas de segurança aplicadas pelo
+Cloudflare. O GitHub Actions continua responsável apenas pela validação e pelo
+artefato de teste; ele não publica o site.
 
 ## Configuração da loja
 
 Quando a extensão estiver publicada, informe a URL da Chrome Web Store em `chromeWebStoreUrl` nos arquivos de configuração do site e da extensão. Enquanto o campo estiver vazio, os botões de instalação do site permanecem ocultos.
+
+### Checklist da Chrome Web Store
+
+Use `dist/recarregaai.zip` como pacote de envio. O ZIP contém somente os
+arquivos executados pela extensão, com `manifest.json` na raiz.
+
+No painel da loja, use estas informações:
+
+- propósito único: **limpar o cache da página escolhida e recarregá-la
+  automaticamente no intervalo definido pelo usuário**;
+- política de privacidade:
+  `https://recarregaai.pages.dev/privacy.html`;
+- página do produto: `https://recarregaai.pages.dev/`;
+- suporte: `olinbytedigital@gmail.com`;
+- justificativas das permissões: use as descrições da seção
+  [Permissões](#permissões).
+
+Antes de enviar para análise, adicione no painel:
+
+- pelo menos uma captura atual da extensão em `1280x800` ou `640x400`;
+- imagem promocional pequena em `440x280`;
+- descrições curta e completa coerentes com o propósito único;
+- declarações de privacidade iguais ao conteúdo da política pública.
+
+O ícone obrigatório de `128x128` já está no pacote. Não inclua capturas,
+documentação, backend ou arquivos do site dentro do ZIP da extensão.
 
 ## Versionamento
 
